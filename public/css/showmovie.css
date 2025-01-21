@@ -1,0 +1,9 @@
+.new-movie .delete-update{
+    display: flex;
+    width: 100%;
+
+}
+.new-movie .delete-update .btn-option{
+    margin-right: 10px;
+    
+}
