@@ -8,14 +8,15 @@
 </head>
 <body>
     <div class="login-wrapper">
-        <form action="">
+        <form action="{{route("login.post")}}" method = "POST">
+        @csrf
             <h2>Đăng nhập</h2>
             <div class = "input-field">
-                <input type="text" required>
+                <input  name = "email" type="text" required>
                 <label>nhập email của bạn</label>
             </div>      
             <div class = "input-field">
-                <input type="text" required>
+                <input  name = "password" type="password" required>
                 <label>nhập mật khẩu của bạn</label>
             </div>     
 
@@ -30,7 +31,7 @@
 
             <button type = "submit">đăng nhập</button>
             <div class = "account-options">
-                <p>bạn chưa có tài khoản? <a href="#">Đăng ký</a></p>
+                <p>bạn chưa có tài khoản? <a href="">Đăng ký</a></p>
             </div>
         </form>
     </div>
