@@ -78,45 +78,4 @@
 
     </div>
 </div>
-
-
-
-<!-- <div class = "movie-management">
-
-    <div class = "movie-table">
-        <div class = "table-header">
-            <div class="data">
-                <span class="data-title">Tên Phim</span>         
-                <span class="data-title">Loại phim</span>
-                <span class="data-title">thể loại</span>         
-                <span class="data-title">Năm phát hành</span>
-                <span class="data-title">trạng thái</span>
-    
-            </div>
-        </div>
-
-        @foreach ($movies as $movie)
-      
-            <div class="table-data">
-                <div class="data">
-                    <span class="data-name">{{$movie->MovieName}}</span>
-                    @foreach ($movie->Types as $type)
-                    <span class="data-name">{{$type->TypeName}}</span>
-                    @endforeach
-
-                    @foreach ($movie->countries as $Country)
-                    <span class="data-name">{{$Country->CountryName}}</span>
-                    @endforeach
-                    <span class="data-name">{{$movie->MovieYear}}</span> 
-                    <span class="data-name">vv</span>
-                    <span class="data-name"></span> 
-                </div>        
-                   
-            </div>
-            @endforeach
-     
-        </div>
-</div>
-
-   -->
 @endsection

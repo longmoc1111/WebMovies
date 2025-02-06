@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap-5.3.0-alpha1-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.min.css">
-    <link rel = "stylesheet" href = "/css/parentss.css">
-    <link rel = "stylesheet" href = "/css/MovieManagement.css">
-    <link rel = "stylesheet" href = "/css/createmovie.css">
-    <link rel = "stylesheet" href = "/css/showmovie.css">
+    <link rel = "stylesheet" href = "/css1/parentss.css">
+    <link rel = "stylesheet" href = "/css1/MovieManagement.css">
+    <link rel = "stylesheet" href = "/css1/createmovie.css">
+    <link rel = "stylesheet" href = "/css1/showmovie.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/css/multi-select-tag.css">
 
 
@@ -67,14 +67,14 @@
                 <div class="menu-bars2" >
                 <ul>
                     <li class="create-movie">
-                            <a href="">
+                            <a href="{{route("Actor.index")}}">
                             <i class="bi bi-lightning-charge-fill"></i>
-                            <span class = "link-name">thông tin đạo diễn</span>
+                            <span class = "link-name">thông tin diễn viên</span>
                             </a></li>
                         <li class="create-movie">
                             <a href="">
                             <i class="bi bi-lightning-charge-fill"></i>
-                            <span class = "link-name">thêm đạo diễn</span>
+                            <span class = "link-name">thêm diễn viên</span>
                             </a>
                         </li>
                     </ul>
@@ -126,7 +126,7 @@
         </div>
         @yield("main")
     </section> 
-    <script src="/js/parentss.js"></script>
+    <script src="/js1/parentss.js"></script>
 
 </body>
 </html>

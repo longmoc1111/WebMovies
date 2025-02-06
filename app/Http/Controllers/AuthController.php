@@ -18,7 +18,7 @@ class AuthController extends Controller
         ]);
         $credentials = $request->only("email", "password");
         if(Auth::attempt($credentials)){
-            return redirect()->intended(route("home"));
+            return redirect()->intended(route("Dashboard.index"));
         }else{
             return redirect(route("login"))
                 ->with("error","Đăng nhập thất bại. Vui lòng nhập lại");

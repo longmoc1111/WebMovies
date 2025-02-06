@@ -20,7 +20,7 @@ class MoviesController extends Controller
     public function index()
     {
         $movies = Movie::with('Actors','countries','Types','Genres')->get();  
-        return view('movies.index',compact('movies'));
+        return view('admin.movies.index',compact('movies'));
     }
 
     public function create()
@@ -30,7 +30,7 @@ class MoviesController extends Controller
         $Directors = Director::all();
         $Countries = Country::all();
         $Actors = Actor::all();
-        return view('movies.CreateMovie',compact('Types','Genres', 'Directors','Countries','Actors'));
+        return view('admin.movies.CreateMovie',compact('Types','Genres', 'Directors','Countries','Actors'));
     }
 
     public function store(Request $request)
@@ -81,7 +81,7 @@ class MoviesController extends Controller
     { 
      
         $movie = Movie::find($id);
-        return view('movies.showMovie',compact('movie'));
+        return view('admin.movies.showMovie',compact('movie'));
     }
 
     public function edit(string $id)
@@ -92,7 +92,7 @@ class MoviesController extends Controller
         $Directors = Director::all();
         $Countries = Country::all();
         $Actors = Actor::all();
-        return view('movies.editMovie',compact('Movie','Types','Genres', 'Directors','Countries','Actors'));  
+        return view('admin.movies.editMovie',compact('Movie','Types','Genres', 'Directors','Countries','Actors'));  
     }
 
     /**

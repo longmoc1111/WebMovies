@@ -13,7 +13,6 @@ use App\Models\Actor;
 class DashboardController extends Controller{
 
     public function index(){
-        echo 'q34t';
-        // return view('dashboard.index');
+        return view('admin.dashboard.index');
     }
 }

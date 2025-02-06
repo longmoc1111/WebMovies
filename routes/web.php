@@ -5,6 +5,9 @@ use App\Http\Controllers\MoviesController;
 use App\http\Controllers\DashboardController;
 use App\http\Controllers\LoginController;
 use App\http\Controllers\AuthController;
+use App\http\Controllers\ActorController;
+use App\http\Controllers\HomeController;
+
 
 // Route::controller(LoginController::Class)->prefix('Login')->name('Login')->group(function(){
 //     route::get('/','index')->name('.index');
@@ -12,9 +15,6 @@ use App\http\Controllers\AuthController;
 // });
 
 // Route::get('/',[DashboardController::class,'index']);
-Route::middleware("auth")->group(function(){
-    Route::view("/home","welcome")->name('home');
-});
 Route::get("/login",[AuthController::class, "login"])
     ->name("login");
 Route::post("/login",[AuthController::class,"loginPost"])
@@ -23,18 +23,26 @@ Route::post("/login",[AuthController::class,"loginPost"])
 Route::get("/register",[AuthController::class, "register"])
     ->name("register");
 Route::post("/register",[AuthController::class,"registerPost"])
-    ->name("register.post");    
-// Route::controller(DashboardController::class)->prefix('Dashboard')->name('Dashboard')->group(function(){
-//     route::get('/','index')->name('.index');
-// }); 
+    ->name("register.post");  
+    Route::middleware(["auth","admin"])->prefix("Dashboard")->name('Dashboard.')->group(function(){
+        route::get('/',[DashboardController::class, 'index'])->name('index');
+    }); 
+    
+Route::middleware(["auth", "admin"])->prefix("Movies")->name("Movies.")->group(function(){
+    route::get('/',[MoviesController::class,'index'])->name('index');
+    route::get('/create',[MoviesController::class,'create'])->name('create');
+    route::post('/store',[MoviesController::class,'store'])->name('store');
+    route::get('/show/{MovieID}',[MoviesController::class,'show'])->name('show');
+    route::delete('/{MovieID}',[MoviesController::class,'destroy'])->name('destroy');
+    route::get('/edit/{MovieID}',[MoviesController::class,'edit'])->name('edit');
+    route::put('/update/{MovieID}',[MoviesController::class,'update'])->name('update');
+});
+  
+Route::middleware(["auth","admin"])->prefix("Actor")->name("Actor.")->group(function(){
+    route::get("/",[ActorController::class,"index"])->name("index");
+});
 
+Route::get("/home",[HomeController::class,"index"])->name("home");
 // Route::controller(MoviesController::class)->prefix('Movies')->name('Movies')->group(function(){
-//     // route::get('/','index')->name('.index');
-//     route::get('/','index')->name('.index');
-//     route::get('/create','create')->name('.create');
-//     route::post('/store','store')->name('.store');
-//     route::get('/show/{MovieID}','show')->name('.show');
-//     route::delete('/{MovieID}','destroy')->name('.destroy');
-//     route::get('/edit/{MovieID}','edit')->name('.edit');
-//     route::put('/update/{MovieID}','update')->name('.update');
+
 // });
