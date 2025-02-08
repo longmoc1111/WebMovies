@@ -24,6 +24,8 @@ Route::get("/register",[AuthController::class, "register"])
     ->name("register");
 Route::post("/register",[AuthController::class,"registerPost"])
     ->name("register.post");  
+Route::post("/logout",[AuthController::class,"logout"])
+    ->name("logout.post");
     Route::middleware(["auth","admin"])->prefix("Dashboard")->name('Dashboard.')->group(function(){
         route::get('/',[DashboardController::class, 'index'])->name('index');
     }); 
@@ -42,7 +44,12 @@ Route::middleware(["auth","admin"])->prefix("Actor")->name("Actor.")->group(func
     route::get("/",[ActorController::class,"index"])->name("index");
 });
 
-Route::get("/home",[HomeController::class,"index"])->name("home");
+Route::prefix("Home")->name("Home.")->group(function(){
+    Route::get("/",[HomeController::class,"index"])->name("index");
+    Route::get("/detail/{MovieID}",[HomeController::class,"detailMovie"])->name("detail");
+    Route::get("/viewAll",[HomeController::class,"viewAll"])->name("viewAll");
+});
+
 // Route::controller(MoviesController::class)->prefix('Movies')->name('Movies')->group(function(){
 
 // });

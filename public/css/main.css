@@ -4469,3 +4469,16 @@ body::-webkit-scrollbar-thumb {
   border-radius: 4px !important;
   cursor: pointer;
 }
+
+.btn-logout{
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  width: 100%;
+  display: block;
+  cursor: pointer;
+}
+.btn-logout:hover{
+  color: #f9ab00; /* Màu chữ khi hover */
+}

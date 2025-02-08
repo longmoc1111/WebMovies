@@ -68,13 +68,10 @@
                 @endif
 
             </div>
-
-
             <div>
                 @php
                     foreach ($movie->Actors as $Actors)
                         $MovieActors[$Actors->ActorID] = $Actors->ActorName;
-
                 @endphp
                 @if (isset($MovieActors))
                     <label for="" class="form-label">Diễn viên</label>
@@ -100,22 +97,22 @@
                         $MovieCountries[$Countries->CountryID] = $Countries->CountryName;
                 @endphp
 
-                @if (Isset($MovieCountries))
-                 <label for="" class="form-label">Quốc gia</label>
-                <select id="Countries" class="form-select mb-3 input" multiple="multiple" disabled>
-                    @foreach ($MovieCountries as $id => $name)
-                        <option value="{{$id}}" selected>{{$name}}</option>
-                    @endforeach
-                </select>
+                @if (isset($MovieCountries))
+                    <label for="" class="form-label">Quốc gia</label>
+                    <select id="Countries" class="form-select mb-3 input" multiple="multiple" disabled>
+                        @foreach ($MovieCountries as $id => $name)
+                            <option value="{{$id}}" selected>{{$name}}</option>
+                        @endforeach
+                    </select>
 
                 @else
-                <label for="" class="form-label">Quốc gia</label>
-                <select id="Countries" class="form-select mb-3 input" multiple="multiple" disabled>
+                    <label for="" class="form-label">Quốc gia</label>
+                    <select id="Countries" class="form-select mb-3 input" multiple="multiple" disabled>
                         <option value=""></option>
-                </select>
+                    </select>
                 @endif
 
-               
+
             </div>
 
         </div>
@@ -144,7 +141,11 @@
                     <label class="form-label" for="">ảnh phim</label>
                 </div>
                 <div>
-                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/5KvMLgeh3jA?si=c4K2PtP9azc8hHDb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    <iframe width="100%" height="315"
+                        src="https://www.youtube.com/embed/5KvMLgeh3jA?si=c4K2PtP9azc8hHDb" title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
 
             </div>

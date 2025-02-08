@@ -130,6 +130,7 @@
                         <option value="full hd">full hd</option>
                         <option value="bản cam">bản cam</option>
                         <option value="đã hoàn thành">đã hoàn thành</option>
+                        <option value="đã hoàn thành">sắp ra mắt</option>
                     </select>
                 </div>
 

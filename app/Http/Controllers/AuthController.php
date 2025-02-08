@@ -18,7 +18,8 @@ class AuthController extends Controller
         ]);
         $credentials = $request->only("email", "password");
         if(Auth::attempt($credentials)){
-            return redirect()->intended(route("Dashboard.index"));
+            // dd(Auth::user());
+            return redirect()->intended(route("Home.index"));
         }else{
             return redirect(route("login"))
                 ->with("error","Đăng nhập thất bại. Vui lòng nhập lại");
@@ -46,5 +47,9 @@ class AuthController extends Controller
             return redirect(route("register"))
                 ->with("error","Tạo tài khoản thất bại");
         }
+    }
+    public function logout(){
+        Auth::logout();
+        return redirect()->route("Home.index");
     }
 }
