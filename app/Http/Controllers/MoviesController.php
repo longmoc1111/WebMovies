@@ -19,8 +19,8 @@ class MoviesController extends Controller
      */
     public function index()
     {
-        $movies = Movie::with('Actors','countries','Types','Genres')->get();  
-        return view('admin.movies.index',compact('movies'));
+        $movies = Movie::OrderBy("MovieEvaluate","DESC")->paginate(10);  
+        return view('admin.movies.index',compact('movies')  );
     }
 
     public function create()
@@ -40,18 +40,19 @@ class MoviesController extends Controller
             'MovieYear'=>'required',
             'MovieDescription'=>'required',
             'MovieEvaluate'=>'required',
+             'MovieImage'=>'required',
             'MovieStatus'=>'required|min:0|max:10',
             'MovieLink'=>'required|url',
             'GenreID'=>'required',            
        ]);
-        if($request->hasfile('MovieImage')){
-            $file = $request->file('MovieImage');
-            $fileNameWithoutExt = pathinfo($file->getClientOriginalName(),PATHINFO_FILENAME);
-            $fileExtension = $file->getClientOriginalExtension();
-            $newFileName = str::slug($fileNameWithoutExt,'-'). '-' . time() . '.' . $fileExtension;
-            $file->move(public_path('images'), $newFileName);
-            $validateDataMovies['MovieImage'] = $newFileName;
-        }
+        // if($request->hasfile('MovieImage')){
+        //     $file = $request->file('MovieImage');
+        //     $fileNameWithoutExt = pathinfo($file->getClientOriginalName(),PATHINFO_FILENAME);
+        //     $fileExtension = $file->getClientOriginalExtension();
+        //     $newFileName = str::slug($fileNameWithoutExt,'-'). '-' . time() . '.' . $fileExtension;
+        //     $file->move(public_path('images'), $newFileName);
+        //     $validateDataMovies['MovieImage'] = $newFileName;
+        // }
         $movie = Movie::create($validateDataMovies);
 
        $validateDataDirector = $request->get('DirectorID');
@@ -104,26 +105,27 @@ class MoviesController extends Controller
                 'MovieName'=>'required',
                 'MovieYear'=>'required',
                 'MovieDescription'=>'required',
+                'MovieImage'=>'required',
                 'MovieEvaluate'=>'required',
                 'MovieStatus'=>'required|min:0|max:10',
                 'MovieLink'=>'required|url',
                 'GenreID'=>'required',
         ]);
 
-        if($request->hasfile('currentMovieImage')){
-            $oldfileImage = public_path('images/'. $request->get('MovieImage'));
-            if(File::exists($oldfileImage)){
-                File::delete($oldfileImage);
-            }
-            else{              
-            }
-            $file = $request->file('currentMovieImage');
-            $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $fileNameExtension = $file->getClientOriginalExtension();
-            $shortFileName = str::slug($fileNameWithoutExt, '-') . '-' .  time() . '.' . $fileNameExtension;
-            $file->move(public_path('images'), $shortFileName);
-            $validate['MovieImage'] = $shortFileName;    
-        }
+        // if($request->hasfile('currentMovieImage')){
+        //     $oldfileImage = public_path('images/'. $request->get('MovieImage'));
+        //     if(File::exists($oldfileImage)){
+        //         File::delete($oldfileImage);
+        //     }
+        //     else{              
+        //     }
+        //     $file = $request->file('currentMovieImage');
+        //     $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        //     $fileNameExtension = $file->getClientOriginalExtension();
+        //     $shortFileName = str::slug($fileNameWithoutExt, '-') . '-' .  time() . '.' . $fileNameExtension;
+        //     $file->move(public_path('images'), $shortFileName);
+        //     $validate['MovieImage'] = $shortFileName;    
+        // }
 
         
     

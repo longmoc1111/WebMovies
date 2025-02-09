@@ -1,181 +1,173 @@
-@extends('layout.parentss')
+@extends("layout.admin")
+@section("admin")
 
-@section('title', 'Create new Movie')
-
-@section('main')
-
-<div class="new-movie">
-    <form class="my-3" action="{{route('Movies.store')}}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div>
-            @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+    <!-- main content -->
+    <main class="main">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- main title -->
+                <div class="col-12">
+                    <div class="main__title">
+                        <h2>THÊM PHIM MỚI</h2></h2>
+                    </div>
                 </div>
-            @endif
-        </div>
-        <div class="form-create">
-            <div class="left-form">
-                <div>
-                    <label class="form-label" for="">Tên phim</label>
-                    <input required class="form-control mb-3 input" type="text" name="MovieName" id="name">
-                    {{-- @error('name')--}}
-                    {{-- <div class='alert alert-warning'>The name only includes characters from a-z, A-Z</div>--}}
-                    {{-- @enderror--}}
+                <!-- end main title -->
+
+                <!-- form -->
+                <div class="col-12">
+                    <form action="{{route("Movies.store")}}" method="POST" class="sign__form sign__form--add">
+                        @csrf
+                        <div class="row">
+                            <div class="col-12 col-xl-7">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="sign__group">
+                                            <input name="MovieName" type="text" class="sign__input"
+                                                placeholder="Tên phim">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="sign__group">
+                                            <textarea name="MovieDescription" id="text" name="text"
+                                                class="sign__textarea" placeholder="Mô tả"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="sign__group">
+                                            <input name = "MovieImage" type="url" class="sign__input" placeholder="Link ảnh nền">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="sign__group">
+                                            <input name="MovieYear" type="date" class="sign__input">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-xl-5">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="sign__group">
+                                            <select name="MovieStatus" class="sign__selectjs" id="sign__quality">
+                                                <option value="Full HD">Full HD</option>
+                                                <option value="Bản cam">Bản cam</option>
+                                                <option value="Trailer">Trailer</option>
+                                                <option value="Sắp ra mắt">Sắp ra mắt</option>
+                                                <option value="Đã hoàn thành">Đã hoàn thành</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="sign__group">
+                                            <input name="MovieEvaluate" class="sign__input" type="number" min = "1.0" max = "10.0" step = "0.1">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-12">
+                                        <div class="sign__group">
+                                            <select name="GenreID" class="sign__selectjs" id="sign__genre">
+                                                @foreach($Genres as $genre)
+                                                    <option value="{{$genre->GenreID}}">{{$genre->GenreName}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    @php
+                                        foreach ($Types as $type)
+                                            $allTypes[$type->TypeID] = $type->TypeName;
+                                    @endphp
+
+
+                                    <div class="col-12">
+                                        <div class="sign__group">
+                                            <select name="TypeID[]" class="sign__selectjs" id="sign__type" multiple>
+                                                @foreach ($allTypes as $id => $name)
+                                                    <option value="{{$id}}">{{$name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    @php 
+                                        foreach ($Countries as $country)
+                                            $allCountries[$country->CountryID] = $country->CountryName;
+                                    @endphp
+									<div class="col-12">
+                                        <div class="sign__group">
+                                            <select name = "CountryID[]" class="sign__selectjs" id="sign__country" multiple>
+                                                @foreach($allCountries as $id => $name)
+                                                    <option value="{{$id}}">{{$name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-4">
+                                @php
+                                    foreach ($Directors as $director)
+                                        $allDirectors[$director->DirectorID] = $director->DirectorName;
+                                @endphp
+                                <div class="sign__group">
+                                    <select name = "DirectorID[]" class="sign__selectjs" id="sign__director" multiple>
+                                        @foreach ($allDirectors as $id => $name)
+                                            <option value="{{$id}}">{{$name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            @php
+                                foreach ($Actors as $actor)
+                                    $allActors[$actor->ActorID] = $actor->ActorName
+                            @endphp
+                            <div class="col-12 col-md-6 col-xl-8">
+                                <div class="sign__group">
+                                    <select name = "ActorID[]" class="sign__selectjs" id="sign__actors" multiple>
+                                        @foreach($allActors as $id => $name)
+                                            <option value="{{$id}}">{{$name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- <div class="col-12">
+                                <div class="sign__group">
+                                    <label class="sign__label">Item type:</label>
+                                    <ul class="sign__radio">
+                                        <li>
+                                            <input id="type1" type="radio" name="type" data-bs-toggle="collapse"
+                                                data-bs-target=".multi-collapse" checked="">
+                                            <label for="type1">Movie</label>
+                                        </li>
+                                        <li>
+                                            <input id="type2" type="radio" name="type" data-bs-toggle="collapse"
+                                                data-bs-target=".multi-collapse">
+                                            <label for="type2">TV Series</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div> -->
+                            <div class="col-12">
+                                <div class="collapse show multi-collapse">
+                                        <input name = "MovieLink" type="url" class="sign__input" placeholder="Link phim">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="sign__btn sign__btn--small"><span>thêm</span></span></button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-
-                <div>
-
-
-                    <label for="" class="form-label">Loại phim</label>
-                    <select name="GenreID" id="" class="form-select mb-3  input">
-                        @foreach ($Genres as $Genre)
-                            <option value="{{$Genre->GenreID}}">{{$Genre->GenreName}}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    @php
-                        foreach ($Types as $Type)
-                            $AllTypes[$Type->TypeID] = $Type->TypeName;
-
-                    @endphp
-                    <label for="" class="form-label">Thể loại</label>
-                    <select name="TypeID[]" id="Types" class="form-select mb-3 input" multiple="multiple">
-                        @foreach ($AllTypes as $id => $name)
-                            <option value="{{$id}}">{{$name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label for="" class="form-lable">Năm phát hành</label>
-                    <select name="MovieYear" id="" class="form-select mb-3 input">
-                        @for ($i = 1995; $i <= now()->year; $i++)
-                            <option value="{{$i}}">
-                                {{$i}}
-                            </option>
-                        @endfor
-                    </select>
-                </div>
-
-                <div>
-                    @php
-                        foreach ($Directors as $Director)
-                            $AllDirectors[$Director->DirectorID] = $Director->DirectorName;
-                    @endphp
-
-                    <label for="" class="form-label">tác giả</label>
-                    <select name="DirectorID[]" id="Directors" class="form-select input mb-3" multiple="multiple">
-                        @foreach ($AllDirectors as $id => $name)
-                            <option value="{{$id}}">{{$name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    @php
-                        foreach ($Actors as $Actor)
-                            $AllActors[$Actor->ActorID] = $Actor->ActorName;
-                    @endphp
-
-                    <label for="" class="form-label">diễn viên</label>
-                    <select name="ActorID[]" id="Actors" class="form-select input mb-3" multiple="multiple">
-                        @foreach ($AllActors as $id => $name)
-                            <option value="{{$id}}">{{$name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    @php
-                        foreach ($Countries as $Country)
-                            $AllCountries[$Country->CountryID] = $Country->CountryName;
-                    @endphp
-
-                    <label for="" class="form-label">Quốc gia</label>
-                    <select name="ActorID[]" id="Countries" class="form-select input mb-3" multiple="multiple">
-                        @foreach ($AllCountries as $id => $name)
-                            <option value="{{$id}}">{{$name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label for="" class="form-label">Quốc gia</label>
-                    <select name="CountryID[]" id="" class="form-select input mb-3" multiple="multiple">
-                        @foreach ($Countries as $Country)
-                            <option value="{{$Country->CountryID}}">
-                                {{$Country->CountryName}}
-                            </option>
-                        @endforeach
-
-                    </select>
-                </div>
-
+                <!-- end form -->
             </div>
-
-
-            <div class="right-form">
-
-
-                <div>
-                    <label for="" class="form-label">trạng thái</label>
-                    <select name="MovieStatus" id="" class="form-select mb-3  input">
-                        <option value="full hd">full hd</option>
-                        <option value="bản cam">bản cam</option>
-                        <option value="đã hoàn thành">đã hoàn thành</option>
-                        <option value="đã hoàn thành">sắp ra mắt</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="form-label" for="">Mô tả</label>
-                    <textarea class="form-control mb-3  input" name="MovieDescription" id=""></textarea>
-                </div>
-                <div>
-                    <label class="form-label">đánh giá</label>
-                    <input class="form-control mb-3  input" type="number" step='0.1' min='0' max='10'
-                        name="MovieEvaluate">
-                </div>
-
-                <div>
-                    <label class="form-label" for="">ảnh phim</label>
-                    <input required class="form-control mb-3 input" type="file" name="MovieImage" id="name">
-                </div>
-
-                <div>
-                    <label class="form-label" for="">link phim</label>
-                    <input required class="form-control mb-3 input" type="url" name='MovieLink' id="name">
-                </div>
-
-            </div>
         </div>
-
-        <div class="backOrCreate btn-submit mt-3">
-            <a href="javascript:void(0);" onclick="window.history.back();" type="button"
-                class="btn btn-primary btn-option">Quay
-                lại</a>
-
-            <button class="btn btn-success" type="submit">xác nhận</button>
-        </div>
-
-    </form>
-    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.1.0/dist/js/multi-select-tag.js"></script>
-    <script>
-        new MultiSelectTag('Types')
-        new MultiSelectTag('Directors')
-        new MultiSelectTag('Actors')
-        new MultiSelectTag('Countries')
-    </script>
-
-</div>
-
-
-
+    </main>
+    <!-- end main content -->
 @endsection
