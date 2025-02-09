@@ -12,8 +12,8 @@ class ActorController extends Controller
      */
     public function index()
     {
-        $actors = Actor::OrderBy("ActorName","ASC")->paginate(5);
-        return view("actors.index",compact("actors"));
+        $Actors = Actor::OrderBy("ActorName","ASC")->paginate(10);
+        return view("admin.actors.index",compact("Actors"));
     }
 
     /**
@@ -21,7 +21,7 @@ class ActorController extends Controller
      */
     public function create()
     {
-        //
+        return view("admin.actors.create");
     }
 
     /**
@@ -29,7 +29,15 @@ class ActorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $validateActor = $request->validate([
+            'ActorName' => 'required',
+            'ActorNationality' => 'required',
+            'ActorDate'=>'required',
+            'ActorAvatar' => 'required'
+        ]);
+        Actor::create($validateActor);
+        return redirect()->route("admin.actor.index");
     }
 
     /**
@@ -45,7 +53,8 @@ class ActorController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $Actor = Actor::find($id);
+        return view("admin.actors.edit",compact("Actor"));
     }
 
     /**
@@ -53,7 +62,16 @@ class ActorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+            // dd($request->all());
+            $validateActor = $request->validate([
+                'ActorName' => 'required',
+                'ActorNationality' => 'required',
+                'ActorDate'=>'required',
+                'ActorAvatar' => 'required'
+            ]);
+            $movie = Actor::find($id);
+            $movie->update($validateActor);
+            return redirect()->route("admin.actor.index");
     }
 
     /**

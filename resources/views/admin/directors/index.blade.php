@@ -53,27 +53,27 @@
                             @php
                                 $count = 1;
                             @endphp
-                            @foreach($Actors as $actor)
+                            @foreach($Directors as $director)
                                 <tr>
                                     <td>
                                         <div class="catalog__text">{{$count++}}</div>
                                     </td>
                                     <td>
-                                        <div class="catalog__text">{{$actor->ActorName}}</div>
+                                        <div class="catalog__text">{{$director->DirectorName}}</div>
                                     </td>
                                     <td>
                                         <div class="catalog__user">
                                             <div class="catalog__avatar">
-                                                <img src="{{$actor->ActorAvatar}}" alt="">
+                                                <img src="{{$director->DirectorAvatar}}" alt="">
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="catalog__text">{{$actor->ActorNationality}}</div>
+                                        <div class="catalog__text">{{$director->DirectorNationality}}</div>
                                     </td>
                                     
                                     <td>
-                                        <div class="catalog__text">{{$actor->ActorDate}}</div>
+                                        <div class="catalog__text">{{$director->DirectorDate}}</div>
                                     </td>
                                     <td>
                                         <div class="catalog__btns">
@@ -81,7 +81,7 @@
                                                 class="catalog__btn catalog__btn--banned" data-bs-target="#modal-status">
                                                 <i class="bi bi-lock"></i>
                                             </button>
-                                            <a href="{{route("admin.actor.edit", $actor->ActorID)}}"
+                                            <a href=""
                                                 class="catalog__btn catalog__btn--edit">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
@@ -103,7 +103,7 @@
             <div class="col-12">
                 <div class="main__paginator">
                     <!-- amount -->
-                    <span class="main__paginator-pages">{{$Actors->currentPage()}} of {{$Actors->lastPage()}}</span>
+                    <span class="main__paginator-pages">{{$Directors->currentPage()}} of {{$Directors->lastPage()}}</span>
                     <!-- end amount -->
 
                     <ul class="main__paginator-list">
@@ -122,27 +122,27 @@
                     </ul>
 
                     <ul class="paginator">
-                        @if($Actors->onFirstPage())
+                        @if($Directors->onFirstPage())
                             <li class="paginator__item paginator__item--prev">
                                 <a href="#"><i class="bi bi-chevron-left"></i></a>
                             </li>
                         @else
                             <li class="paginator__item paginator__item--prev">
-                                <a href="{{$Actors->previousPageUrl()}}"><i class="bi bi-chevron-left"></i></a>
+                                <a href="{{$Directors->previousPageUrl()}}"><i class="bi bi-chevron-left"></i></a>
                             </li>
                         @endif
-                        @for($i = 1; $i <= $Actors->lastPage(); $i++)
-                                                    @if($i == $Actors->currentPage())
+                        @for($i = 1; $i <= $Directors->lastPage(); $i++)
+                                                    @if($i == $Directors->currentPage())
                                                         <li class="paginator__item paginator__item--active"><a href="#">{{$i}}</a></li>
                                                     @else
-                                                                                <li class="paginator__item"><a href="{{$Actors->url($i)}}">{{$i}}</a></
+                                                                                <li class="paginator__item"><a href="{{$Directors->url($i)}}">{{$i}}</a></
                                                          li>
                                                     @endif
                         @endfor
 
-                            @if($Actors->hasMorePages())
+                            @if($Directors->hasMorePages())
                                 <li class="paginator__item paginator__item--next">
-                                    <a href="{{$Actors->nextPageUrl()}}"><i class="bi bi-chevron-right"></i></a>
+                                    <a href="{{$Directors->nextPageUrl()}}"><i class="bi bi-chevron-right"></i></a>
                                 </li>
                             @else
                                 <li class="paginator__item paginator__item--next">

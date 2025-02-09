@@ -86,11 +86,11 @@
 				</li>
 
 				<li class="sidebar__nav-item">
-					<a href="comments.html" class="sidebar__nav-link"><i class="bi bi-chat"></i> <span>Đạo diễn</span></a>
+					<a href="{{route("admin.director.index")}}" class="sidebar__nav-link"><i class="bi bi-chat"></i> <span>Đạo diễn</span></a>
 				</li>
 
                 <li class="sidebar__nav-item">
-					<a href="comments.html" class="sidebar__nav-link"><i class="bi bi-chat"></i> <span>diễn viên</span></a>
+					<a href="{{route("admin.actor.index")}}" class="sidebar__nav-link"><i class="bi bi-chat"></i> <span>diễn viên</span></a>
 				</li>
 
 				<!-- dropdown -->

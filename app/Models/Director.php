@@ -10,7 +10,7 @@ class Director extends Model
     use HasFactory;
     protected $primaryKey = "DirectorID";
     protected $keyType = "int";
-    public $fillable = ['DirectorID','DirectorName','DirectorDate'];
+    public $fillable = ['DirectorID','DirectorName','DirectorNationality','DirectorDate',"DirectorAvatar"];
     public function DirectorMovie(){
         return $this->belongsToMany(Movie::class,'director_movies','DirectorID','MovieID');
     }

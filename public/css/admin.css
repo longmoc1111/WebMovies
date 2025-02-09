@@ -762,11 +762,11 @@ body::-webkit-scrollbar-thumb {
 .catalog__avatar {
   display: block;
   position: relative;
-  width: 46px;
+  width: 40px;
   overflow: hidden;
   border-radius: 8px;
   border: 2px solid #1a191f;
-  margin-right: 15px;
+  margin-left: 15px;
   overflow: hidden;
 }
 .catalog__avatar img {

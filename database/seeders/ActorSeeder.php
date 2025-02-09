@@ -19,6 +19,8 @@ class ActorSeeder extends Seeder
             Actor::create([
                 'ActorName'=>$faker->randomElement($actor),
                 'ActorDate'=>'1980-01-01',
+                'ActorNationality'=>'Mỹ',
+                'ActorAvatar'=>'https://',
             ]);
             
         }

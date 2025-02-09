@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id("MovieID");
             $table->string("MovieName");
             $table->string("MovieYear");
-            $table->string("MovieDescription");
+            $table->text("MovieDescription");
             $table->string("MovieEvaluate");
             $table->string("MovieStatus");
             $table->string("MovieImage");
