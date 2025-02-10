@@ -33,6 +33,12 @@ Route::post("/logout",[AuthController::class,"logout"])
 
 Route::middleware(["auth","admin"])->prefix("admin")->name("admin.director.")->group(function(){
     route::get("/director/index",[DirectorController::class,"index"])->name("index");
+    route::get("/director/create",[DirectorController::class,"create"])->name("create");
+    route::post("/director/store",[DirectorController::class,"store"])->name("store");
+    route::get("/director/edit/{DirectorID}",[DirectorController::class,"edit"])->name("edit");
+    route::put("/director/update/{DirectorID}",[DirectorController::class,"update"])->name("update");
+    route::delete("/director/destroy/{DirectorID}",[DirectorController::class,"destroy"])->name("destroy");
+
 });
 
 Route::middleware(["auth","admin"])->prefix("admin")->name("admin.actor.")->group(function(){
@@ -41,6 +47,8 @@ Route::middleware(["auth","admin"])->prefix("admin")->name("admin.actor.")->grou
     route::post("/actor/store",[ActorController::class,"store"])->name("store");
     route::get("/actor/edit/{ActorID}",[ActorController::class,"edit"])->name("edit");
     route::put("/actor/update{ActorID}",[ActorController::class,"update"])->name("update");
+    route::delete("/actor/destroy/{ActorID}",[ActorController::class,"destroy"])->name("destroy");
+
 });
 
 

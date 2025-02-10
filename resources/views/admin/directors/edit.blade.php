@@ -16,15 +16,15 @@
                 <div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab" tabindex="0">
                     <div class="col-12 mx-auto">
                         <div class="row">
-                            @if(session('error'))
-                                <div class="alert alert-danger">
-                                    {{ session('error') }}
-                                </div>
-                            @endif
+                        @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
 
                             <!-- details form -->
                             <div class="col-12">
-                                <form action="{{route("admin.actor.update",$Actor)}}" method="POST"
+                                <form action="{{route("admin.director.update",$Director)}}" method="POST"
                                     class="sign__form sign__form--profile">
                                     @csrf
                                     @method("PUT")
@@ -32,29 +32,33 @@
                                         <div class="col-12">
                                             <div class="sign__group">
                                                 <label class="sign__label" for="username">Họ tên</label>
-                                                <input id="username" type="text" name="ActorName" class="sign__input" value = "{{$Actor->ActorName}}">
+                                                <input id="username" type="text" name="DirectorName" class="sign__input" value="{{$Director->DirectorName}}">
                                             </div>
                                         </div>
 
                                         <div class="col-12">
-                                            <div class="sign__group">
-                                                <label class="sign__label" for="email2">Quốc tịch</label>
-                                                <input id="email2" type="text" name="ActorNationality"
-                                                    class="sign__input" value = "{{$Actor->ActorNationality}}">
-                                            </div>
+                                        <div class="sign__group">
+                                        <label class="sign__label" for="username">Quốc tịch</label>
+                                            <select name = "DirectorNationality" class="sign__selectjs" id="sign__country">
+                                                <option value="" selected></option> 
+                                                @foreach($Countries as $country)
+                                                    <option value="{{$country->CountryName}}" {{$Director->DirectorDirectorNationality == $country->ConuntryName ? "selected" : ""}}>{{$country->CountryName}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="sign__group">
                                                 <label class="sign__label" for="fname">ngày sinh</label>
-                                                <input id="fname" type="date" name="ActorDate" class="sign__input" value = "{{$Actor->ActorDate}}">
+                                                <input id="fname" type="date" name="DirectorDate" class="sign__input" value="{{$Director->DirectorDate}}">
                                             </div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="sign__group">
                                                 <label class="sign__label" for="fname">link ảnh đại diện</label>
-                                                <input name="ActorAvatar" id="fname" type="url" class="sign__input"  value = "{{$Actor->ActorAvatar}}">
+                                                <input name="DirectorAvatar" id="fname" type="url" class="sign__input" value="{{$Director->DirectorAvatar}}">
                                             </div>
                                         </div>
 

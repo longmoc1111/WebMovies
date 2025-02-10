@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Actor;
+use App\Models\Country;
 
 class ActorController extends Controller
 {
@@ -21,7 +22,8 @@ class ActorController extends Controller
      */
     public function create()
     {
-        return view("admin.actors.create");
+        $Countries = Country::all();
+        return view("admin.actors.create",compact("Countries"));
     }
 
     /**
@@ -53,8 +55,9 @@ class ActorController extends Controller
      */
     public function edit(string $id)
     {
+        $Countries = Country::all();
         $Actor = Actor::find($id);
-        return view("admin.actors.edit",compact("Actor"));
+        return view("admin.actors.edit",compact("Actor","Countries"));
     }
 
     /**
@@ -79,6 +82,11 @@ class ActorController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $actor = Actor::find($id);
+        if($actor){
+            $actor->ActorMovie()->detach();
+        }
+        $actor->delete();
+        return redirect()->route("admin.actor.index");
     }
 }

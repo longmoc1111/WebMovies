@@ -37,9 +37,13 @@
 
                                         <div class="col-12">
                                             <div class="sign__group">
-                                                <label class="sign__label" for="email2">Quốc tịch</label>
-                                                <input id="email2" type="text" name="ActorNationality"
-                                                    class="sign__input">
+                                            <label class="sign__label" for="username">Quốc tịch</label>
+                                            <select name = "ActorNationality" class="sign__selectjs" id="sign__country">
+                                                <option value="" selected></option> 
+                                                @foreach($Countries as $country)
+                                                    <option value="{{$country->CountryName}}">{{$country->CountryName}}</option>
+                                                @endforeach
+                                            </select>
                                             </div>
                                         </div>
 

@@ -86,7 +86,7 @@
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             <button type="button" data-bs-toggle="modal"
-                                                class="catalog__btn catalog__btn--delete" data-bs-target="#modal-delete">
+                                                class="catalog__btn catalog__btn--delete" data-bs-target="#{{$actor->ActorID}}">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -158,104 +158,31 @@
 </main>
 <!-- end main content -->
 
-<!-- user modal -->
-<div class="modal fade" id="modal-user" tabindex="-1" aria-labelledby="modal-user" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal__content">
-                <form action="#" class="modal__form">
-                    <h4 class="modal__title">Thêm mới</h4>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="sign__group">
-                                <label class="sign__label" for="email0">Email</label>
-                                <input id="email0" type="text" name="email0" class="sign__input">
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="sign__group">
-                                <label class="sign__label" for="pass0">Password</label>
-                                <input id="pass0" type="password" name="pass0" class="sign__input">
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="sign__group">
-                                <label class="sign__label" for="subscription">Subscription</label>
-                                <select class="sign__select" id="subscription">
-                                    <option value="Basic">Basic</option>
-                                    <option value="Premium">Premium</option>
-                                    <option value="Cinematic">Cinematic</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <div class="sign__group">
-                                <label class="sign__label" for="rights">Rights</label>
-                                <select class="sign__select" id="rights">
-                                    <option value="User">User</option>
-                                    <option value="Moderator">Moderator</option>
-                                    <option value="Admin">Admin</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-lg-6 offset-lg-3">
-                            <button type="button" class="sign__btn sign__btn--modal">Add</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end user modal -->
-
-<!-- status modal -->
-<div class="modal fade" id="modal-status" tabindex="-1" aria-labelledby="modal-status" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal__content">
-                <form action="#" class="modal__form">
-                    <h4 class="modal__title">Status change</h4>
-
-                    <p class="modal__text">Are you sure about immediately change status?</p>
-
-                    <div class="modal__btns">
-                        <button class="modal__btn modal__btn--apply" type="button"><span>Apply</span></button>
-                        <button class="modal__btn modal__btn--dismiss" type="button" data-bs-dismiss="modal"
-                            aria-label="Close"><span>Dismiss</span></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end status modal -->
 
 <!-- delete modal -->
-<div class="modal fade" id="modal-delete" tabindex="-1" aria-labelledby="modal-delete" aria-hidden="true">
+ @foreach($Actors as $actor)
+<div class="modal fade" id="{{$actor->ActorID}}" tabindex="-1" aria-labelledby="modal-delete" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal__content">
-                <form action="#" class="modal__form">
-                    <h4 class="modal__title">User delete</h4>
+                <form action="{{route("admin.actor.destroy",$actor->ActorID)}}" method = "POST" class="modal__form">
+                    @csrf
+                    @method("DELETE")
+                    <h4 class="modal__title">xóa diễn viên</h4>
 
-                    <p class="modal__text">Are you sure to permanently delete this user?</p>
+                    <p class="modal__text mx-auto">bạn có chắc muốn xóa ?</p>
 
                     <div class="modal__btns">
-                        <button class="modal__btn modal__btn--apply" type="button"><span>Delete</span></button>
+                        <button class="modal__btn modal__btn--apply" type="submit"><span>xóa</span></button>
                         <button class="modal__btn modal__btn--dismiss" type="button" data-bs-dismiss="modal"
-                            aria-label="Close"><span>Dismiss</span></button>
+                            aria-label="Close"><span>quay lại</span></button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+@endforeach
 <!-- end delete modal -->
 
 @endsection

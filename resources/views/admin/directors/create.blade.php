@@ -24,36 +24,40 @@
 
                             <!-- details form -->
                             <div class="col-12">
-                                <form action="{{route("admin.actor.store")}}" method="POST"
+                                <form action="{{route("admin.director.store")}}" method="POST"
                                     class="sign__form sign__form--profile">
                                     @csrf
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="sign__group">
                                                 <label class="sign__label" for="username">Họ tên</label>
-                                                <input id="username" type="text" name="ActorName" class="sign__input">
+                                                <input id="username" type="text" name="DirectorName" class="sign__input">
                                             </div>
                                         </div>
 
                                         <div class="col-12">
-                                            <div class="sign__group">
-                                                <label class="sign__label" for="email2">Quốc tịch</label>
-                                                <input id="email2" type="text" name="ActorNationality"
-                                                    class="sign__input">
-                                            </div>
+                                        <div class="sign__group">
+                                        <label class="sign__label" for="username">Quốc tịch</label>
+                                            <select name = "DirectorNationality" class="sign__selectjs" id="sign__country">
+                                                <option value="" selected></option> 
+                                                @foreach($Countries as $country)
+                                                    <option value="{{$country->CountryName}}">{{$country->CountryName}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="sign__group">
                                                 <label class="sign__label" for="fname">ngày sinh</label>
-                                                <input id="fname" type="date" name="ActorDate" class="sign__input">
+                                                <input id="fname" type="date" name="DirectorDate" class="sign__input">
                                             </div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="sign__group">
                                                 <label class="sign__label" for="fname">link ảnh đại diện</label>
-                                                <input name="ActorAvatar" id="fname" type="url" class="sign__input">
+                                                <input name="DirectorAvatar" id="fname" type="url" class="sign__input">
                                             </div>
                                         </div>
 

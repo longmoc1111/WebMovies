@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Director;
+use App\Models\Country;
+
 
 class DirectorController extends Controller
 {
@@ -12,7 +14,7 @@ class DirectorController extends Controller
      */
     public function index()
     {
-        $Directors = Director::Orderby("DirectorName","DESC")->paginate(10);
+        $Directors = Director::Orderby("created_at","DESC")->paginate(10);
         return view("admin.directors.index",compact("Directors"));
 
     }
@@ -22,7 +24,8 @@ class DirectorController extends Controller
      */
     public function create()
     {
-        //
+        $Countries = Country::all();
+        return view("admin.directors.create", compact("Countries"));
     }
 
     /**
@@ -30,7 +33,14 @@ class DirectorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validateDirectors = $request->validate([
+            'DirectorName' =>'required',
+            'DirectorNationality' =>'required',
+            'DirectorDate' =>'required',
+            'DirectorAvatar' =>'required',
+        ]);
+        Director::Create($validateDirectors);
+        return redirect()->route("admin.director.index")    ;
     }
 
     /**
@@ -38,7 +48,7 @@ class DirectorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
     }
 
     /**
@@ -46,7 +56,9 @@ class DirectorController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $Director = Director::find($id);
+        $Countries = Country::all();
+        return view("admin.directors.edit",compact("Director","Countries"));
     }
 
     /**
@@ -54,7 +66,15 @@ class DirectorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validateDirectors = $request->validate([
+            'DirectorName' =>'required',
+            'DirectorNationality' =>'required',
+            'DirectorDate' =>'required',
+            'DirectorAvatar' =>'required',
+        ]);
+        $Director = Director::find($id);
+        $Director->update($validateDirectors);
+        return redirect()->route("admin.director.index");
     }
 
     /**
@@ -62,6 +82,11 @@ class DirectorController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $director = Director::find($id);
+        if($director){
+            $director->DirectorMovie()->detach();
+        }
+        $director->delete();
+        return redirect()->route("admin.director.index");
     }
 }

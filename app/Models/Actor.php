@@ -12,7 +12,7 @@ class Actor extends Model
     public $fillable = ['ActorID','ActorName','ActorNationality','ActorDate','ActorAvatar'];
 
     public function ActorMovie(){
-        return $this->belongsToMany(Movie::class,'genre_movies','ActorID','MovieID');
+        return $this->belongsToMany(Movie::class,'actor_movies','ActorID','MovieID');
     }
     
 }
