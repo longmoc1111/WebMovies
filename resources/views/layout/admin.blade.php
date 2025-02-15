@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="/css/slimselect.css">
 	<link rel="stylesheet" href="/css/admin.css">
 	<link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="/css/iziToast.min.css">
 
 	<!-- Icon font -->
 	<link rel="stylesheet" href="/webfont/tabler-icons.min.css">
@@ -61,7 +62,7 @@
 
 			<div class="sidebar__user-title">
 				<span>Admin</span>
-				<p>John Doe</p>
+				<p>{{Auth()->user()->name}}</p>
 			</div>
 
 			<button class="sidebar__user-btn" type="button">
@@ -78,11 +79,7 @@
 				</li>
 
 				<li class="sidebar__nav-item">
-					<a href="{{route("Movies.index")}}" class="sidebar__nav-link sidebar__nav-link--active"><i class="bi bi-film"></i> <span>quản lý phim</span></a>
-				</li>
-
-				<li class="sidebar__nav-item">
-					<a href="" class="sidebar__nav-link"><i class="bi bi-person"></i> <span>Người dùng</span></a>
+					<a href="{{route("Movies.index")}}" class="sidebar__nav-link "><i class="bi bi-film"></i> <span>phim</span></a>
 				</li>
 
 				<li class="sidebar__nav-item">
@@ -92,7 +89,9 @@
                 <li class="sidebar__nav-item">
 					<a href="{{route("admin.actor.index")}}" class="sidebar__nav-link"><i class="bi bi-chat"></i> <span>diễn viên</span></a>
 				</li>
-
+				<li class="sidebar__nav-item">
+					<a href="" class="sidebar__nav-link"><i class="bi bi-person"></i> <span>Người dùng</span></a>
+				</li>
 				<!-- dropdown -->
 				<li class="sidebar__nav-item">
 					<a class="sidebar__nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-files"></i> <span>Trang</span> <i class="bi bi-chevron-down"></i></a>
@@ -101,7 +100,7 @@
 						<li><a href="{{route("Movies.create")}}">Thêm Mới phim</a></li>
 						<li><a href="{{route("login")}}">Đăng nhập</a></li>
 						<li><a href="{{route("login")}}">Đăng ký</a></li>
-						<li><a href="404.html">404 Page</a></li>
+						<li><a href="{{route("Unauthorized")}}">404 Page</a></li>
 					</ul>
 				</li>
 				<!-- end dropdown -->
@@ -112,18 +111,20 @@
 			</ul>
 		</div>
 		<!-- end sidebar nav -->
-		
-		<!-- sidebar copyright -->
-		<div class="sidebar__copyright">© HOTFLIX, 2019—2024. <br>Create by <a href="https://themeforest.net/user/dmitryvolkov/portfolio" target="_blank">Dmitry Volkov</a></div>
-		<!-- end sidebar copyright -->
+	
 	</div>
 	<!-- end sidebar -->
 @yield("admin")
+</body>
 
-	<!-- JS -->
-	<script src="/js/bootstrap.bundle.min.js"></script>
+<footer>
+
 	<script src="/js/slimselect.min.js"></script>
 	<script src="/js/smooth-scrollbar.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="/js/admin.js"></script>
-</body>
+	<script src="/js/bootstrap.bundle.min.js"></script>>
+	<script src="/js/iziToast.min.js"></script>
+	@yield("footeradmin")
+</footer>
 </html>

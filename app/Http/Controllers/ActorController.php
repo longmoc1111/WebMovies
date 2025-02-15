@@ -13,7 +13,7 @@ class ActorController extends Controller
      */
     public function index()
     {
-        $Actors = Actor::OrderBy("ActorName","ASC")->paginate(10);
+        $Actors = Actor::OrderBy("created_at","ASC")->paginate(10);
         return view("admin.actors.index",compact("Actors"));
     }
 
@@ -37,9 +37,16 @@ class ActorController extends Controller
             'ActorNationality' => 'required',
             'ActorDate'=>'required',
             'ActorAvatar' => 'required'
-        ]);
+        ],
+        [
+            'ActorName' =>'Tên không được để trống',
+            'ActorNationality' =>'Quốc tịch không được để trống',
+            'ActorDate' =>'Năm sinh không được để trống',
+            'ActorAvatar' =>'Avatar không được để trống',  
+        ]
+    );
         Actor::create($validateActor);
-        return redirect()->route("admin.actor.index");
+        return redirect()->route("admin.actor.index")->with("addActor","thêm mới thành công");
     }
 
     /**
@@ -71,10 +78,16 @@ class ActorController extends Controller
                 'ActorNationality' => 'required',
                 'ActorDate'=>'required',
                 'ActorAvatar' => 'required'
+            ]   ,
+            [
+                'ActorName' =>'Tên không được để trống',
+                'ActorNationality' =>'Quốc tịch không được để trống',
+                'ActorDate' =>'Năm sinh không được để trống',
+                'ActorAvatar' =>'Avatar không được để trống',  
             ]);
             $movie = Actor::find($id);
             $movie->update($validateActor);
-            return redirect()->route("admin.actor.index");
+            return redirect()->route("admin.actor.index")->with("editActor","sửa đổi thành công");
     }
 
     /**
@@ -87,6 +100,27 @@ class ActorController extends Controller
             $actor->ActorMovie()->detach();
         }
         $actor->delete();
-        return redirect()->route("admin.actor.index");
+        return redirect()->route("admin.actor.index")->with("deleteActor","xóa thành công");
+    }
+    public function sort(){
+        if(request("sort") == "Tên"){
+            $Actors = Actor::Orderby("ActorName","ASC")->paginate(10)->appends(request()->query());
+            return view("admin.actors.index",compact("Actors"));
+        } if(request("sort") == "Quốc tịch"){
+            $Actors = Actor::Orderby("ActorNationality","ASC")->paginate(10)->appends(request()->query());
+            return view("admin.actors.index",compact("Actors"));
+        }if(request("sort") == "Ngày sinh"){
+            $Actors = Actor::Orderby("ActorDate","DESC")->paginate(10)->appends(request()->query());
+            return view("admin.actors.index",compact("Actors"));
+        }
+    }
+    public function search(){
+        $key = request("search");
+        $Actors = Actor::where("ActorName","like","%".$key."%")
+        ->orWhere("ActorNationality","like","%".$key."%")
+        ->orWhere("ActorDate","like","%".$key."%")
+        ->paginate(10)->appends(request()->query());
+        return view("admin.actors.index",compact("Actors"));
+
     }
 }

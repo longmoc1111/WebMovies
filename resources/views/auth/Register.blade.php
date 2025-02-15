@@ -68,14 +68,27 @@
 				<div class="col-12">
 					<div class="sign__content">
 						<!-- authorization form -->
+						 
 						<form action="{{route("register.post")}}" class="sign__form" method = "POST">
                             @csrf
+							<h2 style = "color:white;">Đăng ký</h2>
+
+							@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 							<a href="index.html" class="sign__logo">
 								<img src="img/logo.svg" alt="">
 							</a>
 
                             <div class="sign__group">
-								<input name = "username" type="text" class="sign__input" placeholder="UserName">
+								<input name = "name" type="text" class="sign__input" placeholder="UserName">
 							</div>
 
 							<div class="sign__group">

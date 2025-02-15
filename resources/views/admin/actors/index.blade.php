@@ -7,25 +7,28 @@
             <!-- main title -->
             <div class="col-12">
                 <div class="main__title">
-                    <h2>Users</h2>
-
-                    <span class="main__title-stat">3,702 Total</span>
+                    <h2>diễn viên</h2>
 
                     <div class="main__title-wrap">
                         <a href="{{route("admin.actor.create")}}" type="button"
-                            class="main__title-link main__title-link--wrap">Thêm mới</a>
+                            class="main__title-link main__title-link--wrap ">Thêm mới</a>
+                            <form action="{{route("admin.actor.sort")}}" class="filter__select">
+                                <select name="sort" class="filter__select" name="sort" id="filter__sort"
+                                    onchange="this.form.submit()">
+                                    <option value="Tên" {{request("sort") == "Tên" ? "selected" : "" }}>Tên tác giả</option>
+                                    <option value="Ngày sinh" {{request("sort") == "Ngày sinh" ? "selected" : "" }}>Ngày sinh
+                                    </option>
+                                    <option value="Quốc tịch" {{request("sort") == "Quốc tịch" ? "selected" : ""}}>Quốc tịch
+                                    </option>
+                                </select>
+                            </form>
 
-                        <select class="filter__select" name="sort" id="filter__sort">
-                            <option value="0">Date created</option>
-                            <option value="1">Pricing plan</option>
-                            <option value="2">Status</option>
-                        </select>
 
                         <!-- search -->
-                        <form action="#" class="main__title-form">
-                            <input type="text" placeholder="Find user..">
-                            <button type="button">
-                                <i class="ti ti-search"></i>
+                        <form action="{{route("admin.actor.search")}}" class="main__title-form">
+                            <input name = "search" type="text" placeholder="Tìm kiếm....">
+                            <button type="submit">
+                                <i class="bi bi-search"></i>
                             </button>
                         </form>
                         <!-- end search -->
@@ -77,16 +80,12 @@
                                     </td>
                                     <td>
                                         <div class="catalog__btns">
-                                            <button type="button" data-bs-toggle="modal"
-                                                class="catalog__btn catalog__btn--banned" data-bs-target="#modal-status">
-                                                <i class="bi bi-lock"></i>
-                                            </button>
                                             <a href="{{route("admin.actor.edit", $actor->ActorID)}}"
                                                 class="catalog__btn catalog__btn--edit">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             <button type="button" data-bs-toggle="modal"
-                                                class="catalog__btn catalog__btn--delete" data-bs-target="#{{$actor->ActorID}}">
+                                                class="catalog__btn catalog__btn--delete addCart" data-bs-target="#{{$actor->ActorID}}">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -184,5 +183,34 @@
 </div>
 @endforeach
 <!-- end delete modal -->
+@endsection
+
+@section("footeradmin")
+@if (session("addActor"))
+<script>
+        iziToast.success({
+            message:"{{session("addActor")}}",
+            position: "topRight"
+        });
+    </script>
+@endif
+
+@if(session("editActor"))
+<script>
+        iziToast.success({
+            message:"{{session("editActor")}}",
+            position: "topRight"
+        });
+    </script>
+@endif
+  
+@if (session("deleteActor"))
+<script>
+        iziToast.success({
+            message:"{{session("deleteActor")}}",
+            position: "topRight"
+        });
+    </script>
+@endif
 
 @endsection

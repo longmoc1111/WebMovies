@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,34 +51,28 @@
 							<!-- end dropdown -->
 
 							<!-- dropdown -->
-							<li class="header__nav-item">
+							<!-- <li class="header__nav-item">
 								<a class="header__nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Thể loại<i class="bi bi-chevron-down"></i></a>
-
 								<ul class="dropdown-menu header__dropdown-menu">
 									<li><a href="catalog.html">Catalog style 1</a></li>
 									<li><a href="catalog2.html">Catalog style 2</a></li>
 									<li><a href="details.html">Details Movie</a></li>
 									<li><a href="details2.html">Details TV Series</a></li>
 								</ul>
+								
+							</li> -->
+							<li class="header__nav-item">
+								<a class="header__nav-link" href="{{ route("Home.theaterMovie") }}" role="button"  aria-expanded="false">Phim chiếu rạp</a>
 							</li>
 							<li class="header__nav-item">
-								<a class="header__nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Phim chiếu rạp</a>
-							</li>
-							<li class="header__nav-item">
-								<a class="header__nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Phim lẻ<i class="bi bi-chevron-down"></i></a>
+								<a class="header__nav-link" href="{{ route("Home.singleMovie") }}" role="button"  aria-expanded="false">Phim lẻ</a>
 
-								<ul class="dropdown-menu header__dropdown-menu">
-									<li><a href="catalog.html">Catalog style 1</a></li>
-									<li><a href="catalog2.html">Catalog style 2</a></li>
-									<li><a href="details.html">Details Movie</a></li>
-									<li><a href="details2.html">Details TV Series</a></li>
-								</ul>
 							</li>
 							<!-- end dropdown -->
 
 
 							<!-- dropdown -->
-							@if(Auth::check())
+							@if(Auth::check() && Auth::user()->name == "admin")
 							<li class="header__nav-item">
 								<a class="header__nav-link" href="{{route("Dashboard.index")}}" role="button"  aria-expanded="false">Trang Admin</a>
 									<!-- <li><a href="../admin/index.html" target="_blank">Admin pages</a></li> -->
@@ -90,18 +85,18 @@
 
 						<!-- header auth -->
 						<div class="header__auth">
-							<form action="#" class="header__search">
-								<input class="header__search-input" type="text" placeholder="Search...">
-								<button class="header__search-button" type="button">
+							<form action="{{route("Home.search")}}" class="header__search">
+								<input name = "search" class="header__search-input" type="text" placeholder="Tìm kiếm...">
+								<button class="header__search-button" type="submit">
 									<i class="bi bi-search"></i>
 								</button>
 								<button class="header__search-close" type="button">
-									<i class="ti ti-x"></i>
+									<i class="bi bi-x"></i>
 								</button>
 							</form>
 
 							<button class="header__search-btn" type="button">
-								<i class="ti ti-search"></i>
+								<i class="bi bi-search"></i>
 							</button>
 
 						
@@ -109,7 +104,7 @@
 							 @if(Auth::check())
 							<div class="header__profile">
 								<a class="header__sign-in header__sign-in--user" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									<i class="ti ti-user"></i>
+									<i class="bi bi-person"></i>
 									<span>{{Auth::user()->name}}</span>
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end header__dropdown-menu header__dropdown-menu--user">
@@ -126,7 +121,7 @@
 							@else
 							<a href="{{route("login")}}" class="header__sign-in">
 								<i class="ti ti-login"></i>
-								<span>sign in</span>
+								<span>Đăng nhập</span>
 							</a>
                         	@endif
 							<!-- end dropdown -->
@@ -235,7 +230,11 @@
 	<!-- end plan modal -->
 
 	<!-- JS -->
-	<script src="/js/bootstrap.bundle.min.js"></script>
+
+</body>
+<footer>
+	@section("footerHome")
+<script src="/js/bootstrap.bundle.min.js"></script>
 	<script src="/js/splide.min.js"></script>
 	<script src="/js/slimselect.min.js"></script>
 	<script src="/js/smooth-scrollbar.js"></script>
@@ -243,7 +242,7 @@
 	<script src="/js/photoswipe.min.js"></script>
 	<script src="/js/photoswipe-ui-default.min.js"></script>
 	<script src="/js/main.js"></script>
-</body>
+</footer>
 </html>
 
 

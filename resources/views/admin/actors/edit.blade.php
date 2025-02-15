@@ -7,7 +7,7 @@
             <!-- main title -->
             <div class="col-12">
                 <div class="main__title">
-                    <h2>Thêm mới diễn viên</h2>
+                    <h2>Sửa thông tin diễn viên</h2>
                 </div>
             </div>
             <!-- end main title -->
@@ -24,7 +24,7 @@
 
                             <!-- details form -->
                             <div class="col-12">
-                                <form action="{{route("admin.actor.update",$Actor)}}" method="POST"
+                                <form action="{{route("admin.actor.update", $Actor)}}" method="POST"
                                     class="sign__form sign__form--profile">
                                     @csrf
                                     @method("PUT")
@@ -32,33 +32,38 @@
                                         <div class="col-12">
                                             <div class="sign__group">
                                                 <label class="sign__label" for="username">Họ tên</label>
-                                                <input id="username" type="text" name="ActorName" class="sign__input" value = "{{$Actor->ActorName}}">
+                                                <input id="username" type="text" name="ActorName" class="sign__input"
+                                                    value="{{$Actor->ActorName}}">
                                             </div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="sign__group">
-                                            <label class="sign__label" for="username">Quốc tịch</label>
-                                            <select name = "ActorNationality" class="sign__selectjs" id="sign__country">
-                                                <option value="" selected></option> 
-                                                @foreach($Countries as $country)
-                                                    <option value="{{$country->CountryName}}" {{$Actor->ActorDirectorNationality == $country->ConuntryName ? "selected" : ""}}>{{$country->CountryName}}</option>
-                                                @endforeach
-                                            </select>
+                                                <label class="sign__label" for="username">Quốc tịch</label>
+                                                <select name="ActorNationality" class="sign__selectjs"
+                                                    id="sign__country">
+                                                    <option value="" selected></option>
+                                                    @foreach($Countries as $country)
+                                                        <option value="{{$country->CountryName}}"
+                                                            {{$Actor->ActorDirectorNationality == $country->ConuntryName ? "selected" : ""}}>{{$country->CountryName}}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="sign__group">
                                                 <label class="sign__label" for="fname">ngày sinh</label>
-                                                <input id="fname" type="date" name="ActorDate" class="sign__input" value = "{{$Actor->ActorDate}}">
+                                                <input id="fname" type="date" name="ActorDate" class="sign__input"
+                                                    value="{{$Actor->ActorDate}}">
                                             </div>
                                         </div>
 
                                         <div class="col-12">
                                             <div class="sign__group">
                                                 <label class="sign__label" for="fname">link ảnh đại diện</label>
-                                                <input name="ActorAvatar" id="fname" type="url" class="sign__input"  value = "{{$Actor->ActorAvatar}}">
+                                                <input name="ActorAvatar" id="fname" type="url" class="sign__input"
+                                                    value="{{$Actor->ActorAvatar}}">
                                             </div>
                                         </div>
 
@@ -79,4 +84,16 @@
     </div>
 </main>
 <!-- end main content -->
+@endsection
+@section("footeradmin")
+@if($errors->any())
+@foreach($errors->all() as $error)
+        <script>
+            iziToast.warning({
+                message:"{{$error}}",
+                position:"topRight"
+            })
+        </script>
+    @endforeach
+@endif
 @endsection

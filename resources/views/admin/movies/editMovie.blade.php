@@ -51,7 +51,7 @@
                         </div>
 
                         @php
-                            $allstatus = ["Full HD", "Bản cam", "Trailer", "Sắp ra mắt", "Đã hoàn thành"];
+                            $allstatus = ["Full HD", "Bản cam", "Trailer"];
                         @endphp
                         <div class="col-12 col-xl-5">
                             <div class="row">
@@ -238,4 +238,17 @@
     </div>
 </main>
 <!-- end main content -->
+@endsection
+
+@section("footeradmin")
+@if($errors->any())
+@foreach($errors->all() as $error)
+        <script>
+            iziToast.warning({
+                message:"{{$error}}",
+                position:"topRight"
+            })
+        </script>
+    @endforeach
+@endif
 @endsection

@@ -12,7 +12,7 @@ class Genre extends Model
     protected $keyType = 'int'; 
     public $fillable = ['GenreID','GenreName'];
     public function GenreMovie(){
-        return $this->hasMany(Movie::class,'MovieID');
+        return $this->hasMany(Movie::class,'GenreID',"GenreID");
     }
 
 

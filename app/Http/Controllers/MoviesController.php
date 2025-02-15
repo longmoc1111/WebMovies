@@ -19,8 +19,8 @@ class MoviesController extends Controller
      */
     public function index()
     {
-        $movies = Movie::OrderBy("MovieEvaluate","DESC")->paginate(10);  
-        return view('admin.movies.index',compact('movies')  );
+        $movies = Movie::OrderBy("created_at","DESC")->paginate(10);     
+        return view('admin.movies.index',compact('movies'));
     }
 
     public function create()
@@ -75,7 +75,7 @@ class MoviesController extends Controller
             $movie->Types()->attach($validateDataType);
     }
 
-    return redirect()->route('Movies.index')->with('addmovie','thêm mới thành công');
+    return redirect()->route('Movies.index')->with('addMovie','thêm mới thành công');
 }
 
     public function show(string $id)
@@ -152,7 +152,7 @@ class MoviesController extends Controller
         if(isset($validatedataCountries)){
             $movies->Countries()->sync($validatedataCountries);
         }
-        return redirect()->route('Movies.index')->with('editmovie','cập nhật thành công');
+        return redirect()->route('Movies.index')->with('editMovie','cập nhật thành công');
     }
 
     
@@ -170,6 +170,29 @@ class MoviesController extends Controller
             $movie->Types()->detach();
         }
         $movie->delete();
-        return redirect()->route('Movies.index')->with('delete','xóa thành công');
+        return redirect()->route('Movies.index')->with('deleteMovie','xóa thành công');
+    }
+
+    public function sort(){
+        request("option");
+        if(request("option") == "Tên phim"){
+            $movies = Movie::OrderBy("MovieName","ASC")->paginate(10)->appends(request()->query());  
+        return view('admin.movies.index',compact('movies'));
+        }if(request("option") == "Năm ra mắt"){
+            $movies = Movie::OrderBy("MovieYear","DESC")->paginate(10)->appends(request()->query());  
+        return view('admin.movies.index',compact('movies'));
+        }if(request("option") == "Đánh giá"){
+            $movies = Movie::OrderBy("MovieEvaluate","ASC")->paginate(10)->appends(request()->query());  
+        return view('admin.movies.index',compact('movies'));
+        }     
+    }
+    public function search(){
+        $key = request("search");
+        $movies = Movie::where("MovieName","like","%".$key."%")
+        ->orWhere("MovieEvaluate","like","%".$key."%")
+        ->orWhere("MovieYear","like","%".$key."%")
+        ->orWhere("MovieStatus","like","%".$key."%")
+        ->paginate(10)->appends(request()->query());
+        return view("admin.movies.index",compact("movies"));
     }
 }

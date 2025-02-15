@@ -241,20 +241,20 @@
 		});
 	}
 
-	if (document.querySelector('#filter__quality')) {
+	if (document.querySelector('#filter__country')) {
 		new SlimSelect({
-			select: '#filter__quality',
+			select: '#filter__country',
 			settings: {
-				showSearch: false,
+				placeholderText :'Quốc gia',
 			}
 		});
 	}
 
-	if (document.querySelector('#filter__rate')) {
+	if (document.querySelector('#filter__Type')) {
 		new SlimSelect({
-			select: '#filter__rate',
+			select: '#filter__Type',
 			settings: {
-				showSearch: false,
+				placeholderText:"thể loại",
 			}
 		});
 	}
@@ -275,21 +275,15 @@
 		});
 	}
 
-	if (document.querySelector('#mfilter__quality')) {
+	if (document.querySelector('#mfilter__country')) {
 		new SlimSelect({
-			select: '#mfilter__quality',
-			settings: {
-				showSearch: false,
-			}
+			select: '#mfilter__country',
 		});
 	}
 
-	if (document.querySelector('#mfilter__rate')) {
+	if (document.querySelector('#mfilter__type')) {
 		new SlimSelect({
-			select: '#mfilter__rate',
-			settings: {
-				showSearch: false,
-			}
+			select: '#mfilter__type',
 		});
 	}
 

@@ -79,3 +79,16 @@
 </main>
 <!-- end main content -->
 @endsection
+
+@section("footeradmin")
+@if($errors->any())
+@foreach($errors->all() as $error)
+        <script>
+            iziToast.warning({
+                message:"{{$error}}",
+                position:"topRight"
+            })
+        </script>
+    @endforeach
+@endif
+@endsection

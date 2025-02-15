@@ -37,10 +37,17 @@ class DirectorController extends Controller
             'DirectorName' =>'required',
             'DirectorNationality' =>'required',
             'DirectorDate' =>'required',
-            'DirectorAvatar' =>'required',
-        ]);
+            'DirectorAvatar' =>'required',  
+        ],
+        [
+            'DirectorName' =>'Tên không được để trống',
+            'DirectorNationality' =>'Quốc tịch không được để trống',
+            'DirectorDate' =>'Năm sinh không được để trống',
+            'DirectorAvatar' =>'Avatar không được để trống',  
+        ]
+    );
         Director::Create($validateDirectors);
-        return redirect()->route("admin.director.index")    ;
+        return redirect()->route("admin.director.index")->with("addDirector","thêm mới thành công");
     }
 
     /**
@@ -71,10 +78,17 @@ class DirectorController extends Controller
             'DirectorNationality' =>'required',
             'DirectorDate' =>'required',
             'DirectorAvatar' =>'required',
-        ]);
+        ],
+        [
+            // 'DirectorName' =>'Tên không được để trống',
+            'DirectorNationality' =>'Quốc tịch không được để trống',
+            'DirectorDate' =>'Năm sinh không được để trống',
+            'DirectorAvatar' =>'Avatar không được để trống',  
+        ]
+    );
         $Director = Director::find($id);
         $Director->update($validateDirectors);
-        return redirect()->route("admin.director.index");
+        return redirect()->route("admin.director.index")->with("editDirector","sửa đổi thành công");
     }
 
     /**
@@ -87,6 +101,27 @@ class DirectorController extends Controller
             $director->DirectorMovie()->detach();
         }
         $director->delete();
-        return redirect()->route("admin.director.index");
+        return redirect()->route("admin.director.index")->with("deleteDirector","xóa thành công");
+    }
+    public function sort(){
+        if(request("sort") == "Tên"){
+            $Directors = Director::Orderby("DirectorName","ASC")->paginate(10)->appends(request()->query());
+            return view("admin.directors.index",compact("Directors"));
+        } if(request("sort") == "Quốc tịch"){
+            $Directors = Director::Orderby("DirectorNationality","ASC")->paginate(10)->appends(request()->query());
+            return view("admin.directors.index",compact("Directors"));
+        }if(request("sort") == "Ngày sinh"){
+            $Directors = Director::Orderby("DirectorDate","DESC")->paginate(10)->appends(request()->query());
+            return view("admin.directors.index",compact("Directors"));
+        }
+    }
+    public function search(){
+        $key = request("search");
+        $Directors = Director::where("DirectorName","like","%".$key."%")
+        ->orWhere("DirectorNationality","like","%".$key."%")
+        ->orWhere("DirectorDate","like","%".$key."%")
+        ->paginate(10)->appends(request()->query());
+        return view("admin.directors.index",compact("Directors"));
+
     }
 }

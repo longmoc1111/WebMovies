@@ -191,3 +191,17 @@
 	}
 
 })(window, document);   
+
+ // addCart toast
+ $('.addCart').click(function() {
+
+	iziToast.show({
+		color: 'dark',
+		icon: 'fal fa-cart-arrow-down',
+		message: 'Added to cart successfully',
+		position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+		progressBarColor: 'rgb(0, 0, 0)',
+	});
+
+}); // ! .click()
+console.log($('.addCart').length);

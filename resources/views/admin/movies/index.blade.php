@@ -7,24 +7,27 @@
 			<!-- main title -->
 			<div class="col-12">
 				<div class="main__title">
-					<h2>Catalog</h2>
-
-					<span class="main__title-stat">14,452 Total</span>
-
+					<h2>phim</h2>
 					<div class="main__title-wrap">
 						<a href="{{route("Movies.create")}}" class="main__title-link main__title-link--wrap">Thêm
 							mới</a>
 
-						<select class="filter__select" name="sort" id="filter__sort">
-							<option value="0">Date created</option>
-							<option value="1">Rating</option>
-							<option value="2">Views</option>
-						</select>
-
+						<form action="{{route("Movies.sort")}}" class="filter__select" id="filterForm">
+						 
+							<select name="option" class="filter__select" id="filter__sort" onchange = "this.form.submit()">
+								<option value="Tên phim" {{request("option") == "Tên phim" ? "selected" : ""}}>Tên phim
+								</option>
+								<option value="Năm ra mắt" {{request("option") == "Năm ra mắt" ? "selected" : ""}}>Năm ra
+									mắt</option>
+								<option value="Đánh giá" {{request("option") == "Đánh giá" ? "selected" : ""}}>
+									Đánh giá</option>
+							</select>
+						</form>
+						
 						<!-- search -->
-						<form action="#" class="main__title-form">
-							<input type="text" placeholder="Find movie / tv series..">
-							<button type="button">
+						<form action="{{route("Movies.search")}}" class="main__title-form">
+							<input name = "search" type="text" placeholder="Tìm kiếm....">
+							<button type="submit">
 								<i class="bi bi-search"></i>
 							</button>
 						</form>
@@ -64,7 +67,8 @@
 										<div class="catalog__text"><a href="#">{{$movie->MovieName}}</a></div>
 									</td>
 									<td>
-										<div class="catalog__text catalog__text--rate">{{$movie->MovieEvaluate}}</div>
+										<div class="catalog__text"><i class="bi bi-star"
+												style="margin-right: 5px; color:#f9ab00"></i>{{$movie->MovieEvaluate}}</div>
 									</td>
 									<td>
 										<div class="catalog__text">
@@ -84,14 +88,11 @@
 									</td>
 									<td>
 										<div class="catalog__btns">
-											<button type="button" data-bs-toggle="modal"
-												class="catalog__btn catalog__btn--banned" data-bs-target="#modal-status">
-												<i class="bi bi-lock"></i>
-											</button>
 											<a href="#" class="catalog__btn catalog__btn--view">
 												<i class="bi bi-eye"></i>
 											</a>
-											<a href="{{route("Movies.edit",$movie->MovieID)}}" class="catalog__btn catalog__btn--edit">
+											<a href="{{route("Movies.edit", $movie->MovieID)}}"
+												class="catalog__btn catalog__btn--edit">
 												<i class="bi bi-pencil-square"></i>
 											</a>
 											<button type="button" data-bs-toggle="modal"
@@ -180,8 +181,8 @@
 					<form class="modal__form" action="{{route("Movies.destroy", $movie->MovieID)}}" method="POST">
 						@csrf
 						@method("DELETE")
-						<h4 class="modal__title">Xóa bộ phim này</h4>
-						<p class="modal__text">bạn có chắc chắn muốn xóa
+						<h4 class="modal__title">Xóa bộ phim này ?</h4>
+						<p class="modal__text mx-auto">bạn có chắc chắn muốn xóa ?
 						</p>
 						<div class="modal__btns">
 							<button class="modal__btn modal__btn--apply" type="submit"><span>xóa</span></button>
@@ -195,4 +196,37 @@
 	</div>
 @endforeach
 @endsection
+
+@section("footeradmin")
+@if(session("addMovie"))
+	<script>
+		iziToast.success({
+			message: '{{session("addMovie")}}',
+			position: "topRight"
+		});
+	</script>
+@endif
+
+@if(session("editMovie"))
+	<script>
+		iziToast.success({
+			message: "{{session("editMovie")}}",
+			position: "topRight"
+		})
+	</script>
+@endif
+
+@if(session("deleteMovie"))
+	<script>
+		iziToast.success({
+			message: "{{session('deleteMovie')}}",
+			position: "topRight"
+		})
+	</script>
+@endif
+
+
+@endsection
+
+
 <!-- end delete modal -->

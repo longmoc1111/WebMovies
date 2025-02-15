@@ -7,7 +7,7 @@
             <!-- main title -->
             <div class="col-12">
                 <div class="main__title">
-                    <h2>Thêm mới diễn viên</h2>
+                    <h2>Sửa thông tin đạo diễn</h2>
                 </div>
             </div>
             <!-- end main title -->
@@ -79,4 +79,18 @@
     </div>
 </main>
 <!-- end main content -->
+@endsection
+
+
+@section("footeradmin")
+@if($errors->any())
+@foreach($errors->all() as $error)
+        <script>
+            iziToast.warning({
+                message:"{{$error}}",
+                position:"topRight"
+            })
+        </script>
+    @endforeach
+@endif
 @endsection

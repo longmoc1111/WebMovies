@@ -39,6 +39,7 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        $user->role = "user";
 
         if($user->save()){
             return redirect(route("login"))
@@ -51,5 +52,8 @@ class AuthController extends Controller
     public function logout(){
         Auth::logout();
         return redirect()->route("Home.index");
+    }
+    public function Unauthorized(){
+        return view("abortPage.404");
     }
 }

@@ -54,6 +54,8 @@
 	<link rel="stylesheet" href="/css/default-skin.css">
 	<link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="/css/iziToast.min.css">
+
 
 	<!-- Icon font -->
 	<link rel="stylesheet" href="webfont/tabler-icons.min.css">
@@ -124,5 +126,7 @@
 	<script src="/js/photoswipe.min.js"></script>
 	<script src="/js/photoswipe-ui-default.min.js"></script>
 	<script src="/js/main.js"></script>
+	<script src="/js/iziToast.min.js"></script>
+	
 </body>
 </html>
