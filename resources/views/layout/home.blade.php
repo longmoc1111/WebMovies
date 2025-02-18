@@ -14,6 +14,8 @@
 	<link rel="stylesheet" href="/css/default-skin.css">
 	<link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="/css/iziToast.min.css">
+
 
 	<!-- Icon font -->
 	<link rel="stylesheet" href="/webfont/tabler-icons.min.css">
@@ -108,7 +110,7 @@
 									<span>{{Auth::user()->name}}</span>
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end header__dropdown-menu header__dropdown-menu--user">
-									<li><a href="profile.html"><i class="bi bi-person"></i>cá nhân</a></li>
+									<li><a href="{{ route("Profile.index") }}"><i class="bi bi-person"></i>cá nhân</a></li>
 									<li><a href="profile.html"><i class="bi bi-bookmark"></i>yêu thích</a></li>
 									<li>
 									<form action="{{route("logout.post")}}" method = "POST">
@@ -233,7 +235,6 @@
 
 </body>
 <footer>
-	@section("footerHome")
 <script src="/js/bootstrap.bundle.min.js"></script>
 	<script src="/js/splide.min.js"></script>
 	<script src="/js/slimselect.min.js"></script>
@@ -242,6 +243,11 @@
 	<script src="/js/photoswipe.min.js"></script>
 	<script src="/js/photoswipe-ui-default.min.js"></script>
 	<script src="/js/main.js"></script>
+	<script src="/js/iziToast.min.js"></script>
+	@yield("footerHome")
+	
+
+
 </footer>
 </html>
 

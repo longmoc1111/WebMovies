@@ -68,27 +68,9 @@
 
 				<!-- player -->
 				<div class="col-12 col-xl-6">
-				<iframe width="100%" height="100%" src="{{$movieID->MovieLink}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-					<!-- <video controls crossorigin playsinline
-						poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" id="player"> -->
-						 <!-- Video files  -->
-						<!-- <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4"
-							type="video/mp4" size="576">
-						<source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4"
-							type="video/mp4" size="720">
-						<source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4"
-							type="video/mp4" size="1080"> -->
-
-						<!-- Caption files -->
-						<!-- <track kind="captions" label="English" srclang="en"
-							src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default>
-						<track kind="captions" label="Français" srclang="fr"
-							src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt"> -->
+				<iframe src="{{ $movieID->MovieLink }}" width="640" height="360" allowfullscreen></iframe>
 
 						<!-- Fallback for browsers that don't support the <video> element -->
-						<!-- <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4"
-							download>Download</a>
-					</video> -->
 				</div>
 				<!-- end player -->
 			</div>
@@ -152,13 +134,13 @@
 													in the middle of text.</p>
 												<div class="comments__actions">
 													<div class="comments__rate">
-														<button type="button"><i class="ti ti-thumb-up"></i>12</button>
+														<button type="button"><i class="bi bi-hand-thumbs-up"></i>12</button>
 
-														<button type="button">7<i class="ti ti-thumb-down"></i></button>
+														<button type="button">7<i class="bi bi-hand-thumbs-down"></i></button>
 													</div>
 
 													<button type="button"><i
-															class="ti ti-arrow-forward-up"></i>trả lời</button>
+															class="bi bi-arrow-return-right"></i>trả lời</button>
 													
 												</div>
 											</li>
@@ -176,9 +158,9 @@
 													specimen book.</p>
 												<div class="comments__actions">
 													<div class="comments__rate">
-														<button type="button"><i class="ti ti-thumb-up"></i>8</button>
+														<button type="button"><i class="bi bi-thumb-up"></i>8</button>
 
-														<button type="button">3<i class="ti ti-thumb-down"></i></button>
+														<button type="button">3<i class="bi bi-thumb-down"></i></button>
 													</div>
 
 													<button type="button"><i
@@ -366,7 +348,7 @@
 										<div class="item__cover">
 											<img src="{{$movie->MovieImage}}" alt="">
 											<!-- sua lai route -->
-											<a href="" class="item__play">
+											<a href="{{ route("Home.detail",$movie->MovieID) }}" class="item__play">
 												<i class="bi bi-play"></i>
 											</a>
 											<span class="item__rate item__rate--green">{{$movie->MovieEvaluate}}</span>

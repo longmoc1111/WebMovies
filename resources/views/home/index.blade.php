@@ -185,5 +185,14 @@
 
 @section("footerHome")
 
+@if(session("successLogin"))
+	<script>
+		iziToast.success({
+			message: "{{ session("successLogin") }}",
+			position: "topRight"
+		});
+	</script>
+@endif
+
 
 @endsection

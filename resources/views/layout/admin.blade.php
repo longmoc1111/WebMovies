@@ -64,10 +64,12 @@
 				<span>Admin</span>
 				<p>{{Auth()->user()->name}}</p>
 			</div>
-
-			<button class="sidebar__user-btn" type="button">
+			<form class="sidebar__user-btn" action="{{ route("logout.post") }}" method = "POST">
+			@csrf
+			<button class="sidebar__user-btn" type="submit">
 				<i class="bi bi-box-arrow-right"></i>
 			</button>
+			</form>
 		</div>
 		<!-- end sidebar user -->
 

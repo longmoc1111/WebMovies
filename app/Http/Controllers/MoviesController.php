@@ -146,8 +146,7 @@ class MoviesController extends Controller
         $vailidateDataActors = $request->get('ActorID');
         if(isset($vailidateDataActors)){
             $movies->Actors()->sync($vailidateDataActors);
-        }
-        
+        }   
         $validatedataCountries = $request->get('CountryID');
         if(isset($validatedataCountries)){
             $movies->Countries()->sync($validatedataCountries);

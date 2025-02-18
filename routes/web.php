@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MoviesController;
 use App\http\Controllers\DashboardController;
@@ -84,9 +85,10 @@ Route::prefix("Home")->name("Home.")->group(function(){
     Route::get("/theaterMovie",[HomeController::class,"theaterMovie"])->name("theaterMovie");
     Route::get("/singleMovie",[HomeController::class,"singleMovie"])->name("singleMovie");
     Route::get("/search",[HomeController::class,"search"])->name("search");
-    Route::get("/filter",[HomeController::class,"filter"])->name("filter");
-
-    
+    Route::get("/filter",[HomeController::class,"filter"])->name("filter"); 
+});
+Route::prefix("Profile")->name("Profile.")->group(function(){
+    route::get("/",[ProfileController::class,"index"])->name("index");
 });
 
 // Route::controller(MoviesController::class)->prefix('Movies')->name('Movies')->group(function(){

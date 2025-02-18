@@ -19,10 +19,10 @@ class AuthController extends Controller
         $credentials = $request->only("email", "password");
         if(Auth::attempt($credentials)){
             // dd(Auth::user());
-            return redirect()->intended(route("Home.index"));
+            return redirect()->intended(route("Home.index"))->with("successLogin","Đăng nhập thành công");
         }else{
             return redirect(route("login"))
-                ->with("error","Đăng nhập thất bại. Vui lòng nhập lại");
+                ->with("errorLogin","Thông tin tài khoản, hoặc mật khẩu không chính xác!");
         }   
     }
     
@@ -32,9 +32,13 @@ class AuthController extends Controller
     function registerPost(Request $request){
         $request -> validate([
             "name" => "required",
-            "email" => "required",
+            "email" => "required|unique:users,email",
             "password" => "required",
-        ]);
+        ],
+        [
+            "email.unique"=>"email đã tồn tại!",
+        ]
+    );
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
@@ -43,10 +47,10 @@ class AuthController extends Controller
 
         if($user->save()){
             return redirect(route("login"))
-                ->with("success","Tạo tài khoản thành công");
+                ->with("successRegister","Tạo tài khoản thành công");
         }else{
             return redirect(route("register"))
-                ->with("error","Tạo tài khoản thất bại");
+                ->with("errorRegister","Tạo tài khoản thất bại");
         }
     }
     public function logout(){

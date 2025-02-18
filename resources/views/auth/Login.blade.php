@@ -40,20 +40,21 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<!-- CSS -->
 
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/css/splide.min.css">
 	<link rel="stylesheet" href="/css/slimselect.css">
 	<link rel="stylesheet" href="/css/plyr.css">
 	<link rel="stylesheet" href="/css/photoswipe.css">
 	<link rel="stylesheet" href="/css/default-skin.css">
 	<link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="/bootstrap-icons/font/bootstrap-icons.min.css">
 	<link rel="stylesheet" href="/css/iziToast.min.css">
 
 
@@ -77,18 +78,19 @@
 				<div class="col-12">
 					<div class="sign__content">
 						<!-- authorization form -->
-						<form action="{{route("login.post")}}" class="sign__form" method = "POST">
-                            @csrf
+						<form action="{{route("login.post")}}" class="sign__form" method="POST">
+							@csrf
 							<a href="index.html" class="sign__logo">
-								<img src="img/logo.svg" alt="">
+								<img src="" alt="">
+								<h1 style = "color:#F9AB00">Đăng nhập</h1>
 							</a>
 
 							<div class="sign__group">
-								<input name = "email" type="text" class="sign__input" placeholder="Email">
+								<input name="email" type="text" class="sign__input" placeholder="Email">
 							</div>
 
 							<div class="sign__group">
-								<input name = "password" type="password" class="sign__input" placeholder="Password">
+								<input name="password" type="password" class="sign__input" placeholder="Password">
 							</div>
 
 							<!-- <div class="sign__group sign__group--checkbox">
@@ -106,7 +108,8 @@
 								<a class="gl" href="#">Sign in with<i class="ti ti-brand-google"></i></a>
 							</div> -->
 
-							<span class="sign__text">chưa có tài khoản?<a href="{{route('register')}}">Đăng ký !</a></span>
+							<span class="sign__text">chưa có tài khoản?<a href="{{route('register')}}">Đăng ký
+									!</a></span>
 
 							<!-- <span class="sign__text"><a href="forgot.html">Forgot password?</a></span> -->
 						</form>
@@ -118,7 +121,7 @@
 	</div>
 
 	<!-- JS -->
-    <script src="/js/bootstrap.bundle.min.js"></script>
+	<script src="/js/bootstrap.bundle.min.js"></script>
 	<script src="/js/splide.min.js"></script>
 	<script src="/js/slimselect.min.js"></script>
 	<script src="/js/smooth-scrollbar.js"></script>
@@ -128,5 +131,27 @@
 	<script src="/js/main.js"></script>
 	<script src="/js/iziToast.min.js"></script>
 	
+
 </body>
+
+@if(session("errorLogin"))
+	<script>
+		iziToast.warning({
+			message: "{{ session("errorLogin") }}",
+			position: "topCenter"
+		});
+	</script>
+@endif
+
+@if(session("successRegister"))
+	<script>
+		iziToast.success({
+			message: "{{ session("successRegister") }}",
+			position: "topCenter"
+		});
+	</script>
+@endif
+
+ 
+
 </html>
