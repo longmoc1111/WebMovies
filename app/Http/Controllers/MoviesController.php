@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers;
+use App\Mail\WelcomeMail;
 use Illuminate\support\str;
 use Illuminate\Http\Request;
 use Illuminate\support\facades\File;
@@ -9,6 +10,7 @@ use App\Models\Genre;
 use App\Models\Director;
 use App\Models\Country;
 use App\Models\Actor;
+use Mail;
 
 
 
@@ -127,9 +129,6 @@ class MoviesController extends Controller
         //     $validate['MovieImage'] = $shortFileName;    
         // }
 
-        
-    
-      
         $movies = Movie::find($id);
         $movies->update($validate);
 
@@ -194,4 +193,11 @@ class MoviesController extends Controller
         ->paginate(10)->appends(request()->query());
         return view("admin.movies.index",compact("movies"));
     }
+
+
+    public function mail(){
+        $email = "longmoc93@gmail.com";
+        Mail::to($email)->send(new WelcomeMail());
+    }
+
 }

@@ -78,6 +78,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                
                                 @php
                                     foreach ($Types as $type)
                                         $allTypes[$type->TypeID] = $type->TypeName;
