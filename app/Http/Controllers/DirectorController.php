@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use File;
 use Illuminate\Http\Request;
 use App\Models\Director;
 use App\Models\Country;
@@ -14,8 +15,8 @@ class DirectorController extends Controller
      */
     public function index()
     {
-        $Directors = Director::Orderby("created_at","DESC")->paginate(10);
-        return view("admin.directors.index",compact("Directors"));
+        $Directors = Director::Orderby("created_at", "DESC")->paginate(10);
+        return view("admin.directors.index", compact("Directors"));
 
     }
 
@@ -33,21 +34,29 @@ class DirectorController extends Controller
      */
     public function store(Request $request)
     {
-        $validateDirectors = $request->validate([
-            'DirectorName' =>'required',
-            'DirectorNationality' =>'required',
-            'DirectorDate' =>'required',
-            'DirectorAvatar' =>'required',  
-        ],
-        [
-            'DirectorName' =>'Tên không được để trống',
-            'DirectorNationality' =>'Quốc tịch không được để trống',
-            'DirectorDate' =>'Năm sinh không được để trống',
-            'DirectorAvatar' =>'Avatar không được để trống',  
-        ]
-    );
+        $validateDirectors = $request->validate(
+            [
+                'DirectorName' => 'required',
+                'DirectorNationality' => 'required',
+                'DirectorDate' => 'required',
+            ],
+            [
+                'DirectorName' => 'Tên không được để trống',
+                'DirectorNationality' => 'Quốc tịch không được để trống',
+                'DirectorDate' => 'Năm sinh không được để trống',
+            ]
+        );
+        if ($request->hasfile("DirectorAvatar")) {
+            $file = $request->file("DirectorAvatar");
+            $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileNameExt = $file->getClientOriginalExtension();
+            $newFileName = $fileNameWithoutExt . "_" . time() . "." . $fileNameExt;
+            $file->move("assets/directorAvatar", $newFileName);
+            $validateDirectors["DirectorAvatar"] = $newFileName;
+
+        }
         Director::Create($validateDirectors);
-        return redirect()->route("admin.director.index")->with("addDirector","thêm mới thành công");
+        return redirect()->route("admin.director.index")->with("addDirector", "thêm mới thành công");
     }
 
     /**
@@ -55,7 +64,7 @@ class DirectorController extends Controller
      */
     public function show(string $id)
     {
-        
+
     }
 
     /**
@@ -65,7 +74,7 @@ class DirectorController extends Controller
     {
         $Director = Director::find($id);
         $Countries = Country::all();
-        return view("admin.directors.edit",compact("Director","Countries"));
+        return view("admin.directors.edit", compact("Director", "Countries"));
     }
 
     /**
@@ -73,22 +82,37 @@ class DirectorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validateDirectors = $request->validate([
-            'DirectorName' =>'required',
-            'DirectorNationality' =>'required',
-            'DirectorDate' =>'required',
-            'DirectorAvatar' =>'required',
-        ],
-        [
-            // 'DirectorName' =>'Tên không được để trống',
-            'DirectorNationality' =>'Quốc tịch không được để trống',
-            'DirectorDate' =>'Năm sinh không được để trống',
-            'DirectorAvatar' =>'Avatar không được để trống',  
-        ]
-    );
+         
+        $validateDirectors = $request->validate(
+            [
+                'DirectorName' => 'required',
+                'DirectorNationality' => 'required',
+                'DirectorDate' => 'required',
+            ],
+            [
+                // 'DirectorName' =>'Tên không được để trống',
+                'DirectorNationality' => 'Quốc tịch không được để trống',
+                'DirectorDate' => 'Năm sinh không được để trống',
+            ]
+        );
+        if ($request->hasfile("DirectorAvatar")) {
+            if($request->hasfile("oldDirectorAvatar")){
+                $oldFileAvatar = public_path("assets/directorAvatar" . $request->get("oldDirectorAvatar"));
+                if(File::exists($oldFileAvatar)){
+                    File::delete($oldFileAvatar);
+                }
+            }
+            $file = $request->file("DirectorAvatar");
+            $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileNameExt = $file->getClientOriginalExtension();
+            $newFileName = $fileNameWithoutExt . "_" . time() . "." . $fileNameExt;
+            $file->move("assets/directorAvatar", $newFileName);
+            $validateDirectors["DirectorAvatar"] = $newFileName;
+
+        }
         $Director = Director::find($id);
         $Director->update($validateDirectors);
-        return redirect()->route("admin.director.index")->with("editDirector","sửa đổi thành công");
+        return redirect()->route("admin.director.index")->with("editDirector", "sửa đổi thành công");
     }
 
     /**
@@ -97,31 +121,39 @@ class DirectorController extends Controller
     public function destroy(string $id)
     {
         $director = Director::find($id);
-        if($director){
+        if ($director) {    
+            $DirectorAvatar = public_path("assets/directorAvatar/" . $director->DirectorAvatar);
+            if(File::exists($DirectorAvatar)){
+                File::delete($DirectorAvatar);
+            }
             $director->DirectorMovie()->detach();
         }
         $director->delete();
-        return redirect()->route("admin.director.index")->with("deleteDirector","xóa thành công");
+        return redirect()->route("admin.director.index")->with("deleteDirector", "xóa thành công");
     }
-    public function sort(){
-        if(request("sort") == "Tên"){
-            $Directors = Director::Orderby("DirectorName","ASC")->paginate(10)->appends(request()->query());
-            return view("admin.directors.index",compact("Directors"));
-        } if(request("sort") == "Quốc tịch"){
-            $Directors = Director::Orderby("DirectorNationality","ASC")->paginate(10)->appends(request()->query());
-            return view("admin.directors.index",compact("Directors"));
-        }if(request("sort") == "Ngày sinh"){
-            $Directors = Director::Orderby("DirectorDate","DESC")->paginate(10)->appends(request()->query());
-            return view("admin.directors.index",compact("Directors"));
+    public function sort()
+    {
+        if (request("sort") == "Tên") {
+            $Directors = Director::Orderby("DirectorName", "ASC")->paginate(10)->appends(request()->query());
+            return view("admin.directors.index", compact("Directors"));
+        }
+        if (request("sort") == "Quốc tịch") {
+            $Directors = Director::Orderby("DirectorNationality", "ASC")->paginate(10)->appends(request()->query());
+            return view("admin.directors.index", compact("Directors"));
+        }
+        if (request("sort") == "Ngày sinh") {
+            $Directors = Director::Orderby("DirectorDate", "DESC")->paginate(10)->appends(request()->query());
+            return view("admin.directors.index", compact("Directors"));
         }
     }
-    public function search(){
+    public function search()
+    {
         $key = request("search");
-        $Directors = Director::where("DirectorName","like","%".$key."%")
-        ->orWhere("DirectorNationality","like","%".$key."%")
-        ->orWhere("DirectorDate","like","%".$key."%")
-        ->paginate(10)->appends(request()->query());
-        return view("admin.directors.index",compact("Directors"));
+        $Directors = Director::where("DirectorName", "like", "%" . $key . "%")
+            ->orWhere("DirectorNationality", "like", "%" . $key . "%")
+            ->orWhere("DirectorDate", "like", "%" . $key . "%")
+            ->paginate(10)->appends(request()->query());
+        return view("admin.directors.index", compact("Directors"));
 
     }
 }

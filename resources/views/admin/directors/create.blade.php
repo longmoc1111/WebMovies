@@ -25,7 +25,7 @@
                             <!-- details form -->
                             <div class="col-12">
                                 <form action="{{route("admin.director.store")}}" method="POST"
-                                    class="sign__form sign__form--profile">
+                                    class="sign__form sign__form--profile" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
                                         <div class="col-12">
@@ -55,15 +55,24 @@
                                         </div>
 
                                         <div class="col-12">
-                                            <div class="sign__group">
-                                                <label class="sign__label" for="fname">link ảnh đại diện</label>
-                                                <input name="DirectorAvatar" id="fname" type="url" class="sign__input">
+                                                <div class="sign__group">
+                                                    <label class="sign__label" for="fname">Ảnh đại diện</label>
+                                                    <div class="collapse show multi-collapse">
+                                                        <div class="sign__video position-relative">
+                                                            <label id="movie1" for="sign__video-upload"
+                                                                class="position-relative d-inline-flex align-items-center justify-content-between w-100"
+                                                                style="height: 46px; padding-right: 30px;">
+                                                                <i class="bi bi-image" style="font-size: 20px;"></i>
+                                                            </label>
+                                                            <input data-name="#movie1" id="sign__video-upload"
+                                                                name="DirectorAvatar" class="sign__video-upload" type="file">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-
                                         <div class="col-12">
                                             <button class="sign__btn sign__btn--small"
-                                                type="submit"><span>Save</span></button>
+                                                type="submit"><span>Lưu</span></button>
                                         </div>
                                     </div>
                                 </form>

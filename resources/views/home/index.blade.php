@@ -29,7 +29,7 @@
 									<li class="splide__slide">
 										<div class="item item--hero">
 											<div class="item__cover">
-												<img src="{{$movie->MovieImage}}" alt="">
+												<img src="/assets/BackgroundMovie/{{$movie->MovieImage}}" alt="">
 												<!--thay doi route  -->
 												<a href="{{route("Home.detail", $movie->MovieID)}}" class="item__play">
 													<i class="bi bi-play"></i>
@@ -39,7 +39,7 @@
 														class="bi bi-bookmark"></i></button>
 											</div>
 											<div class="item__content">
-												<h3 class="item__title"><a href="details.html">{{$movie->MovieName}}</a></h3>
+												<h3 class="item__title"><a href="{{route("Home.detail", $movie->MovieID)}}">{{$movie->MovieName}}</a></h3>
 												<span class="item__category">
 												<a href="#">{{ $movie->Genres->pluck("GenreName")->take(2)->join(", ") }}</a>
 													<!-- <a href="#">Triler</a> -->
@@ -86,7 +86,7 @@
 							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 								<div class="item">
 									<div class="item__cover">
-										<img src="{{$movie->MovieImage}}" alt="">
+									<img src="/assets/BackgroundMovie/{{$movie->MovieImage}}" alt="">
 										<a href="{{route("Home.detail", $movie->MovieID)}}" class="item__play">
 											<i class="bi bi-play"></i>
 										</a>
@@ -94,7 +94,7 @@
 										<button class="item__favorite" type="button"><i class="bi bi-bookmark"></i></button>
 									</div>
 									<div class="item__content">
-										<h3 class="item__title"><a href="details.html">{{$movie->MovieName}}</a></h3>
+										<h3 class="item__title"><a href="{{route("Home.detail", $movie->MovieID)}}">{{$movie->MovieName}}</a></h3>
 										<span class="item__category">
 										<a href="#">{{ $movie->Genres->pluck("GenreName")->take(2)->join(", ") }}</a>
 											<!-- <a href="#">Triler</a> -->
@@ -150,11 +150,11 @@
 					<div class="splide__track">
 						<ul class="splide__list">
 							@foreach($movies as $movie)
-								@if($movie->MovieStatus == "sắp ra mắt")
+								@if($movie->MovieStatus == "Sắp ra mắt")
 									<li class="splide__slide">
 										<div class="item item--carousel">
 											<div class="item__cover">
-												<img src="{{$movie->MovieImage}}" alt="">
+											<img src="/assets/BackgroundMovie/{{$movie->MovieImage}}" alt="">
 												<a href="{{route("Home.detail", $movie->MovieID)}}" class="item__play">
 													<i class="bi bi-play"></i>
 												</a>
@@ -163,7 +163,7 @@
 														class="bi bi-bookmark"></i></button>
 											</div>
 											<div class="item__content">
-												<h3 class="item__title"><a href="details.html">{{$movie->MovieName}}</a></h3>
+												<h3 class="item__title"><a href="{{route("Home.detail", $movie->MovieID)}}">{{$movie->MovieName}}</a></h3>
 												<span class="item__category">
 													<a href="#">{{ $movie->Genres->pluck("GenreName")->take(2)->join(", ") }}</a>
 												</span>

@@ -15,7 +15,7 @@ class ResetPasswordCustom extends Notification
      * Create a new notification instance.
      */
     public $token;
-    public function __construct()
+    public function __construct($token)
     {
         $this->token = $token;
     }
@@ -39,8 +39,8 @@ class ResetPasswordCustom extends Notification
                     ->subject("Khôi phục mật khẩu")
                     ->greeting("Xin chào !")    
                     ->line('Bạn nhận được Email này vì có yêu cầu đặt lại mật khẩu.')
-                    ->action('Notification Action', url(route("password.reset",['token'=>$this->token],false)))
-                    ->line('Thank you for using our application!');
+                    ->action('Đặt lại mật khẩu', url('/reset-password/'. $this->token))
+                    ->line('Nếu bạn không sử dụng link này trong 1 giờ, đường link sẽ hết hạn');
     }
 
     /**

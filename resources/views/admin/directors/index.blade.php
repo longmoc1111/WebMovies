@@ -26,7 +26,7 @@
 
                             <!-- search -->
                             <form action="{{route("admin.director.search")}}" class="main__title-form">
-                                <input name = "search" type="text" placeholder="Tìm kiếm....">
+                                <input name="search" type="text" placeholder="Tìm kiếm....">
                                 <button type="submit">
                                     <i class="bi bi-search"></i>
                                 </button>
@@ -67,7 +67,7 @@
                                         <td>
                                             <div class="catalog__user">
                                                 <div class="catalog__avatar">
-                                                    <img src="{{$director->DirectorAvatar}}" alt="">
+                                                    <img src="/assets/directorAvatar/{{$director->DirectorAvatar}}" alt="">
                                                 </div>
                                             </div>
                                         </td>

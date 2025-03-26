@@ -13,7 +13,11 @@
 								@if(session("status"))
 									<div class="alert alert-warning">{{ session("status") }}</div>
 								@endif
-								
+								@if($errors->any())
+									@foreach ($errors->all() as $error)
+										<div class = "alert alert-warning">{{ $error }}</div>
+									@endforeach
+								@endif
 								<a href="index.html" class="sign__logo">
 									<img src="" alt="">
 									<h1 style="color:#F9AB00">Quên mật khẩu</h1>

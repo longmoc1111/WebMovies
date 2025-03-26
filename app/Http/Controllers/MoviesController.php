@@ -21,8 +21,8 @@ class MoviesController extends Controller
      */
     public function index()
     {
-        $movies = Movie::OrderBy("created_at","DESC")->paginate(10);     
-        return view('admin.movies.index',compact('movies'));
+        $movies = Movie::OrderBy("created_at", "DESC")->paginate(10);
+        return view('admin.movies.index', compact('movies'));
     }
 
     public function create()
@@ -32,59 +32,59 @@ class MoviesController extends Controller
         $Directors = Director::all();
         $Countries = Country::all();
         $Actors = Actor::all();
-        return view('admin.movies.CreateMovie',compact('Types','Genres', 'Directors','Countries','Actors'));
+        return view('admin.movies.CreateMovie', compact('Types', 'Genres', 'Directors', 'Countries', 'Actors'));
     }
 
     public function store(Request $request)
     {
+
         $validateDataMovies = $request->validate([
-            'MovieName'=>'required',
-            'MovieYear'=>'required',
-            'MovieDescription'=>'required',
-            'MovieEvaluate'=>'required',
-             'MovieImage'=>'required',
-            'MovieStatus'=>'required|min:0|max:10',
-            'MovieLink'=>'required|url',
-            'GenreID'=>'required',            
-       ]);
-        // if($request->hasfile('MovieImage')){
-        //     $file = $request->file('MovieImage');
-        //     $fileNameWithoutExt = pathinfo($file->getClientOriginalName(),PATHINFO_FILENAME);
-        //     $fileExtension = $file->getClientOriginalExtension();
-        //     $newFileName = str::slug($fileNameWithoutExt,'-'). '-' . time() . '.' . $fileExtension;
-        //     $file->move(public_path('images'), $newFileName);
-        //     $validateDataMovies['MovieImage'] = $newFileName;
-        // }
+            'MovieName' => 'required',
+            'MovieYear' => 'required',
+            'MovieDescription' => 'required',
+            'MovieEvaluate' => 'required',
+            'MovieStatus' => 'required|min:0|max:10',
+            'MovieLink' => 'required|url',
+            'GenreID' => 'required',
+        ]);
+        if ($request->hasfile("MovieImage")) {
+            $file = $request->file("MovieImage");
+            $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileNameExt = $file->getClientOriginalExtension();
+            $newFileName = $fileNameWithoutExt . "_" . time() . "." . $fileNameExt;
+            $file->move(public_path("assets/BackgroundMovie"), $newFileName);
+            $validateDataMovies["MovieImage"] = $newFileName;
+        }
         $movie = Movie::create($validateDataMovies);
 
-       $validateDataDirector = $request->get('DirectorID');
-        if(isset($validateDataDirector)){
+        $validateDataDirector = $request->get('DirectorID');
+        if (isset($validateDataDirector)) {
             $movie->Directors()->attach($validateDataDirector);
-        }   
-        
+        }
+
         $validateDataActor = $request->get('ActorID');
-        if(isset($validateDataActor)){
+        if (isset($validateDataActor)) {
             $movie->Actors()->attach($validateDataActor);
         }
 
         $validateDataCountry = $request->get('CountryID');
-        if(isset($validateDataCountry)){
+        if (isset($validateDataCountry)) {
             $movie->Countries()->attach($validateDataCountry);
         }
 
         $validateDataType = $request->get('TypeID');
-        if(isset($validateDataType)){
+        if (isset($validateDataType)) {
             $movie->Types()->attach($validateDataType);
+        }
+
+        return redirect()->route('Movies.index')->with('addMovie', 'thêm mới thành công');
     }
 
-    return redirect()->route('Movies.index')->with('addMovie','thêm mới thành công');
-}
-
     public function show(string $id)
-    { 
-     
+    {
+
         $movie = Movie::find($id);
-        return view('admin.movies.showMovie',compact('movie'));
+        return view('admin.movies.showMovie', compact('movie'));
     }
 
     public function edit(string $id)
@@ -95,7 +95,7 @@ class MoviesController extends Controller
         $Directors = Director::all();
         $Countries = Country::all();
         $Actors = Actor::all();
-        return view('admin.movies.editMovie',compact('Movie','Types','Genres', 'Directors','Countries','Actors'));  
+        return view('admin.movies.editMovie', compact('Movie', 'Types', 'Genres', 'Directors', 'Countries', 'Actors'));
     }
 
     /**
@@ -104,30 +104,30 @@ class MoviesController extends Controller
     public function update(Request $request, string $id)
     {
         $validate = $request->validate([
-                'MovieName'=>'required',
-                'MovieYear'=>'required',
-                'MovieDescription'=>'required',
-                'MovieImage'=>'required',
-                'MovieEvaluate'=>'required',
-                'MovieStatus'=>'required|min:0|max:10',
-                'MovieLink'=>'required|url',
-                'GenreID'=>'required',
+            'MovieName' => 'required',
+            'MovieYear' => 'required',
+            'MovieDescription' => 'required',
+            'MovieEvaluate' => 'required',
+            'MovieStatus' => 'required|min:0|max:10',
+            'MovieLink' => 'required|url',
+            'GenreID' => 'required',
         ]);
 
-        // if($request->hasfile('currentMovieImage')){
-        //     $oldfileImage = public_path('images/'. $request->get('MovieImage'));
-        //     if(File::exists($oldfileImage)){
-        //         File::delete($oldfileImage);
-        //     }
-        //     else{              
-        //     }
-        //     $file = $request->file('currentMovieImage');
-        //     $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        //     $fileNameExtension = $file->getClientOriginalExtension();
-        //     $shortFileName = str::slug($fileNameWithoutExt, '-') . '-' .  time() . '.' . $fileNameExtension;
-        //     $file->move(public_path('images'), $shortFileName);
-        //     $validate['MovieImage'] = $shortFileName;    
-        // }
+
+        if ($request->hasfile("MovieImage")) {
+            if ($request->hasfile('OldFileMovie')) {
+                $oldfileImage = public_path('assets/BackgroundMovie' . $request->get('OldFileMovie'));
+                if (File::exists($oldfileImage)) {
+                    File::delete($oldfileImage);
+                }
+            }
+            $file = $request->file('MovieImage');
+            $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileNameExtension = $file->getClientOriginalExtension();
+            $NewFileMovie = $fileNameWithoutExt . '_' . time() . '.' . $fileNameExtension;
+            $file->move(public_path('assets/BackgroundMovie'), $NewFileMovie);
+            $validate['MovieImage'] = $NewFileMovie;
+        }
 
         $movies = Movie::find($id);
         $movies->update($validate);
@@ -153,7 +153,7 @@ class MoviesController extends Controller
         return redirect()->route('Movies.index')->with('editMovie','cập nhật thành công');
     }
 
-    
+
 
     /**
      * Remove the specified resource from storage.
@@ -161,43 +161,43 @@ class MoviesController extends Controller
     public function destroy(string $id)
     {
         $movie = Movie::find($id);
-        if($movie){
+        if ($movie) {
             $movie->Directors()->detach();
             $movie->Actors()->detach();
             $movie->Countries()->detach();
             $movie->Types()->detach();
         }
         $movie->delete();
-        return redirect()->route('Movies.index')->with('deleteMovie','xóa thành công');
+        return redirect()->route('Movies.index')->with('deleteMovie', 'xóa thành công');
     }
 
-    public function sort(){
+    public function sort()
+    {
         request("option");
-        if(request("option") == "Tên phim"){
-            $movies = Movie::OrderBy("MovieName","ASC")->paginate(10)->appends(request()->query());  
-        return view('admin.movies.index',compact('movies'));
-        }if(request("option") == "Năm ra mắt"){
-            $movies = Movie::OrderBy("MovieYear","DESC")->paginate(10)->appends(request()->query());  
-        return view('admin.movies.index',compact('movies'));
-        }if(request("option") == "Đánh giá"){
-            $movies = Movie::OrderBy("MovieEvaluate","ASC")->paginate(10)->appends(request()->query());  
-        return view('admin.movies.index',compact('movies'));
-        }     
+        if (request("option") == "Tên phim") {
+            $movies = Movie::OrderBy("MovieName", "ASC")->paginate(10)->appends(request()->query());
+            return view('admin.movies.index', compact('movies'));
+        }
+        if (request("option") == "Năm ra mắt") {
+            $movies = Movie::OrderBy("MovieYear", "DESC")->paginate(10)->appends(request()->query());
+            return view('admin.movies.index', compact('movies'));
+        }
+        if (request("option") == "Đánh giá") {
+            $movies = Movie::OrderBy("MovieEvaluate", "ASC")->paginate(10)->appends(request()->query());
+            return view('admin.movies.index', compact('movies'));
+        }
     }
-    public function search(){
+    public function search()
+    {
         $key = request("search");
-        $movies = Movie::where("MovieName","like","%".$key."%")
-        ->orWhere("MovieEvaluate","like","%".$key."%")
-        ->orWhere("MovieYear","like","%".$key."%")
-        ->orWhere("MovieStatus","like","%".$key."%")
-        ->paginate(10)->appends(request()->query());
-        return view("admin.movies.index",compact("movies"));
+        $movies = Movie::where("MovieName", "like", "%" . $key . "%")
+            ->orWhere("MovieEvaluate", "like", "%" . $key . "%")
+            ->orWhere("MovieYear", "like", "%" . $key . "%")
+            ->orWhere("MovieStatus", "like", "%" . $key . "%")
+            ->paginate(10)->appends(request()->query());
+        return view("admin.movies.index", compact("movies"));
     }
 
 
-    public function mail(){
-        $email = "longmoc93@gmail.com";
-        Mail::to($email)->send(new WelcomeMail());
-    }
 
 }
