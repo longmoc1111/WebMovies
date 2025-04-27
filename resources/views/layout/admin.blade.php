@@ -81,7 +81,7 @@
 				</li>
 
 				<li class="sidebar__nav-item">
-					<a href="{{route("Movies.index")}}" class="sidebar__nav-link "><i class="bi bi-film"></i> <span>phim</span></a>
+					<a href="{{route("admin.movies.index")}}" class="sidebar__nav-link "><i class="bi bi-film"></i> <span>phim</span></a>
 				</li>
 
 				<li class="sidebar__nav-item">
@@ -99,7 +99,7 @@
 					<a class="sidebar__nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-files"></i> <span>Trang</span> <i class="bi bi-chevron-down"></i></a>
 
 					<ul class="dropdown-menu sidebar__dropdown-menu">
-						<li><a href="{{route("Movies.create")}}">Thêm Mới phim</a></li>
+						<li><a href="{{route("admin.movies.create")}}">Thêm Mới phim</a></li>
 						<li><a href="{{route("login")}}">Đăng nhập</a></li>
 						<li><a href="{{route("login")}}">Đăng ký</a></li>
 						<li><a href="{{route("Unauthorized")}}">404 Page</a></li>

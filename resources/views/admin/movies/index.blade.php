@@ -9,10 +9,10 @@
 				<div class="main__title">
 					<h2>phim</h2>
 					<div class="main__title-wrap">
-						<a href="{{route("Movies.create")}}" class="main__title-link main__title-link--wrap">Thêm
+						<a href="{{route("admin.movies.create")}}" class="main__title-link main__title-link--wrap">Thêm
 							mới</a>
 
-						<form action="{{route("Movies.sort")}}" class="filter__select" id="filterForm">
+						<form action="{{route("admin.movies.sort")}}" class="filter__select" id="filterForm">
 						 
 							<select name="option" class="filter__select" id="filter__sort" onchange = "this.form.submit()">
 								<option value="Tên phim" {{request("option") == "Tên phim" ? "selected" : ""}}>Tên phim
@@ -25,7 +25,7 @@
 						</form>
 						
 						<!-- search -->
-						<form action="{{route("Movies.search")}}" class="main__title-form">
+						<form action="{{route("admin.movies.search")}}" class="main__title-form">
 							<input name = "search" type="text" placeholder="Tìm kiếm....">
 							<button type="submit">
 								<i class="bi bi-search"></i>
@@ -91,7 +91,7 @@
 											<a href="#" class="catalog__btn catalog__btn--view">
 												<i class="bi bi-eye"></i>
 											</a>
-											<a href="{{route("Movies.edit", $movie->MovieID)}}"
+											<a href="{{route("admin.movies.edit", $movie->MovieID)}}"
 												class="catalog__btn catalog__btn--edit">
 												<i class="bi bi-pencil-square"></i>
 											</a>
@@ -178,7 +178,7 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal__content">
-					<form class="modal__form" action="{{route("Movies.destroy", $movie->MovieID)}}" method="POST">
+					<form class="modal__form" action="{{route("admin.movies.destroy", $movie->MovieID)}}" method="POST">
 						@csrf
 						@method("DELETE")
 						<h4 class="modal__title">Xóa bộ phim này ?</h4>

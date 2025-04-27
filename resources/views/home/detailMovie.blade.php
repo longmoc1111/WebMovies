@@ -18,7 +18,7 @@
 							<!-- card cover -->
 							<div class="col-12 col-sm-5 col-md-5 col-lg-4 col-xl-6 col-xxl-5">
 								<div class="item__cover">
-									<img src="{{$movieID->MovieImage}}" alt="">
+									<img src="/assets/BackgroundMovie/{{$movieID->MovieImage}}" alt="">
 									<span class="item__rate item__rate--green">8.4</span>
 									<button class="item__favorite item__favorite--static" type="button"><i
 											class="bi bi-bookmark"></i></button>
@@ -306,21 +306,7 @@
 						</div>
 
 						<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab" tabindex="0">
-							<!-- project gallery -->
-							<div class="gallery" itemscope>
-								<div class="row">
-									<!-- gallery item -->
-									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope>
-										<a href="img/gallery/project-1.jpg" itemprop="contentUrl" data-size="1920x1280">
-											<img src="{{$movieID->MovieImage}}" itemprop="thumbnail"
-												alt="Image description" />
-										</a>
-										<figcaption itemprop="caption description">Some image caption 1</figcaption>
-									</figure>
-									<!-- end gallery item -->
-								</div>
-							</div>
-							<!-- end project gallery -->
+
 						</div>
 						
 					</div>
@@ -346,7 +332,7 @@
 								<div class="col-6 col-sm-4 col-lg-6">
 									<div class="item">
 										<div class="item__cover">
-											<img src="{{$movie->MovieImage}}" alt="">
+											<img src="/assets/BackgroundMovie/{{$movie->MovieImage}}" alt="">
 											<!-- sua lai route -->
 											<a href="{{ route("Home.detail",$movie->MovieID) }}" class="item__play">
 												<i class="bi bi-play"></i>
@@ -357,9 +343,9 @@
 										<div class="item__content">
 											<h3 class="item__title"><a href="#">{{$movie->MovieName}}</a></h3>
 											<span class="item__category">
-												<a href="#">Action</a>
-												<a href="#">Triler</a>
-											</span>
+												<a href="#">{{ $movie->Genres->pluck("GenreName")->take(2)->join(", ") }}</a>
+													<!-- <a href="#">Triler</a> -->
+												</span>
 										</div>
 									</div>
 								</div>

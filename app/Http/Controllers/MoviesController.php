@@ -77,7 +77,7 @@ class MoviesController extends Controller
             $movie->Types()->attach($validateDataType);
         }
 
-        return redirect()->route('Movies.index')->with('addMovie', 'thêm mới thành công');
+        return redirect()->route('admin.movies.index')->with('addMovie', 'thêm mới thành công');
     }
 
     public function show(string $id)
@@ -150,7 +150,7 @@ class MoviesController extends Controller
         if(isset($validatedataCountries)){
             $movies->Countries()->sync($validatedataCountries);
         }
-        return redirect()->route('Movies.index')->with('editMovie','cập nhật thành công');
+        return redirect()->route('admin.movies.index')->with('editMovie','cập nhật thành công');
     }
 
 
@@ -168,7 +168,7 @@ class MoviesController extends Controller
             $movie->Types()->detach();
         }
         $movie->delete();
-        return redirect()->route('Movies.index')->with('deleteMovie', 'xóa thành công');
+        return redirect()->route('admin.movies.index')->with('deleteMovie', 'xóa thành công');
     }
 
     public function sort()

@@ -16,7 +16,7 @@
 
                 <!-- form -->
                 <div class="col-12">
-                    <form action="{{route("Movies.store")}}" method="POST" class="sign__form sign__form--add"
+                    <form action="{{route("admin.movies.store")}}" method="POST" class="sign__form sign__form--add"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="row">

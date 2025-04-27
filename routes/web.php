@@ -66,16 +66,16 @@ Route::middleware(["auth", "admin:admin"])->prefix("Dashboard")->name('Dashboard
     route::get('/', [DashboardController::class, 'index'])->name('index');
 });
 
-Route::middleware(["auth", "admin:admin"])->prefix("Movies")->name("Movies.")->group(function () {
-    route::get('/', [MoviesController::class, 'index'])->name('index');
-    route::get('/create', [MoviesController::class, 'create'])->name('create');
-    route::post('/store', [MoviesController::class, 'store'])->name('store');
-    route::get('/show/{MovieID}', [MoviesController::class, 'show'])->name('show');
-    route::delete('/{MovieID}', [MoviesController::class, 'destroy'])->name('destroy');
-    route::get('/edit/{MovieID}', [MoviesController::class, 'edit'])->name('edit');
-    route::put('/update/{MovieID}', [MoviesController::class, 'update'])->name('update');
-    route::get("/sort", [MoviesController::class, "sort"])->name("sort");
-    route::get("/search", [MoviesController::class, "search"])->name("search");
+Route::middleware(["auth", "admin:admin"])->prefix("admin")->name("admin.movies.")->group(function () {
+    route::get('/movies', [MoviesController::class, 'index'])->name('index');
+    route::get('movies/create', [MoviesController::class, 'create'])->name('create');
+    route::post('movies/store', [MoviesController::class, 'store'])->name('store');
+    route::get('movies/show/{MovieID}', [MoviesController::class, 'show'])->name('show');
+    route::delete('movies/{MovieID}', [MoviesController::class, 'destroy'])->name('destroy');
+    route::get('movies/edit/{MovieID}', [MoviesController::class, 'edit'])->name('edit');
+    route::put('movies/update/{MovieID}', [MoviesController::class, 'update'])->name('update');
+    route::get("movies/sort", [MoviesController::class, "sort"])->name("sort");
+    route::get("movies/search", [MoviesController::class, "search"])->name("search");
 });
 Route::middleware(["auth", "admin:admin"])->prefix("Actor")->name("Actor.")->group(function () {
     route::get("/", [ActorController::class, "index"])->name("index");

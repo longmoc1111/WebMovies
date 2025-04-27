@@ -16,7 +16,7 @@
 
             <!-- form -->
             <div class="col-12">
-                <form action="{{route("Movies.update", $Movie)}}" method="POST" class="sign__form sign__form--add" enctype="multipart/form-data">
+                <form action="{{route("admin.movies.update", $Movie)}}" method="POST" class="sign__form sign__form--add" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="row">

@@ -78,7 +78,7 @@
 					<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 						<div class="item">
 							<div class="item__cover">
-								<img src="{{$movie->MovieImage}}" alt="">
+								<img src="/assets/BackgroundMovie/{{$movie->MovieImage}}" alt="">
 								<a href="{{ route("Home.detail", $movie->MovieID) }}" class="item__play">
 									<i class="bi bi-play"></i>
 								</a>
