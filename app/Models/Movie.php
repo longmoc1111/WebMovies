@@ -17,7 +17,7 @@ class Movie extends Model
     public $fillable = ['MovieID','MovieName','MovieYear','MovieDescription','MovieEvaluate','MovieStatus','MovieImage','MovieLink','GenreID'];
 
     public function Countries(){
-        return $this->belongstomany(Country::class,'country_movies','MovieID','CountryID');  
+        return $this->belongsTomany(Country::class,'country_movies','MovieID','CountryID');  
     }
     public function Directors(){
         return $this->belongstomany(Director::class,'director_movies','MovieID','DirectorID');  

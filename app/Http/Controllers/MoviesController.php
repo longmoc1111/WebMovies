@@ -22,6 +22,7 @@ class MoviesController extends Controller
     public function index()
     {
         $movies = Movie::OrderBy("created_at", "DESC")->paginate(10);
+        $movie = Movie::with('countries')->first();
         return view('admin.movies.index', compact('movies'));
     }
 
@@ -133,24 +134,24 @@ class MoviesController extends Controller
         $movies->update($validate);
 
         $validateDataTypes = $request->get('TypeID');
-        if(isset($validateDataTypes)){
+        if (isset($validateDataTypes)) {
             $movies->Types()->sync($validateDataTypes);
         }
 
         $validateDataDirectors = $request->get('DirectorID');
-        if(isset($validateDataDirectors)){
+        if (isset($validateDataDirectors)) {
             $movies->Directors()->sync($validateDataDirectors);
         }
 
         $vailidateDataActors = $request->get('ActorID');
-        if(isset($vailidateDataActors)){
+        if (isset($vailidateDataActors)) {
             $movies->Actors()->sync($vailidateDataActors);
-        }   
+        }
         $validatedataCountries = $request->get('CountryID');
-        if(isset($validatedataCountries)){
+        if (isset($validatedataCountries)) {
             $movies->Countries()->sync($validatedataCountries);
         }
-        return redirect()->route('admin.movies.index')->with('editMovie','cập nhật thành công');
+        return redirect()->route('admin.movies.index')->with('editMovie', 'cập nhật thành công');
     }
 
 

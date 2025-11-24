@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\TestApiContronller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MoviesController;
 use App\http\Controllers\DashboardController;
@@ -97,4 +98,4 @@ Route::prefix("Profile")->name("Profile.")->group(function () {
 
 route::get("/mail",[MoviesController::class, "mail"]);
 
-// });
+Route::get('/testapi', [TestApiContronller::class, 'index']);
