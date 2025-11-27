@@ -1,12 +1,25 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axiosClient from "../../axios-client";
+import { Link } from "react-router-dom";
 
 export default function Moives() {
   const [movies, setMovies] = useState([]);
   const [errors, setErrors] = useState();
   const [loading, setLoading] = useState(false);
+ const initialized = useRef(false);
 
+ useEffect(() => {
+    if(initialized.current == false && window.SlimSelect){
+      new window.SlimSelect({
+        select: "#filter__sort",
+        setting: {
+          placeholderText:"lọc phim"
+        }
+      })
+      initialized.current = true
+    }
+ },[])
   useEffect(() => {
     getMovies();
   }, []);
@@ -41,9 +54,9 @@ export default function Moives() {
             <div className="main__title">
               <h2>phim</h2>
               <div className="main__title-wrap">
-                <a href="#" className="main__title-link main__title-link--wrap">
+                <Link to="/movies/create" className="main__title-link main__title-link--wrap">
                   Thêm mới
-                </a>
+                </Link>
                 {errors && (
                   <div className="alert alert-warning">
                     {Object.keys(errors).map((key) => (

@@ -8,6 +8,7 @@ import GustLayout from "./components/GustLayout";
 import Users from "./views/adminPages/userPages//Users";
 import UpdateUser from "./views/adminPages/userPages/Update";
 import Moives from "./views/adminPages/MoviesPage/Moives";
+import Create from "./views/adminPages/MoviesPage/Create";
 
 
 const router = createBrowserRouter([
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path:"/movies",
         element:<Moives/>
+      },
+      {
+        path:"/movies/create",
+        element:<Create/>
       }
     ],
   },

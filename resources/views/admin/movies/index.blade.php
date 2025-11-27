@@ -210,7 +210,7 @@
 @if(session("editMovie"))
 	<script>
 		iziToast.success({
-			message: "{{session("editMovie")}}",
+			message: '{{session("editMovie")}}',
 			position: "topRight"
 		})
 	</script>

@@ -8,6 +8,29 @@ import axiosClient from "../views/axios-client";
 export default function DefaultLayout() {
   const { user, token,setUser, setToken } = useStateContext();
 
+
+  useEffect(() => {
+  const headerBtn = document.querySelector('.header__btn');
+  const headerNav = document.querySelector('.sidebar');
+
+  function toggleHeaderMenu() {
+    headerBtn.classList.toggle('header__btn--active');
+    headerNav.classList.toggle('sidebar--active');
+  }
+
+  if (headerBtn) {
+    headerBtn.addEventListener('click', toggleHeaderMenu);
+  }
+
+  // Cleanup để tránh nhân đôi khi StrictMode render 2 lần
+  return () => {
+    if (headerBtn) {
+      headerBtn.removeEventListener('click', toggleHeaderMenu);
+    }
+  };
+}, []);
+
+
   if (!token) {
     return <Navigate to="/login" />;
   }

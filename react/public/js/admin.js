@@ -107,7 +107,7 @@
 	}
 	if (document.querySelector('#sign__type')) {
 		new SlimSelect({
-			select: '#sign__type',
+			select: '#selectjs__types',
 			settings: {
 				placeholderText: 'Chọn thể loại',
 			}
@@ -115,7 +115,7 @@
 	}
 
 
-	if (document.querySelector('#sign__country')) {
+	if (document.querySelector('#selectjs__country')) {
 		new SlimSelect({
 			select: '#sign__country',
 			settings: {

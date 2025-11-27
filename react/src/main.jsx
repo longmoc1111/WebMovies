@@ -7,11 +7,11 @@ import { ContexProvider } from "./contexts/ContextProvider.jsx";
 import { MoviesProvider } from "./contexts/MovieContextProvider.jsx";
 
 createRoot(document.getElementById("root1")).render(
-  <StrictMode>
+  <StrictMode> 
     <ContexProvider>
       <MoviesProvider>
         <RouterProvider router={router} />
       </MoviesProvider>
     </ContexProvider>
-  </StrictMode>
+   </StrictMode>
 );

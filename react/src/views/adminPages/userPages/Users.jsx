@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import axiosClient from "../../axios-client";
-import { Link,useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Users() {
   const nameRef = useRef();
@@ -13,8 +13,21 @@ export default function Users() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(null);
 
-  const location = useLocation()
-  const hasShowToast = useRef(false)
+  const location = useLocation();
+  const hasShowToast = useRef(false);
+  const initialized = useRef(false);
+
+  useEffect(() =>{
+    if(initialized.current == false &&  window.SlimSelect){
+      new window.SlimSelect({
+        select: "#filter__sort",
+        settings: {
+          placeholderText: "Lọc người dùng"
+        }
+      })
+      initialized.current = true
+    }
+  },[])
   useEffect(() => {
     getUsers();
   }, []);
@@ -72,17 +85,17 @@ export default function Users() {
         }
       });
   };
-  useEffect(()=> {
-console.log(hasShowToast)
-    if(!hasShowToast.current && location.state?.message){
-      hasShowToast.current = true
+  useEffect(() => {
+    console.log(hasShowToast);
+    if (!hasShowToast.current && location.state?.message) {
+      hasShowToast.current = true;
       iziToast.success({
-        message:location.state.message,
-        position:"topRight"
-      })
+        message: location.state.message,
+        position: "topRight",
+      });
     }
-    window.history.replaceState({}, document.title)
-  },[])
+    window.history.replaceState({}, document.title);
+  }, []);
 
   return (
     <main className="main">
