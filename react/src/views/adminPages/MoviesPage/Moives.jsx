@@ -1,13 +1,15 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import axiosClient from "../../axios-client";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Moives() {
   const [movies, setMovies] = useState([]);
   const [errors, setErrors] = useState();
   const [loading, setLoading] = useState(false);
  const initialized = useRef(false);
+ const location = useLocation()
+ const hasShowToast = useRef(false)
 
  useEffect(() => {
     if(initialized.current == false && window.SlimSelect){
@@ -43,6 +45,16 @@ export default function Moives() {
         }
       });
   };
+  useEffect(() => {
+    if(!hasShowToast.current && location.state?.message){
+        hasShowToast.current = true
+        iziToast.success({
+          message:location.state.message,
+          possition:"topRight"
+        })
+    }
+      window.history.replaceState({}, document.title);
+  },[])
   console.log(axiosClient.defaults.baseURL);
   return (
     // <!-- main content -->

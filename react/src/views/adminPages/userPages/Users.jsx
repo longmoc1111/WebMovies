@@ -86,7 +86,6 @@ export default function Users() {
       });
   };
   useEffect(() => {
-    console.log(hasShowToast);
     if (!hasShowToast.current && location.state?.message) {
       hasShowToast.current = true;
       iziToast.success({
