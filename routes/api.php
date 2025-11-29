@@ -13,6 +13,7 @@ Route::middleware('auth:sanctum')->group(function(){
     });
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get("/movies/create-data", [MovieController::class, "createData"]);
+    Route::get("/movies/update-data",[MovieController::class, "updateData"]);
     Route::apiResource('users', UserController::class);
     Route::apiResource('/movies',MovieController::class);
 }); 

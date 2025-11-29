@@ -7,27 +7,27 @@ export default function Moives() {
   const [movies, setMovies] = useState([]);
   const [errors, setErrors] = useState();
   const [loading, setLoading] = useState(false);
- const initialized = useRef(false);
- const location = useLocation()
- const hasShowToast = useRef(false)
+  const initialized = useRef(false);
+  const location = useLocation();
+  const hasShowToast = useRef(false);
 
- useEffect(() => {
-    if(initialized.current == false && window.SlimSelect){
+  useEffect(() => {
+    if (initialized.current == false && window.SlimSelect) {
       new window.SlimSelect({
         select: "#filter__sort",
         setting: {
-          placeholderText:"lọc phim"
-        }
-      })
-      initialized.current = true
+          placeholderText: "lọc phim",
+        },
+      });
+      initialized.current = true;
     }
- },[])
+  }, []);
   useEffect(() => {
     getMovies();
   }, []);
 
   const getMovies = () => {
-    setLoading(true)
+    setLoading(true);
     axiosClient
       .get("/movies")
       .then(({ data }) => {
@@ -46,15 +46,15 @@ export default function Moives() {
       });
   };
   useEffect(() => {
-    if(!hasShowToast.current && location.state?.message){
-        hasShowToast.current = true
-        iziToast.success({
-          message:location.state.message,
-          possition:"topRight"
-        })
+    if (!hasShowToast.current && location.state?.message) {
+      hasShowToast.current = true;
+      iziToast.success({
+        message: location.state.message,
+        possition: "topRight",
+      });
     }
-      window.history.replaceState({}, document.title);
-  },[])
+    window.history.replaceState({}, document.title);
+  }, []);
   console.log(axiosClient.defaults.baseURL);
   return (
     // <!-- main content -->
@@ -66,7 +66,10 @@ export default function Moives() {
             <div className="main__title">
               <h2>phim</h2>
               <div className="main__title-wrap">
-                <Link to="/movies/create" className="main__title-link main__title-link--wrap">
+                <Link
+                  to="/movies/create"
+                  className="main__title-link main__title-link--wrap"
+                >
                   Thêm mới
                 </Link>
                 {errors && (
@@ -164,7 +167,9 @@ export default function Moives() {
                           </div>
                         </td>
                         <td>
-                          <div className="catalog__text">{m.Genres}</div>
+                          <div className="catalog__text">
+                            {m.Genres.GenreName}
+                          </div>
                         </td>
                         <td>
                           <div className="catalog__text">
@@ -189,12 +194,12 @@ export default function Moives() {
                             >
                               <i className="bi bi-eye"></i>
                             </a>
-                            <a
-                              href="#"
+                            <Link
+                              to={`update/${m.MovieID}`}
                               className="catalog__btn catalog__btn--edit"
                             >
                               <i className="bi bi-pencil-square"></i>
-                            </a>
+                            </Link>
                             <button
                               type="button"
                               data-bs-toggle="modal"

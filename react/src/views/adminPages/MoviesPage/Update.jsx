@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
-import axiosClient from "../../axios-client";
-import Select from "react-select";
+import React, { useEffect, useState } from "react";
 import { customStyles } from "../../../../public/js/selectReact";
-import { useNavigate } from "react-router-dom";
-export default function Create() {
-  const initialized = useRef(false);
-  const [actors, setActors] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [directors, setDirectors] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [types, setTypes] = useState([]);
+import Select from "react-select";
+import axios from "axios";
+import axiosClient from "../../axios-client";
+import { useParams } from "react-router-dom";
+
+export default function Update() {
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState(null);
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const [directors, setDirectors] = useState([]);
+  const [actors, setActors] = useState([]);
+  const [types, setTypes] = useState([]);
+  const [genres, SetGenres] = useState([]);
+  const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
     MovieName: "",
     MovieDescription: "",
@@ -27,55 +27,58 @@ export default function Create() {
     TypeID: [],
     MovieImage: null,
   });
-
-  useEffect(() => {
-    setLoading(true);
-    axiosClient
-      .get("/movies/create-data")
-      .then(({ data }) => {
-        setActors(data.actors);
-        setDirectors(data.directors);
-        setGenres(data.genres);
-        setCountries(data.countries);
-        setTypes(data.types);
-        console.log(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-      });
-  }, []);
-  const GenreOptions = genres.map((g) => ({
-    value: g.GenreID,
-    label: g.GenreName,
-  }));
-  const statusOptions = [
+  const StatusOption = [
     { value: "Full HD", label: "Full HD" },
     { value: "Bản cam", label: "Bản cam" },
     { value: "Sắp ra mắt", label: "Sắp ra mắt" },
   ];
 
-  const actorOptions = actors.map((a) => ({
-    value: a.ActorID,
-    label: a.ActorName,
-  }));
+  useEffect(() => {
+    setLoading(true);
+    axiosClient
+      .get(`/movies/${id}`)
+      .then(({ data }) => {
+        console.log(data);
 
-  const directorOptions = directors.map((d) => ({
-    value: d.DirectorID,
-    label: d.DirectorName,
-  }));
+        setDirectors(
+          data.directors.map((d) => ({
+            value: d.DirectorID,
+            label: d.DirectorName,
+          }))
+        );
+        setActors(
+          data.actors.map((a) => ({
+            value: a.ActorID,
+            label: a.ActorName,
+          }))
+        );
+        SetGenres(
+          data.genres.map((g) => ({
+            value: g.GenreID,
+            label: g.GenreName,
+          }))
+        );
+        setTypes(
+          data.types.map((t) => ({
+            value: t.TypeID,
+            label: t.TypeName,
+          }))
+        );
+        setCountries(
+          data.countries.map((c) => ({
+            value: c.CountryID,
+            label: c.CountryName,
+          }))
+        );
+        setFormData(data.movies);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-  const countryOptions = countries.map((c) => ({
-    value: c.CountryID,
-    label: c.CountryName,
-  }));
-
-  const typeOptions = types.map((t) => ({
-    value: t.TypeID,
-    label: t.TypeName,
-  }));
-
-  const onCreate = async (ev) => {
+  const onUpdate = (ev) => {
     ev.preventDefault();
     const fd = new FormData();
     fd.append("MovieName", formData.MovieName);
@@ -89,34 +92,24 @@ export default function Create() {
     formData.DirectorID.forEach((id) => fd.append("DirectorID[]", id));
     formData.CountryID.forEach((id) => fd.append("CountryID[]", id));
     formData.TypeID.forEach((id) => fd.append("TypeID[]", id));
-    // File
-    fd.append("MovieImage", formData.MovieImage);
 
+    fd.append("MovieImage", formData.MovieImage);
+   
     axiosClient
-      .post("/movies", fd)
+      .put(`/movies/${formData.MovieID}`, fd)
       .then((data) => {
-        navigate('/movies', {
-          state: {
-            message:"Thêm mới bộ phim thành công!"
-          }
-        })
+        console.log(data);
       })
       .catch((err) => {
-        const response = err.response;
-        if (response && response.status === 422) {
-          if (response.data.errors) {
-            setErrors(response.data.errors);
-          } else {
-            setErrors({
-              email: [response.data.message],
-            });
-          }
-        }
+        console.log(err);
       });
   };
 
+  console.log(directors);
+
+  console.log("fm dáta",formData);
+
   return (
-    // <!-- main content -->
     <main className="main">
       <div className="container-fluid">
         <div className="row">
@@ -126,7 +119,7 @@ export default function Create() {
               <h2>THÊM PHIM MỚI</h2>
             </div>
           </div>
-          {errors && (
+          {/* {errors && (
             <div className="alert alert-warning">
               {Object.keys(errors).map((key) => (
                 <p style={{ margin: 0 }} key={key}>
@@ -134,7 +127,7 @@ export default function Create() {
                 </p>
               ))}
             </div>
-          )}
+          )} */}
           {loading && (
             <div
               id="loading-test-1"
@@ -152,7 +145,7 @@ export default function Create() {
           {!loading && (
             <div className="col-12">
               <form
-                onSubmit={onCreate}
+                onSubmit={onUpdate}
                 method="POST"
                 className="sign__form sign__form--add"
                 encType="multipart/form-data"
@@ -168,6 +161,7 @@ export default function Create() {
                             className="sign__input"
                             required
                             placeholder="Tên phim"
+                            value={formData.MovieName}
                             onChange={(e) =>
                               setFormData({
                                 ...formData,
@@ -185,6 +179,7 @@ export default function Create() {
                             id="text"
                             className="sign__textarea"
                             placeholder="Mô tả"
+                            value={formData.MovieDescription}
                             onChange={(e) =>
                               setFormData({
                                 ...formData,
@@ -231,10 +226,11 @@ export default function Create() {
                             name="MovieYear"
                             type="date"
                             className="sign__input"
-                            onChange={(prev) =>
+                            value={formData.MovieYear}
+                            onChange={(e) =>
                               setFormData({
                                 ...formData,
-                                MovieYear: prev.target.value,
+                                MovieYear: e.target.value,
                               })
                             }
                           />
@@ -248,9 +244,9 @@ export default function Create() {
                       <div className="col-12 col-md-6">
                         <div className="sign__group">
                           <Select
-                            options={statusOptions}
-                            value={statusOptions.find(
-                              (opt) => opt.value === statusOptions.status
+                            options={StatusOption}
+                            value={StatusOption.find(
+                              (opt) => opt.value === formData.MovieStatus
                             )}
                             onChange={(selected) => {
                               setFormData((prev) => ({
@@ -274,6 +270,7 @@ export default function Create() {
                             max="10.0"
                             step="0.1"
                             placeholder="đánh giá"
+                            value={formData.MovieEvaluate}
                             onChange={(e) =>
                               setFormData({
                                 ...formData,
@@ -287,16 +284,16 @@ export default function Create() {
                       <div className="col-12">
                         <div className="sign__group">
                           <Select
-                            options={GenreOptions}
-                            value={GenreOptions.find(
-                              (opt) => opt.value === formData.genresID
+                            options={genres}
+                            value={genres.find(
+                              (opt) => opt.value === formData.GenreID
                             )}
-                            onChange={(selected) => {
+                            onChange={(selected) =>
                               setFormData((prev) => ({
                                 ...prev,
                                 GenreID: selected.value,
-                              }));
-                            }}
+                              }))
+                            }
                             styles={customStyles}
                             placeholder="Loại phim"
                           />
@@ -306,19 +303,19 @@ export default function Create() {
                       <div className="col-12">
                         <div className="sign__group">
                           <Select
-                            options={typeOptions}
-                            value={typeOptions.filter((opt) =>
+                            options={types}
+                            value={types.filter((opt) =>
                               formData.TypeID.includes(opt.value)
                             )}
-                            placeholder={"Thể loại"}
-                            onChange={(selected) => {
+                            onChange={(selected) =>
                               setFormData((prev) => ({
                                 ...prev,
                                 TypeID: selected
                                   ? selected.map((item) => item.value)
                                   : [],
-                              }));
-                            }}
+                              }))
+                            }
+                            placeholder={"Thể loại"}
                             styles={customStyles}
                             isMulti
                           />
@@ -328,18 +325,18 @@ export default function Create() {
                       <div className="col-12">
                         <div className="sign__group">
                           <Select
-                            options={countryOptions}
-                            value={countryOptions.filter((opt) =>
+                            options={countries}
+                            value={countries.filter((opt) =>
                               formData.CountryID.includes(opt.value)
                             )}
-                            onChange={(selected) => {
+                            onChange={(selected) =>
                               setFormData((prev) => ({
                                 ...prev,
                                 CountryID: selected
                                   ? selected.map((item) => item.value)
                                   : [],
-                              }));
-                            }}
+                              }))
+                            }
                             placeholder={"Quốc gia"}
                             styles={customStyles}
                             isMulti
@@ -352,18 +349,18 @@ export default function Create() {
                   <div className="col-12 col-md-6 col-xl-4">
                     <div className="sign__group">
                       <Select
-                        options={directorOptions}
-                        value={directorOptions.filter((opt) =>
+                        options={directors}
+                        value={directors.filter((opt) =>
                           formData.DirectorID.includes(opt.value)
                         )}
-                        onChange={(selected) => {
+                        onChange={(selected) =>
                           setFormData((prev) => ({
                             ...prev,
                             DirectorID: selected
                               ? selected.map((item) => item.value)
                               : [],
-                          }));
-                        }}
+                          }))
+                        }
                         placeholder={"Tác giả"}
                         styles={customStyles}
                         isMulti
@@ -373,18 +370,18 @@ export default function Create() {
                   <div className="col-12 col-md-6 col-xl-8">
                     <div className="sign__group">
                       <Select
-                        options={actorOptions}
-                        value={actorOptions.filter((opt) =>
+                        options={actors}
+                        value={actors.filter((opt) =>
                           formData.ActorID.includes(opt.value)
                         )}
-                        onChange={(selected) => {
+                        onChange={(selected) =>
                           setFormData((prev) => ({
                             ...prev,
                             ActorID: selected
                               ? selected.map((item) => item.value)
                               : [],
-                          }));
-                        }}
+                          }))
+                        }
                         placeholder={"Diễn viên"}
                         styles={customStyles}
                         isMulti
@@ -400,10 +397,11 @@ export default function Create() {
                         className="sign__input"
                         required
                         placeholder="Link phim"
-                        onChange={(prev) =>
+                        value={formData.MovieLink}
+                        onChange={(e) =>
                           setFormData({
                             ...formData,
-                            MovieLink: prev.target.value,
+                            MovieLink: e.target.value,
                           })
                         }
                       />

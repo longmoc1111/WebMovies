@@ -17,19 +17,17 @@ class MovieResource extends JsonResource
         return [
             "MovieID" => $this->MovieID,
             "MovieName" => $this->MovieName,
-            "MovieYear" =>$this->MovieYear ,
-            "MovieDescription"=>$this->MovieDescription,
-            "MovieEvaluate"=>$this->MovieEvaluate,
-            "MovieStatus"=>$this->MovieStatus,
-            "MovieImage"=> $this->MovieImage,
-            "MovieLink"=>$this->MovieLink,
-            "Genres" => $this->Genres ? $this->Genres->GenreName : null,
-            "Countries" => $this->Countries ? $this->Countries->map(function($country){
-               return [
-                    "CountryName" => $country->CountryName
-               ];
-            }) : [],
-
+            "MovieYear" => $this->MovieYear,
+            "MovieDescription" => $this->MovieDescription,
+            "MovieEvaluate" => $this->MovieEvaluate,
+            "MovieStatus" => $this->MovieStatus,
+            "MovieImage" => $this->MovieImage,
+            "MovieLink" => $this->MovieLink,
+            "GenreID" => $this->Genres ? $this->Genres->GenreID : null,
+            "CountryID" => $this->Countries ? $this->Countries->pluck("CountryID") : [],
+            "ActorID" => $this->Actors ? $this->Actors->pluck("ActorID"): [],
+            "DirectorID" => $this->Directors ? $this->Directors->pluck("DirectorID") : [],
+            "TypeID" => $this->Types ? $this->Types->pluck("TypeID") : [],
         ];
     }
 }

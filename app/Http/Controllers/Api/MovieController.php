@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MovieRequest\StoreMovieRequest;
+use App\Http\Requests\MovieRequest\UpdateMovieRequest;
 use App\Http\Resources\MovieResource;
 use App\Models\Actor;
 use App\Models\Country;
@@ -63,6 +64,23 @@ class MovieController extends Controller
             $movie->Countries()->attach($data["CountryID"]);
         }
 
+        return response($data);
+    } 
+    public function updateData(){
+
+    }
+    public function show(Movie $movie){
+        return [
+            "movies" => new MovieResource($movie),
+            "genres" => Genre::all(),
+            "countries" => Country::all(),
+            "types" => Type::all(),
+            "actors" => Actor::all(),
+            "directors" => Director::all()
+        ];
+    }
+    public function update(UpdateMovieRequest $request){
+        $data = $request->validated();
         return response($data);
     }
 }

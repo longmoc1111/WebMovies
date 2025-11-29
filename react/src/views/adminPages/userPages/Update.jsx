@@ -22,7 +22,6 @@ export default function UpdateUser() {
       .then(({ data }) => {
         setLoading(false);
         setUser(data);
-              console.log(user)
       })
       .catch((err) => {
         const response = err.response;

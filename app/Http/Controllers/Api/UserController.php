@@ -18,7 +18,7 @@ class UserController extends Controller
             User::orderBy("created_at", "asc")->paginate(10)
         );
 
-    }
+    } 
     public function store(StoreUserRequest $request)
     {
         $data = $request->validated();
