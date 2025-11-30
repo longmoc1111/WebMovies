@@ -168,7 +168,7 @@ export default function Moives() {
                         </td>
                         <td>
                           <div className="catalog__text">
-                            {m.Genres.GenreName}
+                            {/* {m.Genres.GenreName} */}
                           </div>
                         </td>
                         <td>

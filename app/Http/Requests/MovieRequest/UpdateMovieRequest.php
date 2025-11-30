@@ -23,16 +23,17 @@ class UpdateMovieRequest extends FormRequest
     {
         return [
             'MovieName' => 'required',
-            // 'MovieYear' => 'required',
-            // 'MovieDescription' => 'required',
-            // 'MovieEvaluate' => 'required',
-            // 'MovieStatus' => 'required|min:0|max:10',
-            // 'MovieLink' => 'required|url',
-            // 'GenreID' => 'required',
-            // "ActorID" => "required",
-            // "DirectorID" => "required",
-            // "CountryID" => "required",
-            // "TypeID" => "required"
+            'MovieYear' => 'required',
+            'MovieDescription' => 'required',
+            'MovieEvaluate' => 'required',
+            'MovieStatus' => 'required|min:0|max:10',
+            'MovieLink' => 'required|url',
+            'GenreID' => 'required',
+            "ActorID" => "required",
+            "DirectorID" => "required",
+            "CountryID" => "required",
+            "TypeID" => "required",
+             'MovieImage' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:2048',
         ];
     }
 }

@@ -3,7 +3,7 @@ import { customStyles } from "../../../../public/js/selectReact";
 import Select from "react-select";
 import axios from "axios";
 import axiosClient from "../../axios-client";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function Update() {
   const [loading, setLoading] = useState(false);
@@ -13,6 +13,7 @@ export default function Update() {
   const [types, setTypes] = useState([]);
   const [genres, SetGenres] = useState([]);
   const [countries, setCountries] = useState([]);
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     MovieName: "",
     MovieDescription: "",
@@ -93,12 +94,21 @@ export default function Update() {
     formData.CountryID.forEach((id) => fd.append("CountryID[]", id));
     formData.TypeID.forEach((id) => fd.append("TypeID[]", id));
 
-    fd.append("MovieImage", formData.MovieImage);
-   
+    fd.append("_method", "PUT");
+    if(formData.MovieImage instanceof File){
+      fd.append("MovieImage", formData.MovieImage)
+    }
+
     axiosClient
-      .put(`/movies/${formData.MovieID}`, fd)
-      .then((data) => {
-        console.log(data);
+      .post(`/movies/${formData.MovieID}`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then(({data}) => {
+        navigate('/movies', {
+          state: {
+            message: data.message
+          }
+        })
       })
       .catch((err) => {
         console.log(err);
@@ -107,7 +117,7 @@ export default function Update() {
 
   console.log(directors);
 
-  console.log("fm dáta",formData);
+  console.log("fm dáta", formData);
 
   return (
     <main className="main">
