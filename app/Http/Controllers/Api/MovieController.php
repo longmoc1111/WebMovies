@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MovieRequest\StoreMovieRequest;
 use App\Http\Requests\MovieRequest\UpdateMovieRequest;
 use App\Http\Resources\MovieResource;
+use App\Http\Resources\MovieViewResource;
 use App\Models\Actor;
 use App\Models\Country;
 use App\Models\Director;
@@ -21,7 +22,7 @@ class MovieController extends Controller
 {
     public function index()
     {
-        return MovieResource::collection(Movie::orderBy("created_at", "ASC")->with(["Genres", "Countries"])->paginate(40));
+        return MovieViewResource::collection(Movie::orderBy("created_at", "ASC")->with(["Genres", "Countries"])->paginate(5));
     }
     public function createData()
     {
@@ -125,6 +126,16 @@ class MovieController extends Controller
         }
         return response()->json([
             "message" => "Cập nhật thành công!",
+        ]);
+    }
+    public function destroy(Movie $movie){
+        $movie->Actors()->detach();
+        $movie->Directors()->detach();
+        $movie->Countries()->detach();
+        $movie->Types()->detach();
+        $movie->delete();
+        return response()->json([
+            "message" => "Xóa thành công!",
         ]);
     }
 }

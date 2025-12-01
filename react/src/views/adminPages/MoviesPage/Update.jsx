@@ -14,6 +14,7 @@ export default function Update() {
   const [genres, SetGenres] = useState([]);
   const [countries, setCountries] = useState([]);
   const navigate = useNavigate()
+  const [errors, setErrors] = useState();
   const [formData, setFormData] = useState({
     MovieName: "",
     MovieDescription: "",
@@ -111,7 +112,12 @@ export default function Update() {
         })
       })
       .catch((err) => {
-        console.log(err);
+        const response = err.response
+        if(response && response.status === 422){
+          if(response.data.errors){
+            setErrors(response.data.errors)
+          }
+        }
       });
   };
 
@@ -129,7 +135,7 @@ export default function Update() {
               <h2>THÊM PHIM MỚI</h2>
             </div>
           </div>
-          {/* {errors && (
+          {errors && (
             <div className="alert alert-warning">
               {Object.keys(errors).map((key) => (
                 <p style={{ margin: 0 }} key={key}>
@@ -137,7 +143,7 @@ export default function Update() {
                 </p>
               ))}
             </div>
-          )} */}
+          )}
           {loading && (
             <div
               id="loading-test-1"
@@ -160,7 +166,7 @@ export default function Update() {
                 className="sign__form sign__form--add"
                 encType="multipart/form-data"
               >
-                <div className="row">
+                <div className="row mb-4">
                   <div className="col-12 col-xl-7">
                     <div className="row">
                       <div className="col-12">
@@ -420,7 +426,7 @@ export default function Update() {
                 </div>
                 <div className="col-12">
                   <button type="submit" className="sign__btn sign__btn--small">
-                    thêm
+                    Lưu
                   </button>
                 </div>
                 {/* </div> */}

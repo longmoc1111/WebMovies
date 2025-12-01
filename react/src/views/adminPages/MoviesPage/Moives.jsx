@@ -10,6 +10,8 @@ export default function Moives() {
   const initialized = useRef(false);
   const location = useLocation();
   const hasShowToast = useRef(false);
+  const [page, setPage] = useState(1);
+  const [link, setLink] = useState({});
 
   useEffect(() => {
     if (initialized.current == false && window.SlimSelect) {
@@ -29,9 +31,11 @@ export default function Moives() {
   const getMovies = () => {
     setLoading(true);
     axiosClient
-      .get("/movies")
+      .get(`/movies?page=${page}`)
       .then(({ data }) => {
         setMovies(data.data);
+        setLink(data.links);
+
         setLoading(false);
       })
       .catch((err) => {
@@ -45,17 +49,36 @@ export default function Moives() {
         }
       });
   };
+  console.log("Link ", link);
   useEffect(() => {
     if (!hasShowToast.current && location.state?.message) {
       hasShowToast.current = true;
       iziToast.success({
         message: location.state.message,
-        possition: "topRight",
+        position: "topRight",
       });
     }
     window.history.replaceState({}, document.title);
   }, []);
-  console.log(axiosClient.defaults.baseURL);
+
+  const onDelete = (ev, id) => {
+    ev.preventDefault();
+    setLoading(false);
+    axiosClient
+      .delete(`/movies/${id}`)
+      .then(({ data }) => {
+        iziToast.success({
+          message: data.message,
+          position: "topRight",
+        });
+        getMovies();
+        setLoading(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  console.log(movies);
   return (
     // <!-- main content -->
     <main className="main">
@@ -168,13 +191,15 @@ export default function Moives() {
                         </td>
                         <td>
                           <div className="catalog__text">
-                            {/* {m.Genres.GenreName} */}
+                            {m.Types && m.Types.length
+                              ? m.Types.join(", ")
+                              : "Đang cập nhật"}
                           </div>
                         </td>
                         <td>
                           <div className="catalog__text">
                             {m.Countries && m.Countries.length
-                              ? m.Countries.map((c) => c.CountryName).join(", ")
+                              ? m.Countries.join(", ")
                               : "Đang cập nhật"}
                           </div>
                         </td>
@@ -204,7 +229,7 @@ export default function Moives() {
                               type="button"
                               data-bs-toggle="modal"
                               className="catalog__btn catalog__btn--delete"
-                              data-bs-target="#{{$movie->MovieID}}"
+                              data-bs-target={`#modal-delete_${m.MovieID}`}
                             >
                               <i className="bi bi-trash"></i>
                             </button>
@@ -218,8 +243,111 @@ export default function Moives() {
             </div>
           </div>
           {/* <!-- end items --> */}
+          {/* <!-- paginator --> */}
+          { !loading && <div class="col-12">
+            <div class="main__paginator">
+              {/* <!-- amount --> */}
+              <span class="main__paginator-pages">10 of 169</span>
+              {/* <!-- end amount --> */}
+
+              <ul class="main__paginator-list">
+                <li>
+                  <a href="#">
+                    <i class="ti ti-chevron-left"></i>
+                    <span>Prev</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#">
+                    <span>Next</span>
+                    <i class="ti ti-chevron-right"></i>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="paginator">
+                <li class="paginator__item paginator__item--prev">
+                  <a href="#">
+                    <i class="bi bi-chevron-left"></i>
+                  </a>
+                </li>
+                <li class="paginator__item">
+                  <a href="#">1</a>
+                </li>
+                <li class="paginator__item paginator__item--active">
+                  <a href="#">2</a>
+                </li>
+                <li class="paginator__item">
+                  <a href="#">3</a>
+                </li>
+                <li class="paginator__item">
+                  <a href="#">4</a>
+                </li>
+                <li class="paginator__item">
+                  <span>...</span>
+                </li>
+                <li class="paginator__item">
+                  <a href="#">29</a>
+                </li>
+                <li class="paginator__item">
+                  <a href="#">30</a>
+                </li>
+                <li class="paginator__item paginator__item--next">
+                  <a href="#">
+                    <i class="bi bi-chevron-right"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>}
+          {/* <!-- end paginator -->   */}
         </div>
       </div>
+      {movies.map((m) => (
+        <div
+          key={m.MovieID}
+          className="modal fade"
+          id={`modal-delete_${m.MovieID}`}
+          tabIndex="-1"
+          aria-labelledby="modal-delete"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal__content">
+                <form
+                  onSubmit={(ev) => onDelete(ev, m.MovieID)}
+                  className="modal__form"
+                >
+                  <h4 className="modal__title">Xoá người dùng</h4>
+
+                  <p className="modal__text">
+                    Bạn có chắc muốn xóa bộ phim này ?
+                  </p>
+
+                  <div className="modal__btns">
+                    <button
+                      className="modal__btn modal__btn--apply"
+                      type="submit"
+                      data-bs-dismiss="modal"
+                    >
+                      <span>Xóa</span>
+                    </button>
+
+                    <button
+                      className="modal__btn modal__btn--dismiss"
+                      type="button"
+                      data-bs-dismiss="modal"
+                    >
+                      <span>Quay lại</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
     </main>
   );
 }
