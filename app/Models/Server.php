@@ -9,7 +9,7 @@ class Server extends Model
 {
     use HasFactory;
     protected $primaryKey = 'ServerID';
-    public $fillable = ["ServerID", "ServerName", "Link_embed","Link_m3U8", "EpisodeID"];
+    public $fillable = ["ServerID", "ServerName", "Link_embed","Link_m3u8", "EpisodeID"];
 
     public function ServerEpisode(){
         return $this->belongsTo(Episode::class, "EpisodeID", "EpisodeID");

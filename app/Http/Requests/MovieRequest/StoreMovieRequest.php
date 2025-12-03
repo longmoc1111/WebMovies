@@ -33,7 +33,8 @@ class StoreMovieRequest extends FormRequest
             "ActorID" => "required",
             "DirectorID" => "required",
             "CountryID" => "required",
-            "TypeID" => "required"
+            "TypeID" => "required",
+            "Episodes" => "required"
             
         ];
     }

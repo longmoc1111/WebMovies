@@ -10,8 +10,10 @@ use App\Http\Resources\MovieViewResource;
 use App\Models\Actor;
 use App\Models\Country;
 use App\Models\Director;
+use App\Models\Episode;
 use App\Models\Genre;
 use App\Models\Movie;
+use App\Models\Server;
 use App\Models\Type;
 use App\Models\User;
 use Illuminate\Container\Attributes\Storage;
@@ -37,6 +39,7 @@ class MovieController extends Controller
     public function store(StoreMovieRequest $request)
     {
         $data = $request->validated();
+        $episodes = json_decode($data["Episodes"]);
         if ($data["MovieImage"]) {
             $file = $data["MovieImage"];
             $fileNameWithowEtx = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -67,8 +70,23 @@ class MovieController extends Controller
         if ($data["CountryID"]) {
             $movie->Countries()->attach($data["CountryID"]);
         }
+        foreach($episodes as $ep){
+                $episode = Episode::create([
+                    "EpisodeName" => $ep->EpisodeName,
+                    "MovieID" => $movie->MovieID
+                ]);
+                if($episode){
+                    $server = Server::create([
+                        "ServerName" => $ep->ServerName,
+                        "Link_m3u8" => $ep->Link_m3u8,
+                        "Link_embed" => $ep->Link_embed,
+                        "EpisodeID" => $episode->EpisodeID
+                    ]);
+                }
+             
+        }
 
-        return response($data);
+        return response($episodes);
     }
     public function updateData() {}
     public function show(Movie $movie)
