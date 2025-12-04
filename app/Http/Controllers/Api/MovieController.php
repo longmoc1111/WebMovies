@@ -24,7 +24,7 @@ class MovieController extends Controller
 {
     public function index()
     {
-        return MovieViewResource::collection(Movie::orderBy("created_at", "ASC")->with(["Genres", "Countries"])->paginate(5));
+        return MovieViewResource::collection(Movie::orderBy("created_at", "ASC")->with(["Genres", "Countries"])->paginate(50));
     }
     public function createData()
     {
@@ -40,7 +40,7 @@ class MovieController extends Controller
     {
         $data = $request->validated();
         $episodes = json_decode($data["Episodes"]);
-        if ($data["MovieImage"]) {
+        if ($request->hasFile("MovieImage")) {
             $file = $data["MovieImage"];
             $fileNameWithowEtx = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $fileNameExt = $file->getClientOriginalExtension();
@@ -57,6 +57,9 @@ class MovieController extends Controller
             'MovieLink' => $data['MovieLink'],
             'MovieImage' => $data['MovieImage'],
             'GenreID' => $data['GenreID'],
+            'MovieQuality' => $data['MovieQuality'],
+            'TotalEpisode' => $data['TotalEpisode'],
+
         ]);
         if ($data["DirectorID"]) {
             $movie->Directors()->attach($data["DirectorID"]);
@@ -70,20 +73,19 @@ class MovieController extends Controller
         if ($data["CountryID"]) {
             $movie->Countries()->attach($data["CountryID"]);
         }
-        foreach($episodes as $ep){
-                $episode = Episode::create([
-                    "EpisodeName" => $ep->EpisodeName,
-                    "MovieID" => $movie->MovieID
+        foreach ($episodes as $ep) {
+            $episode = Episode::create([
+                "EpisodeName" => $ep->EpisodeName,
+                "MovieID" => $movie->MovieID
+            ]);
+            if ($episode) {
+                $server = Server::create([
+                    "ServerName" => $ep->ServerName,
+                    "Link_m3u8" => $ep->Link_m3u8,
+                    "Link_embed" => $ep->Link_embed,
+                    "EpisodeID" => $episode->EpisodeID
                 ]);
-                if($episode){
-                    $server = Server::create([
-                        "ServerName" => $ep->ServerName,
-                        "Link_m3u8" => $ep->Link_m3u8,
-                        "Link_embed" => $ep->Link_embed,
-                        "EpisodeID" => $episode->EpisodeID
-                    ]);
-                }
-             
+            }
         }
 
         return response($episodes);
@@ -117,8 +119,8 @@ class MovieController extends Controller
             $newFileName = $fileNameWithoutExt . "_" . time() . "." . $fileNameExt;
             $file->move(storage_path("app/public/upload/image"), $newFileName);
             $data["MovieImage"] = $newFileName;
-        }else{
-             $data["MovieImage"] = $movie->MovieImage;
+        } else {
+            $data["MovieImage"] = $movie->MovieImage;
         }
         $movie->update([
             'MovieName' => $data['MovieName'],
@@ -130,27 +132,43 @@ class MovieController extends Controller
             'MovieImage' => $data['MovieImage'],
             'GenreID' => $data['GenreID'],
         ]);
-        if($data["DirectorID"]){
+        if ($data["DirectorID"]) {
             $movie->Directors()->sync($data["DirectorID"]);
         }
-        if($data["ActorID"]){
+        if ($data["ActorID"]) {
             $movie->Actors()->sync($data["ActorID"]);
         }
-        if($data["CountryID"]){
+        if ($data["CountryID"]) {
             $movie->Countries()->sync($data["CountryID"]);
         }
-        if($data["TypeID"]){
+        if ($data["TypeID"]) {
             $movie->Types()->sync($data["TypeID"]);
         }
         return response()->json([
             "message" => "Cập nhật thành công!",
         ]);
     }
-    public function destroy(Movie $movie){
+    public function destroy(Movie $movie)
+    {
+        if (!$movie) {
+            return;
+        }
         $movie->Actors()->detach();
         $movie->Directors()->detach();
         $movie->Countries()->detach();
         $movie->Types()->detach();
+        if ($movie->MovieImage != null) {
+            $fileName = storage_path("app/public/upload/image/" . $movie->MovieImage);
+            if (File::exists($fileName)) {
+                File::delete($fileName);
+            }
+        }
+        $episodes = $movie->Episodes;
+        foreach($episodes as $ep){
+            $ep->Servers()->delete();
+            $ep->delete();
+        }
+        
         $movie->delete();
         return response()->json([
             "message" => "Xóa thành công!",

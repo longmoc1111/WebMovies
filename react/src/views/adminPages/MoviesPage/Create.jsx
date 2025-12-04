@@ -52,6 +52,8 @@ export default function Create() {
     MovieLink: "",
     MovieYear: "",
     GenreID: "",
+    MovieQuality: "",
+    TotalEpisode: "",
     ActorID: [],
     DirectorID: [],
     CountryID: [],
@@ -81,9 +83,12 @@ export default function Create() {
     label: g.GenreName,
   }));
   const statusOptions = [
-    { value: "Full HD", label: "Full HD" },
-    { value: "Bản cam", label: "Bản cam" },
     { value: "Sắp ra mắt", label: "Sắp ra mắt" },
+    { value: "Đã hoàn thành", label: "Đã hoàn thành" },
+  ];
+  const QualityOption = [
+    { value: "Bản cam", label: "Bản cam" },
+    { value: "Full HD", label: "Full HD" },
   ];
   const serverOptions = [
     { value: "Thuyết minh", label: "Thuyết minh" },
@@ -120,11 +125,13 @@ export default function Create() {
     fd.append("MovieLink", formData.MovieLink);
     fd.append("MovieYear", formData.MovieYear);
     fd.append("GenreID", formData.GenreID);
+    fd.append("MovieQuality", formData.MovieQuality);
+    fd.append("TotalEpisode", formData.TotalEpisode);
     formData.ActorID.forEach((id) => fd.append("ActorID[]", id));
     formData.DirectorID.forEach((id) => fd.append("DirectorID[]", id));
     formData.CountryID.forEach((id) => fd.append("CountryID[]", id));
     formData.TypeID.forEach((id) => fd.append("TypeID[]", id));
-    fd.append("Episodes", JSON.stringify(episodes))
+    fd.append("Episodes", JSON.stringify(episodes));
     // File
     fd.append("MovieImage", formData.MovieImage);
 
@@ -150,7 +157,7 @@ export default function Create() {
         }
       });
   };
-  console.log(episodes)
+  console.log(formData);
   return (
     // <!-- main content -->
     <main className="main">
@@ -231,37 +238,7 @@ export default function Create() {
                           ></textarea>
                         </div>
                       </div>
-                      <div className="col-12 col-md-6">
-                        <div className="collapse show">
-                          <div className="sign__video position-relative">
-                            <label
-                              id="movie1"
-                              htmlFor="sign__video-upload"
-                              className="position-relative d-inline-flex align-items-center justify-content-between w-100"
-                              style={{ height: "46px", paddingRight: "30px" }}
-                            >
-                              Ảnh nền phim
-                              <i
-                                className="bi bi-image"
-                                style={{ fontSize: "20px" }}
-                              ></i>
-                            </label>
-                            <input
-                              data-name="#movie1"
-                              id="sign__video-upload"
-                              name="MovieImage"
-                              className="sign__video-upload"
-                              type="file"
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  MovieImage: e.target.files[0],
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
+
                       <div className="col-12 col-md-6">
                         <div className="sign__group">
                           <input
@@ -278,11 +255,6 @@ export default function Create() {
                           />
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="col-12 col-xl-5">
-                    <div className="row">
                       <div className="col-12 col-md-6">
                         <div className="sign__group">
                           <Select
@@ -299,6 +271,27 @@ export default function Create() {
                             placeholder={"Trạng thái"}
                             styles={customStyles}
                             required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-12 col-xl-5">
+                    <div className="row">
+                      <div className="col-12 col-md-6">
+                        <div className="sign__group">
+                          <input
+                            name="MovieYear"
+                            type="text"
+                            className="sign__input"
+                            placeholder="Số tập"
+                            required
+                            onChange={(prev) =>
+                              setFormData({
+                                ...formData,
+                                TotalEpisode: prev.target.value,
+                              })
+                            }
                           />
                         </div>
                       </div>
@@ -323,7 +316,26 @@ export default function Create() {
                         </div>
                       </div>
 
-                      <div className="col-12">
+                      <div className="col-12 col-md-6">
+                        <div className="sign__group">
+                          <Select
+                            options={QualityOption}
+                            value={QualityOption.find(
+                              (opt) => opt.value === formData.MovieQuality
+                            )}
+                            onChange={(selected) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                MovieQuality: selected.value,
+                              }));
+                            }}
+                            styles={customStyles}
+                            placeholder="Chất lượng"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="col-12 col-md-6">
                         <div className="sign__group">
                           <Select
                             options={GenreOptions}
@@ -390,8 +402,7 @@ export default function Create() {
                       </div>
                     </div>
                   </div>
-
-                  <div className="col-12 col-md-6 col-xl-4">
+                  <div className="col-12 col-md-6 col-xl-6">
                     <div className="sign__group">
                       <Select
                         options={directorOptions}
@@ -413,7 +424,7 @@ export default function Create() {
                       />
                     </div>
                   </div>
-                  <div className="col-12 col-md-6 col-xl-8">
+                  <div className="col-12 col-md-6 col-xl-6">
                     <div className="sign__group">
                       <Select
                         options={actorOptions}
@@ -436,6 +447,37 @@ export default function Create() {
                     </div>
                   </div>
 
+                  <div className="col-12">
+                    <div className="collapse show">
+                      <div className="sign__video">
+                        <label
+                          id="movie1"
+                          htmlFor="sign__video-upload"
+                          className=" d-inline-flex align-items-center justify-content-between w-100"
+                          style={{ height: "46px", paddingRight: "30px" }}
+                        >
+                          Ảnh nền phim
+                          <i
+                            className="bi bi-image"
+                            style={{ fontSize: "20px" }}
+                          ></i>
+                        </label>
+                        <input
+                          data-name="#movie1"
+                          id="sign__video-upload"
+                          name="MovieImage"
+                          className="sign__video-upload"
+                          type="file"
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              MovieImage: e.target.files[0],
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="col-12">
                     <div className="collapse show multi-collapse">
                       <input
@@ -521,10 +563,10 @@ export default function Create() {
                               required
                               onChange={(e) => {
                                 setEpisodes((prev) => {
-                                    const copy = [...prev]
-                                    copy[0].EpisodeName = e.target.value
-                                  return copy
-                                })
+                                  const copy = [...prev];
+                                  copy[0].EpisodeName = e.target.value;
+                                  return copy;
+                                });
                               }}
                             />
                           </div>
@@ -555,13 +597,13 @@ export default function Create() {
                               type="url"
                               className="sign__input"
                               placeholder="Link_embed"
-                              required
+                              // required
                               onChange={(e) => {
                                 setEpisodes((prev) => {
                                   const copy = [...prev];
-                                  copy[0].Link_embed = e.target.value
-                                  return copy
-                                })
+                                  copy[0].Link_embed = e.target.value;
+                                  return copy;
+                                });
                               }}
                             />
                           </div>
@@ -573,12 +615,13 @@ export default function Create() {
                               type="url"
                               className="sign__input"
                               placeholder="Link_m3u8"
-                              required
+                              // required
                               onChange={(e) => {
-                                setEpisodes(prev => {
-                                  const copy = [...prev]
-                                  copy[0].Link_m3u8 = e.target.value
-                                })
+                                setEpisodes((prev) => {
+                                  const copy = [...prev];
+                                  copy[0].Link_m3u8 = e.target.value;
+                                  return copy;
+                                });
                               }}
                             />
                           </div>

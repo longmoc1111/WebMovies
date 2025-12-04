@@ -14,7 +14,7 @@ class Movie extends Model
 {
     use HasFactory;
     protected $primaryKey = "MovieID";
-    public $fillable = ['MovieID','MovieName','MovieYear','MovieDescription','MovieEvaluate','MovieStatus','MovieImage','MovieLink','GenreID'];
+    public $fillable = ['MovieID','MovieName','MovieYear','MovieDescription','MovieEvaluate','MovieStatus','MovieQuality','TotalEpisode','MovieImage','MovieLink','GenreID'];
 
     public function Countries(){
         return $this->belongsTomany(Country::class,'country_movies','MovieID','CountryID');  

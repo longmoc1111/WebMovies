@@ -34,7 +34,9 @@ class StoreMovieRequest extends FormRequest
             "DirectorID" => "required",
             "CountryID" => "required",
             "TypeID" => "required",
-            "Episodes" => "required"
+            "Episodes" => "required",
+            "MovieQuality" => "required",
+            "TotalEpisode" => "required",
             
         ];
     }
