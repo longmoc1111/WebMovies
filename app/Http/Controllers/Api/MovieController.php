@@ -79,10 +79,11 @@ class MovieController extends Controller
                 "MovieID" => $movie->MovieID
             ]);
             if ($episode) {
+                foreach($ep->sources as $sc)
                 $server = Server::create([
-                    "ServerName" => $ep->ServerName,
-                    "Link_m3u8" => $ep->Link_m3u8,
-                    "Link_embed" => $ep->Link_embed,
+                    "ServerName" => $sc->ServerName,
+                    "Link_m3u8" => $sc->Link_m3u8,
+                    "Link_embed" => $sc->Link_embed,
                     "EpisodeID" => $episode->EpisodeID
                 ]);
             }

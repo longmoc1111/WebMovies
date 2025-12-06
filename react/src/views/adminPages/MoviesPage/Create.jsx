@@ -15,10 +15,14 @@ export default function Create() {
   const [chooseType, setChooseType] = useState("phimle");
   const [episodes, setEpisodes] = useState([
     {
-      EpisodeName: "",
-      ServerName: "",
-      Link_embed: "",
-      Link_m3u8: "",
+      EpisodeName: 0,
+      sources: [
+        {
+          ServerName: "",
+          Link_embed: "",
+          Link_m3u8: "",
+        },
+      ],
     },
   ]);
   const navigate = useNavigate();
@@ -33,15 +37,37 @@ export default function Create() {
           (_, i) => ({
             ID: previous.length + i + 1,
             EpisodeName: "",
-            ServerName: "",
-            Link_embed: "",
-            Link_m3u8: "",
+
+            sources: [
+              {
+                ServerName: "",
+                Link_embed: "",
+                Link_m3u8: "",
+              },
+            ],
           })
         );
         return [...previous, ...extra];
       }
       return previous.slice(0, count);
     });
+  };
+  const addSource = (episodeIndex) => {
+    const copy = [...episodes];
+    copy[episodeIndex].sources.push({
+      ServerName: "",
+      Link_embed: "",
+      Link_m3u8: "",
+    });
+    setEpisodes(copy);
+  };
+  const removeEpisode = (index) => {
+    setEpisodes((prev) => prev.filter((_, i) => i !== index));
+  };
+  const removeSource = (index, srcIndex) => {
+    const copy = [...episodes];
+    copy[index].sources.splice(srcIndex, 1);
+    setEpisodes(copy);
   };
   console.log(episodes);
   const [formData, setFormData] = useState({
@@ -143,6 +169,7 @@ export default function Create() {
             message: "Thêm mới bộ phim thành công!",
           },
         });
+        // console.log(data)
       })
       .catch((err) => {
         const response = err.response;
@@ -157,7 +184,7 @@ export default function Create() {
         }
       });
   };
-  console.log(formData);
+  console.log(episodes);
   return (
     // <!-- main content -->
     <main className="main">
@@ -284,7 +311,7 @@ export default function Create() {
                             name="MovieYear"
                             type="text"
                             className="sign__input"
-                            placeholder="Số tập"
+                            placeholder="Tổng số tập"
                             required
                             onChange={(prev) =>
                               setFormData({
@@ -497,9 +524,8 @@ export default function Create() {
                   </div>
                 </div>
 
-                <div className="col-12">
+                <div className="col-12 mt-3">
                   <div className="sign__group">
-                    <label className="sign__label">Item type:</label>
                     <ul className="sign__radio">
                       <li>
                         <input
@@ -512,10 +538,14 @@ export default function Create() {
                             setChooseType("phimle");
                             setEpisodes([
                               {
-                                EpisodeName: "",
-                                ServerName: "",
-                                Link_embed: "",
-                                Link_m3u8: "",
+                                EpisodeName: 0,
+                                sources: [
+                                  {
+                                    ServerName: "",
+                                    Link_embed: "",
+                                    Link_m3u8: "",
+                                  },
+                                ],
                               },
                             ]);
                           }}
@@ -545,87 +575,107 @@ export default function Create() {
                   <div className="col-12">
                     <div>
                       <div className="row">
-                        <div className="col-12">
+                        <div className="sign__season">
+                          <div className="col-12 col-md-6">
+                            <div className="sign__group">
+                              <input
+                                type="text"
+                                className="sign__input"
+                                placeholder="Tập phim"
+                                value={"Full"}
+                                readOnly
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-12 d-flex align-items-center mb-3">
                           <span className="sign__episode-title">
                             Nguồn phim
                           </span>
-                          <button className="sign__delete" type="button">
-                            <i className="bi bi-x"></i>
+                          <button
+                            onClick={() => addSource(0)}
+                            className="sign__add btn"
+                            type="button"
+                          >
+                            <i className="bi bi-plus"></i>
                           </button>
                         </div>
 
-                        <div className="col-12 col-md-6">
-                          <div className="sign__group">
-                            <input
-                              type="number"
-                              className="sign__input"
-                              placeholder="Tập phim"
-                              required
-                              onChange={(e) => {
-                                setEpisodes((prev) => {
-                                  const copy = [...prev];
-                                  copy[0].EpisodeName = e.target.value;
-                                  return copy;
-                                });
-                              }}
-                            />
-                          </div>
-                        </div>
+                        {episodes[0].sources.map((src, srcIndex) => (
+                          <div className="sign__season">
+                            {srcIndex >= 1 && (
+                              <div className="col-12">
+                                <button
+                                  onClick={() => removeSource(0, srcIndex)}
+                                  className="sign__delete btn"
+                                  style={{ marginRight: "20px" }}
+                                  type="button"
+                                >
+                                  <i className="bi bi-x"></i>
+                                </button>
+                              </div>
+                            )}
+                            <div className="col-6 col-md-6">
+                              <div className="sign__group">
+                                <Select
+                                  options={serverOptions}
+                                  value={serverOptions.find(
+                                    (opt) => opt.value === src.ServerName
+                                  )}
+                                  onChange={(selected) => {
+                                    setEpisodes((prev) => {
+                                      const copy = [...prev];
+                                      copy[0].sources[srcIndex].ServerName =
+                                        selected.value;
+                                      return copy;
+                                    });
+                                  }}
+                                  placeholder={"Server"}
+                                  styles={customStyles}
+                                  required
+                                />
+                              </div>
+                            </div>
 
-                        <div className="col-12 col-md-6">
-                          <div className="sign__group">
-                            <Select
-                              options={serverOptions}
-                              // value={serverOptions.find(opt =>  opt.value === )}
-                              onChange={(selected) => {
-                                setEpisodes((prev) => {
-                                  const copy = [...prev];
-                                  copy[0].ServerName = selected.value;
-                                  return copy;
-                                });
-                              }}
-                              placeholder={"Server"}
-                              styles={customStyles}
-                              required
-                            />
-                          </div>
-                        </div>
+                            <div className="col-12  ">
+                              <div className="sign__group">
+                                <input
+                                  type="url"
+                                  className="sign__input"
+                                  placeholder="Link_embed"
+                                  // required
+                                  onChange={(e) => {
+                                    setEpisodes((prev) => {
+                                      const copy = [...prev];
+                                      copy[0].sources[srcIndex].Link_embed =
+                                        e.target.value;
+                                      return copy;
+                                    });
+                                  }}
+                                />
+                              </div>
+                            </div>
 
-                        <div className="col-12  ">
-                          <div className="sign__group">
-                            <input
-                              type="url"
-                              className="sign__input"
-                              placeholder="Link_embed"
-                              // required
-                              onChange={(e) => {
-                                setEpisodes((prev) => {
-                                  const copy = [...prev];
-                                  copy[0].Link_embed = e.target.value;
-                                  return copy;
-                                });
-                              }}
-                            />
+                            <div className="col-12  ">
+                              <div className="sign__group">
+                                <input
+                                  type="url"
+                                  className="sign__input"
+                                  placeholder="Link_m3u8"
+                                  // required
+                                  onChange={(e) => {
+                                    setEpisodes((prev) => {
+                                      const copy = [...prev];
+                                      copy[0].sources[srcIndex].Link_m3u8 =
+                                        e.target.value;
+                                      return copy;
+                                    });
+                                  }}
+                                />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="col-12  ">
-                          <div className="sign__group">
-                            <input
-                              type="url"
-                              className="sign__input"
-                              placeholder="Link_m3u8"
-                              // required
-                              onChange={(e) => {
-                                setEpisodes((prev) => {
-                                  const copy = [...prev];
-                                  copy[0].Link_m3u8 = e.target.value;
-                                  return copy;
-                                });
-                              }}
-                            />
-                          </div>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -655,15 +705,6 @@ export default function Create() {
                           {/* <!-- episode --> */}
                           <div className="sign__episode">
                             <div className="row">
-                              <div className="col-12">
-                                <span className="sign__episode-title">
-                                  Nguồn phim
-                                </span>
-                                <button className="sign__delete" type="button">
-                                  <i className="bi bi-x"></i>
-                                </button>
-                              </div>
-
                               <div className="col-12 col-md-6">
                                 <div className="sign__group">
                                   <input
@@ -680,60 +721,94 @@ export default function Create() {
                                   />
                                 </div>
                               </div>
-
-                              <div className="col-12 col-md-6">
-                                <div className="sign__group">
-                                  <Select
-                                    placeholder={"Server"}
-                                    options={serverOptions}
-                                    styles={customStyles}
-                                    required
-                                    value={serverOptions.find(
-                                      (otp) =>
-                                        otp.serverOptions === ep.ServerName
-                                    )}
-                                    onChange={(selected) => {
-                                      const copy = [...episodes];
-                                      copy[index].ServerName = selected.value;
-                                      setEpisodes(copy);
-                                    }}
-                                  />
-                                </div>
+                              <div className="col-12 d-flex align-items-center mb-3">
+                                <span className="sign__episode-title">
+                                  Nguồn phim
+                                </span>
+                                <button
+                                  onClick={() => addSource(index)}
+                                  className="sign__add btn"
+                                  type="button"
+                                >
+                                  <i className="bi bi-plus"></i>
+                                </button>
                               </div>
+                              {ep.sources.map((src, srcIndex) => (
+                                <div className="sign__season">
+                                  {srcIndex >= 1 && (
+                                    <div className="col-12">
+                                      <button
+                                        onClick={() =>
+                                          removeSource(index, srcIndex)
+                                        }
+                                        className="sign__delete btn"
+                                        type="button"
+                                      >
+                                        <i className="bi bi-x"></i>
+                                      </button>
+                                    </div>
+                                  )}
+                                  <div className="col-6 col-md-6">
+                                    <div className="sign__group">
+                                      <Select
+                                        placeholder={"Server"}
+                                        options={serverOptions}
+                                        styles={customStyles}
+                                        required
+                                        value={serverOptions.find(
+                                          (otp) =>
+                                            otp.serverOptions === src.ServerName
+                                        )}
+                                        onChange={(selected) => {
+                                          const copy = [...episodes];
+                                          copy[index].sources[
+                                            srcIndex
+                                          ].ServerName = selected.value;
+                                          setEpisodes(copy);
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
 
-                              <div className="col-12  ">
-                                <div className="sign__group">
-                                  <input
-                                    type="url"
-                                    className="sign__input"
-                                    placeholder="Link_embed"
-                                    required
-                                    value={ep.Link_embed}
-                                    onChange={(e) => {
-                                      const copy = [...episodes];
-                                      copy[index].Link_embed = e.target.value;
-                                      setEpisodes(copy);
-                                    }}
-                                  />
-                                </div>
-                              </div>
+                                  <div className="col-12  ">
+                                    <div className="sign__group">
+                                      <input
+                                        type="url"
+                                        className="sign__input"
+                                        placeholder="Link_embed"
+                                        required
+                                        value={src.Link_embed}
+                                        onChange={(e) => {
+                                          const copy = [...episodes];
+                                          copy[index].sources[
+                                            srcIndex
+                                          ].Link_embed = e.target.value;
+                                          setEpisodes(copy);
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
 
-                              <div className="col-12  ">
-                                <div className="sign__group">
-                                  <input
-                                    type="url"
-                                    className="sign__input"
-                                    placeholder="Link_m3u8"
-                                    required
-                                    value={ep.Link_m3u8}
-                                    onChange={(e) => {
-                                      const copy = [...episodes];
-                                      copy[index].Link_m3u8 = e.target.value;
-                                      setEpisodes(copy);
-                                    }}
-                                  />
+                                  <div className="col-12  ">
+                                    <div className="sign__group">
+                                      <input
+                                        type="url"
+                                        className="sign__input"
+                                        placeholder="Link_m3u8"
+                                        required
+                                        value={src.Link_m3u8}
+                                        onChange={(e) => {
+                                          const copy = [...episodes];
+                                          copy[index].sources[
+                                            srcIndex
+                                          ].Link_m3u8 = e.target.value;
+                                          setEpisodes(copy);
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
+                              ))}
                             </div>
                           </div>
                           {/* <!-- end episode --> */}

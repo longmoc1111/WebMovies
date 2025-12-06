@@ -28,6 +28,22 @@ class MovieResource extends JsonResource
             "ActorID" => $this->Actors ? $this->Actors->pluck("ActorID"): [],
             "DirectorID" => $this->Directors ? $this->Directors->pluck("DirectorID") : [],
             "TypeID" => $this->Types ? $this->Types->pluck("TypeID") : [],
+            "Episodes" =>$this->Episodes ? $this->Episodes->map(function($ep){
+              return   [
+                    "EpisodeName" => $ep->EpisodeName,
+                    "EpisodeID" =>$ep->EpisodeID,
+                ];
+            }) : [],
+            "Servers" => $this->Episodes ? $this->Episodes->flatmap(function($ep) {
+                    return  $ep->Servers->map(function($sv){
+                       return [
+                            "ServerID" => $sv->ServerID,
+                            "ServerName" => $sv->ServerName,
+                            "Link_embed" => $sv->Link_embed,
+                            "Link_m3u8" => $sv->Link_m3u8,
+                        ];
+                    });
+            }) : [], 
         ];
     }
 }
