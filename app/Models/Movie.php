@@ -14,7 +14,7 @@ class Movie extends Model
 {
     use HasFactory;
     protected $primaryKey = "MovieID";
-    public $fillable = ['MovieID','MovieName','MovieYear','MovieDescription','MovieEvaluate','MovieStatus','MovieQuality','TotalEpisode','MovieImage','MovieLink','GenreID'];
+    public $fillable = ['MovieID','MovieName','MovieYear','MovieDescription','MovieEvaluate','MovieStatus','MovieQuality','TotalEpisode','MovieImage','MovieLink','TypeID',"MovieType"];
 
     public function Countries(){
         return $this->belongsTomany(Country::class,'country_movies','MovieID','CountryID');  
@@ -27,11 +27,11 @@ class Movie extends Model
     }
 
     public function Types(){
-        return $this->belongsToMany( Type::class,'type_movies','MovieID','TypeID');;
+        return $this->belongsTo( Type::class,'TypeID','TypeID');
     }
 
     public function Genres(){
-        return $this->Belongsto(Genre::class,'GenreID',"GenreID");  
+        return $this->belongsToMany(Genre::class,'genre_movies',"MovieID", "GenreID");  
     }
     public function Episodes(){
         return $this->hasMany(Episode::class, "MovieID", "MovieID");

@@ -7,7 +7,7 @@ import DefaultLayout from "./components/DefaultLayout";
 import GustLayout from "./components/GustLayout";
 import Users from "./views/adminPages/userPages//Users";
 import UpdateUser from "./views/adminPages/userPages/Update";
-import Moives from "./views/adminPages/MoviesPage/Moives";
+import Moives from "./views/adminPages/moviesPage/Moives";
 import Create from "./views/adminPages/MoviesPage/Create";
 import Update from "./views/adminPages/MoviesPage/Update";
 

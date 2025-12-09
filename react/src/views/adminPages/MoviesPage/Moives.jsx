@@ -35,7 +35,7 @@ export default function Moives() {
       .then(({ data }) => {
         setMovies(data.data);
         setLink(data.links);
-
+        console.log(data)
         setLoading(false);
       })
       .catch((err) => {
@@ -191,8 +191,8 @@ export default function Moives() {
                         </td>
                         <td>
                           <div className="catalog__text">
-                            {m.Types && m.Types.length
-                              ? m.Types.join(", ")
+                            {m.Genres && m.Genres.length
+                              ? m.Genres.join(", ")
                               : "Đang cập nhật"}
                           </div>
                         </td>
@@ -244,57 +244,57 @@ export default function Moives() {
           </div>
           {/* <!-- end items --> */}
           {/* <!-- paginator --> */}
-          { !loading && <div class="col-12">
-            <div class="main__paginator">
+          { !loading && <div className="col-12">
+            <div className="main__paginator">
               {/* <!-- amount --> */}
-              <span class="main__paginator-pages">10 of 169</span>
+              <span className="main__paginator-pages">10 of 169</span>
               {/* <!-- end amount --> */}
 
-              <ul class="main__paginator-list">
+              <ul className="main__paginator-list">
                 <li>
                   <a href="#">
-                    <i class="ti ti-chevron-left"></i>
+                    <i className="ti ti-chevron-left"></i>
                     <span>Prev</span>
                   </a>
                 </li>
                 <li>
                   <a href="#">
                     <span>Next</span>
-                    <i class="ti ti-chevron-right"></i>
+                    <i className="ti ti-chevron-right"></i>
                   </a>
                 </li>
               </ul>
 
-              <ul class="paginator">
-                <li class="paginator__item paginator__item--prev">
+              <ul className="paginator">
+                <li className="paginator__item paginator__item--prev">
                   <a href="#">
-                    <i class="bi bi-chevron-left"></i>
+                    <i className="bi bi-chevron-left"></i>
                   </a>
                 </li>
-                <li class="paginator__item">
+                <li className="paginator__item">
                   <a href="#">1</a>
                 </li>
-                <li class="paginator__item paginator__item--active">
+                <li className="paginator__item paginator__item--active">
                   <a href="#">2</a>
                 </li>
-                <li class="paginator__item">
+                <li className="paginator__item">
                   <a href="#">3</a>
                 </li>
-                <li class="paginator__item">
+                <li className="paginator__item">
                   <a href="#">4</a>
                 </li>
-                <li class="paginator__item">
+                <li className="paginator__item">
                   <span>...</span>
                 </li>
-                <li class="paginator__item">
+                <li className="paginator__item">
                   <a href="#">29</a>
                 </li>
-                <li class="paginator__item">
+                <li className="paginator__item">
                   <a href="#">30</a>
                 </li>
-                <li class="paginator__item paginator__item--next">
+                <li className="paginator__item paginator__item--next">
                   <a href="#">
-                    <i class="bi bi-chevron-right"></i>
+                    <i className="bi bi-chevron-right"></i>
                   </a>
                 </li>
               </ul>

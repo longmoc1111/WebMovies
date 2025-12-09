@@ -14,8 +14,8 @@ class TypeSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        $Type = ['khoa học viễn tưởng', 'kinh dị', 'phim hài','phim hoạt hình'];
-        for($i = 0; $i < 10; $i++){
+        $Type =["Phim bộ", "Phim lẻ"];
+        for($i = 0; $i < 2; $i++){
             Type::create([
                 'TypeName'=>$faker->randomElement($Type),
             ]);          

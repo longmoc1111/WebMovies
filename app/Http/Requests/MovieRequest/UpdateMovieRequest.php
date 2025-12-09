@@ -33,7 +33,10 @@ class UpdateMovieRequest extends FormRequest
             "DirectorID" => "required",
             "CountryID" => "required",
             "TypeID" => "required",
+            "TotalEpisode" => "required",
+            "MovieType" => "required",
              'MovieImage' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:2048',
+             "Episodes" => "required",
         ];
     }
 }

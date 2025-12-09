@@ -37,7 +37,7 @@ class StoreMovieRequest extends FormRequest
             "Episodes" => "required",
             "MovieQuality" => "required",
             "TotalEpisode" => "required",
-            
+            "MovieType" => "required",
         ];
     }
 }

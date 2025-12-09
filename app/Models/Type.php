@@ -11,7 +11,7 @@ class Type extends Model
     protected $primaryKey = "TypeID";
     public $fillable = ['TypeID','TypeName'];
     public function TypeMovie(){
-        return  $this->belongsToMany(Movie::class,'type_movies','TypeID','MovieID');
+        return  $this->hasMany(Movie::class,'TypeID','TypeID');
     }
 
 }

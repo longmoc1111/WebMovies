@@ -14,7 +14,7 @@ class GenreSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        $genre = ['phim Chiếu rạp', 'phim bộ', 'phim lẻ'];
+        $genre =  ['khoa học viễn tưởng', 'kinh dị', 'phim hài','phim hoạt hình'];
         for($i = 0; $i < 3; $i++){
             Genre::create([
                 'GenreName'=>$faker->randomElement($genre),

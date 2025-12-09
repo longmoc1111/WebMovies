@@ -23,11 +23,11 @@ class MovieViewResource extends JsonResource
             "MovieStatus" => $this->MovieStatus,
             "MovieImage" => $this->MovieImage,
             "MovieLink" => $this->MovieLink,
-            "GenreID" => $this->Genres ? $this->Genres->GenreID : null,
+            "TypeID" => $this->Types ? $this->Types->TypeID : null,
             "Countries" => $this->Countries ? $this->Countries->pluck("CountryName") : [],
             "Actors" => $this->Actors ? $this->Actors->pluck("ActorName") : [],
             "Directors" => $this->Directors ? $this->Directors->pluck("DirectorName") : [],
-            "Types" => $this->Types ? $this->Types->pluck("TypeName") : [],
+            "Genres" => $this->Genres ? $this->Genres->pluck("GenreName") : [],
         ];
     }
 }

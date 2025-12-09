@@ -12,6 +12,6 @@
         protected $keyType = 'int'; 
         public $fillable = ['GenreID','GenreName'];
         public function GenreMovie(){
-            return $this->hasMany(Movie::class,'GenreID',"GenreID");
+            return $this->belongsToMany(Movie::class,"genre_movies",'GenreID',"MovieID");
         }
     }

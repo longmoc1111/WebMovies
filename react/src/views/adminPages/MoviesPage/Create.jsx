@@ -12,7 +12,7 @@ export default function Create() {
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(null);
-  const [chooseType, setChooseType] = useState("phimle");
+  const [chooseType, setChooseType] = useState("single");
   const [episodes, setEpisodes] = useState([
     {
       EpisodeName: 0,
@@ -52,6 +52,27 @@ export default function Create() {
       return previous.slice(0, count);
     });
   };
+  const setTypeMovie = (GenreValue) => {
+    if (GenreValue == "single") {
+      setChooseType("single");
+      setEpisodes([
+        {
+          EpisodeName: 0,
+          sources: [
+            {
+              ServerName: "",
+              Link_embed: "",
+              Link_m3u8: "",
+            },
+          ],
+        },
+      ]);
+    } else if (GenreValue == "series") {
+      setChooseType("series");
+      
+      setEpisodes([]);
+    }
+  };
   const addSource = (episodeIndex) => {
     const copy = [...episodes];
     copy[episodeIndex].sources.push({
@@ -77,13 +98,14 @@ export default function Create() {
     MovieEvaluate: "",
     MovieLink: "",
     MovieYear: "",
-    GenreID: "",
+    TypeID: "",
+    MovieType: "single",
     MovieQuality: "",
     TotalEpisode: "",
     ActorID: [],
     DirectorID: [],
     CountryID: [],
-    TypeID: [],
+    GenreID: [],
     MovieImage: null,
   });
 
@@ -150,13 +172,14 @@ export default function Create() {
     fd.append("MovieEvaluate", formData.MovieEvaluate);
     fd.append("MovieLink", formData.MovieLink);
     fd.append("MovieYear", formData.MovieYear);
-    fd.append("GenreID", formData.GenreID);
+    fd.append("TypeID", formData.TypeID);
     fd.append("MovieQuality", formData.MovieQuality);
     fd.append("TotalEpisode", formData.TotalEpisode);
+    fd.append("MovieType",formData.MovieType);
     formData.ActorID.forEach((id) => fd.append("ActorID[]", id));
     formData.DirectorID.forEach((id) => fd.append("DirectorID[]", id));
     formData.CountryID.forEach((id) => fd.append("CountryID[]", id));
-    formData.TypeID.forEach((id) => fd.append("TypeID[]", id));
+    formData.GenreID.forEach((id) => fd.append("GenreID[]", id));
     fd.append("Episodes", JSON.stringify(episodes));
     // File
     fd.append("MovieImage", formData.MovieImage);
@@ -184,7 +207,9 @@ export default function Create() {
         }
       });
   };
-  console.log(episodes);
+  console.log("episo", episodes);
+  console.log(formData);
+
   return (
     // <!-- main content -->
     <main className="main">
@@ -365,18 +390,18 @@ export default function Create() {
                       <div className="col-12 col-md-6">
                         <div className="sign__group">
                           <Select
-                            options={GenreOptions}
-                            value={GenreOptions.find(
-                              (opt) => opt.value === formData.genresID
+                            options={typeOptions}
+                            value={typeOptions.find(
+                              (opt) => formData.TypeID == opt.value
                             )}
+                            placeholder={"Loại phim"}
                             onChange={(selected) => {
                               setFormData((prev) => ({
                                 ...prev,
-                                GenreID: selected.value,
+                                TypeID: selected ? selected.value : "",
                               }));
                             }}
                             styles={customStyles}
-                            placeholder="Loại phim"
                             required
                           />
                         </div>
@@ -385,19 +410,22 @@ export default function Create() {
                       <div className="col-12">
                         <div className="sign__group">
                           <Select
-                            options={typeOptions}
-                            value={typeOptions.filter((opt) =>
-                              formData.TypeID.includes(opt.value)
+                            options={GenreOptions}
+                            value={GenreOptions.find(
+                              (opt) => opt.value === formData.GenreID
                             )}
-                            placeholder={"Thể loại"}
                             onChange={(selected) => {
-                              setFormData((prev) => ({
-                                ...prev,
-                                TypeID: selected
-                                  ? selected.map((item) => item.value)
-                                  : [],
-                              }));
+                                setFormData((prev) => ({
+                                  ...prev, GenreID: selected ? selected.map((item) => item.value) : []
+                                }))
+
+                              // if (selected.value == 1) {
+                              //   setGenreMovie("phimle");
+                              // } else if (selected.value == 2) {
+                              //   setGenreMovie("phimbo");
+                              // }
                             }}
+                            placeholder={"Thể loại"}
                             styles={customStyles}
                             required
                             isMulti
@@ -532,22 +560,12 @@ export default function Create() {
                           id="type1"
                           type="radio"
                           name="type"
-                          value={"phimle"}
-                          checked={chooseType == "phimle"}
-                          onChange={() => {
-                            setChooseType("phimle");
-                            setEpisodes([
-                              {
-                                EpisodeName: 0,
-                                sources: [
-                                  {
-                                    ServerName: "",
-                                    Link_embed: "",
-                                    Link_m3u8: "",
-                                  },
-                                ],
-                              },
-                            ]);
+                          value={"single"}
+                          checked={chooseType == "single"}
+                          onChange={() => {setTypeMovie("single")
+                            setFormData((prev) => ({
+                              ...prev, MovieType: "single"
+                            }))
                           }}
                         />
                         <label htmlFor="type1">Phim lẻ</label>
@@ -557,12 +575,15 @@ export default function Create() {
                           id="type2"
                           type="radio"
                           name="type"
-                          value={"phimbo"}
-                          checked={chooseType == "phimbo"}
-                          onChange={() => {
-                            setChooseType("phimbo");
-                            setEpisodes([]);
-                          }}
+                          value={"series"}
+                          checked={chooseType == "series"}
+                            onChange={() => {setTypeMovie("series")
+                                setFormData((prev) => ({
+                                 ...prev, MovieType: "series"
+                              }))
+                            }
+                            
+                          }
                         />
                         <label htmlFor="type2">Phim bộ</label>
                       </li>
@@ -571,7 +592,7 @@ export default function Create() {
                 </div>
 
                 {/* <!-- phim lẻ --> */}
-                {chooseType === "phimle" && (
+                {chooseType === "single" && (
                   <div className="col-12">
                     <div>
                       <div className="row">
@@ -683,7 +704,7 @@ export default function Create() {
                 {/* <!-- end movie --> */}
 
                 {/* <!-- phim bộ--> */}
-                {chooseType === "phimbo" && (
+                {chooseType === "series" && (
                   <div className="col-12">
                     <div>
                       <div className="sign__season">
@@ -770,7 +791,7 @@ export default function Create() {
                                     </div>
                                   </div>
 
-                                  <div className="col-12  ">
+                                  <div className="col-12">
                                     <div className="sign__group">
                                       <input
                                         type="url"
