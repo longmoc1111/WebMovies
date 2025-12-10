@@ -15,33 +15,70 @@ export default function Update() {
   const [countries, setCountries] = useState([]);
   const [chooseType, setChooseType] = useState("single");
   const [episodes, setEpisodes] = useState();
+  const [selectedEp, setSelectedEp] = useState();
 
   const navigate = useNavigate();
   const [errors, setErrors] = useState();
 
-  const createEpisode = (count) => {
-    setEpisodes((prev) => {
-      const previous = [...prev];
-      if (count > previous.length) {
-        const extra = Array.from(
-          { length: count - previous.length },
-          (_, i) => ({
-            ID: previous.length + i + 1,
-            EpisodeName: "",
+  // const createEpisode = (count) => {
+  //   setEpisodes((prev) => {
+  //     const previous = [...prev];
+  //     if (count > previous.length) {
+  //       const extra = Array.from(
+  //         { length: count - previous.length },
+  //         (_, i) => ({
+  //           ID: previous.length + i + 1,
+  //           EpisodeName: "",
 
-            sources: [
-              {
-                ServerName: "",
-                Link_embed: "",
-                Link_m3u8: "",
-              },
-            ],
-          })
-        );
-        return [...previous, ...extra];
-      }
-      return previous.slice(0, count);
+  //           sources: [
+  //             {
+  //               ServerName: "",
+  //               Link_embed: "",
+  //               Link_m3u8: "",
+  //             },
+  //           ],
+  //         })
+  //       );
+  //       return [...previous, ...extra];
+  //     }
+  //     return previous.slice(0, count);
+  //   });
+  // };
+
+  const updateSource = (index, srcIndex, newdata) => {
+    setEpisodes((prev) => {
+      const copy = [...prev];
+      copy[index].sources[srcIndex] = {
+        ...copy[index].sources[srcIndex],
+        ...newdata,
+      };
+      return copy;
     });
+  };
+  const updateEpisode = (index, newData) => {
+    setEpisodes((prev) => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], ...newData };
+      return copy;
+    });
+  };
+
+  const addEpisode = () => {
+    setEpisodes((prev) => [
+      ...prev,
+      {
+        EpisodeName: "",
+
+        sources: [
+          {
+            ServerName: "",
+            Link_embed: "",
+            Link_m3u8: "",
+          },
+        ],
+      },
+    ]);
+    // setSelectedEp(episodes.lenght)
   };
 
   const [formData, setFormData] = useState({
@@ -123,6 +160,7 @@ export default function Update() {
           setChooseType("single");
         } else if (data.movies.MovieType == "series") {
           setChooseType("series");
+          if (data.movies.Episodes != null) setSelectedEp(0);
         }
         setLoading(false);
       })
@@ -144,24 +182,23 @@ export default function Update() {
     fd.append("MovieYear", formData.MovieYear);
     fd.append("TypeID", formData.TypeID);
     fd.append("TotalEpisode", formData.TotalEpisode);
-    fd.append("MovieType", formData.MovieType)
+    fd.append("MovieType", formData.MovieType);
     formData.ActorID.forEach((id) => fd.append("ActorID[]", id));
     formData.DirectorID.forEach((id) => fd.append("DirectorID[]", id));
     formData.CountryID.forEach((id) => fd.append("CountryID[]", id));
-    formData.GenreID.forEach((id) => fd.append("GenreID", id));
-    fd.append("Episodes", JSON.stringify(episodes))
+    formData.GenreID.forEach((id) => fd.append("GenreID[]", id));
+    fd.append("Episodes", JSON.stringify(episodes));
 
     fd.append("_method", "PUT");
     if (formData.MovieImage instanceof File) {
       fd.append("MovieImage", formData.MovieImage);
     }
-
     axiosClient
       .post(`/movies/${formData.MovieID}`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then(({ data }) => {
-        console.log(data)
+        console.log(data);
         // navigate("/movies", {
         //   state: {
         //     message: data.message,
@@ -179,6 +216,7 @@ export default function Update() {
   };
 
   console.log(episodes);
+  console.log("selected ep", selectedEp);
 
   // console.log("fm dáta", formData);
 
@@ -566,7 +604,17 @@ export default function Update() {
                             checked={chooseType == "series"}
                             onChange={() => {
                               setChooseType("series");
-                              setEpisodes([]);
+                              setEpisodes([ {
+                                  EpisodeName: "",
+
+                                  sources: [
+                                    {
+                                      ServerName: "",
+                                      Link_embed: "",
+                                      Link_m3u8: "",
+                                    },
+                                  ],
+                                },]);
                             }}
                           />
                           <label htmlFor="type2">Phim bộ</label>
@@ -605,82 +653,82 @@ export default function Update() {
                           </div>
 
                           {episodes?.[0]?.sources?.map((src, srcIndex) => (
-                          <div className="sign__season">
-                            {srcIndex >= 1 && (
-                            <div className="col-12">
-                              <button
-                                // onClick={() => removeSource(0, srcIndex)}
-                                className="sign__delete btn"
-                                style={{ marginRight: "20px" }}
-                                type="button"
-                              >
-                                <i className="bi bi-x"></i>
-                              </button>
-                            </div>
-                              )}   
-                            <div className="col-6 col-md-6">
-                              <div className="sign__group">
-                                <Select
-                                  options={serverOptions}
-                                  value={serverOptions.find(
-                                    (opt) => opt.value === src.ServerName
-                                  )}
-                                  onChange={(selected) => {
-                                    setEpisodes((prev) => {
-                                      const copy = [...prev];
-                                      copy[0].sources[srcIndex].ServerName =
-                                        selected.value;
-                                      return copy;
-                                    });
-                                  }}
-                                  placeholder={"Server"}
-                                  styles={customStyles}
-                                  required
-                                />
+                            <div className="sign__season">
+                              {srcIndex >= 1 && (
+                                <div className="col-12">
+                                  <button
+                                    // onClick={() => removeSource(0, srcIndex)}
+                                    className="sign__delete btn"
+                                    style={{ marginRight: "20px" }}
+                                    type="button"
+                                  >
+                                    <i className="bi bi-x"></i>
+                                  </button>
+                                </div>
+                              )}
+                              <div className="col-6 col-md-6">
+                                <div className="sign__group">
+                                  <Select
+                                    options={serverOptions}
+                                    value={serverOptions.find(
+                                      (opt) => opt.value === src.ServerName
+                                    )}
+                                    onChange={(selected) => {
+                                      setEpisodes((prev) => {
+                                        const copy = [...prev];
+                                        copy[0].sources[srcIndex].ServerName =
+                                          selected.value;
+                                        return copy;
+                                      });
+                                    }}
+                                    placeholder={"Server"}
+                                    styles={customStyles}
+                                    required
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-12  ">
-                              <div className="sign__group">
-                                <input
-                                  type="url"
-                                  className="sign__input"
-                                  placeholder="Link_embed"
-                                  required
-                                  value={src.Link_embed}
-                                  onChange={(e) => {
-                                    setEpisodes((prev) => {
-                                      const copy = [...prev];
-                                      copy[0].sources[srcIndex].Link_embed =
-                                        e.target.value;
-                                      return copy;
-                                    });
-                                  }}
-                                />
+                              <div className="col-12  ">
+                                <div className="sign__group">
+                                  <input
+                                    type="url"
+                                    className="sign__input"
+                                    placeholder="Link_embed"
+                                    required
+                                    value={src.Link_embed}
+                                    onChange={(e) => {
+                                      setEpisodes((prev) => {
+                                        const copy = [...prev];
+                                        copy[0].sources[srcIndex].Link_embed =
+                                          e.target.value;
+                                        return copy;
+                                      });
+                                    }}
+                                  />
+                                </div>
                               </div>
-                            </div>
 
-                            <div className="col-12  ">
-                              <div className="sign__group">
-                                <input
-                                  type="url"
-                                  className="sign__input"
-                                  placeholder="Link_m3u8"
-                                  required
-                                  value={src.Link_m3u8}
-                                  onChange={(e) => {
-                                    setEpisodes((prev) => {
-                                      const copy = [...prev];
-                                      copy[0].sources[srcIndex].Link_m3u8 =
-                                        e.target.value;
-                                      return copy;
-                                    });
-                                  }}
-                                />
+                              <div className="col-12  ">
+                                <div className="sign__group">
+                                  <input
+                                    type="url"
+                                    className="sign__input"
+                                    placeholder="Link_m3u8"
+                                    required
+                                    value={src.Link_m3u8}
+                                    onChange={(e) => {
+                                      setEpisodes((prev) => {
+                                        const copy = [...prev];
+                                        copy[0].sources[srcIndex].Link_m3u8 =
+                                          e.target.value;
+                                        return copy;
+                                      });
+                                    }}
+                                  />
+                                </div>
                               </div>
                             </div>
-                          </div>
-                            ))}  
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -688,7 +736,7 @@ export default function Update() {
 
                   {chooseType == "series" && (
                     <div className="col-12">
-                      <div>
+                      {/* <div>
                         <div className="sign__season">
                           <div className="col-12">
                             <div className="sign__group">
@@ -697,11 +745,7 @@ export default function Update() {
                                 className="sign__input"
                                 placeholder="Số tập"
                                 required
-                                value={
-                                  formData.Episodes
-                                    ? formData.Episodes.length
-                                    : null
-                                }
+                                defaultValue={formData.Episodes?.length}
                                 onChange={(e) => createEpisode(e.target.value)}
                               />
                             </div>
@@ -782,8 +826,9 @@ export default function Update() {
                                         onChange={(e) => {
                                           setEpisodes((prev) => {
                                             const copy = [...prev];
-                                            copy[0].sources[srcIndex].Link_embed =
-                                              e.target.value;
+                                            copy[0].sources[
+                                              srcIndex
+                                            ].Link_embed = e.target.value;
                                             return copy;
                                           });
                                         }}
@@ -802,8 +847,9 @@ export default function Update() {
                                         onChange={(e) => {
                                           setEpisodes((prev) => {
                                             const copy = [...prev];
-                                            copy[0].sources[srcIndex].Link_m3u8 =
-                                              e.target.value;
+                                            copy[0].sources[
+                                              srcIndex
+                                            ].Link_m3u8 = e.target.value;
                                             return copy;
                                           });
                                         }}
@@ -815,8 +861,140 @@ export default function Update() {
                             </div>
                           ))}
                           {/* ))} */}
-                        </div>
+                      {/* </div> */}
+                      {/* </div> */}
+
+                      <div className="episode-list d-flex gap-2 align-items-center mb-3">
+                        {episodes.map((ep, index) => (
+                          <button
+                            key={index}
+                            className={`btn ${
+                              selectedEp === index
+                                ? "btn-primary"
+                                : "btn-secondary"
+                            }`}
+                            onClick={() => setSelectedEp(index)}
+                            type="button"
+                          >
+                            Tập {ep.EpisodeName}
+                          </button>
+                        ))}
+
+                        {/* Nút thêm tập mới */}
+                        <button
+                          className="btn btn-success"
+                          type="button"
+                          // onClick={addEpisode}
+                          onClick={addEpisode}
+                        >
+                          + Tập mới
+                        </button>
                       </div>
+
+                      {selectedEp !== null && (
+                        <div className="episode-editor">
+                          {/* Tên tập */}
+                          <div className="sign__group mb-3">
+                            <input
+                              type="text"
+                              className="sign__input"
+                              placeholder="Tên tập"
+                              value={episodes[selectedEp].EpisodeName}
+                              onChange={(e) =>
+                                updateEpisode(selectedEp, {
+                                  EpisodeName: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+
+                          {/* Nguồn phim */}
+                          <div className="d-flex align-items-center mb-2">
+                            <span className="sign__episode-title">
+                              Nguồn phim
+                            </span>
+
+                            <button
+                              className="sign__add btn"
+                              // onClick={() => addSource(selectedEp)}
+                            >
+                              <i className="bi bi-plus"></i>
+                            </button>
+                          </div>
+
+                          {episodes[selectedEp].sources.map((src, srcIndex) => (
+                            <div
+                              className="row mb-3"
+                              // key={srcIndex}
+                            >
+                              {/* {srcIndex > 0 && ( */}
+                              <button
+                                className="sign__delete btn"
+                                // onClick={() =>
+                                //   removeSource(selectedEp, srcIndex)
+                                // }
+                              >
+                                <i className="bi bi-x"></i>
+                              </button>
+                              {/* )} */}
+
+                              {/* Server */}
+                              <div className="col-md-6">
+                                <div className="sign__group">
+                                  <Select
+                                    options={serverOptions}
+                                    value={serverOptions.find(
+                                      (opt) => src.ServerName === opt.value
+                                    )}
+                                    onChange={(selected) => {
+                                      updateSource(selectedEp, srcIndex, {
+                                        ServerName: selected.value,
+                                      });
+                                    }}
+                                    styles={customStyles}
+                                    placeholder="Server"
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Link loại 1 */}
+                              <div className="col-12">
+                                <div className="sign__group">
+                                  <input
+                                    type="url"
+                                    className="sign__input"
+                                    placeholder="Link_embed"
+                                    value={src.Link_embed}
+                                    onChange={(e) => {
+                                      updateSource(selectedEp, srcIndex, {
+                                        Link_embed: e.target.value,
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Link loại 2 */}
+                              <div className="col-12">
+                                <div className="sign__group">
+                                  <input
+                                    type="url"
+                                    className="sign__input"
+                                    placeholder="Link_m3u8"
+                                    value={src.Link_m3u8}
+                                    onChange={(e) => {
+                                      updateSource(selectedEp, srcIndex, {
+                                        Link_m3u8: e.target.value,
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          {/* ))} */}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

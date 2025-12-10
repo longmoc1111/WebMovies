@@ -41,7 +41,7 @@ class MovieController extends Controller
         $data = $request->validated();
         $episodes = json_decode($data["Episodes"]);
         if ($request->hasFile("MovieImage")) {
-            $file = $data["MovieImage"];
+            $file = $request->file("MovieImage");
             $fileNameWithowEtx = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $fileNameExt = $file->getClientOriginalExtension();
             $newFileName = $fileNameWithowEtx . "_" . time() . "." . $fileNameExt;
@@ -80,13 +80,14 @@ class MovieController extends Controller
                 "MovieID" => $movie->MovieID
             ]);
             if ($episode) {
-                foreach($ep->sources as $sc)
-                $server = Server::create([
-                    "ServerName" => $sc->ServerName,
-                    "Link_m3u8" => $sc->Link_m3u8,
-                    "Link_embed" => $sc->Link_embed,
-                    "EpisodeID" => $episode->EpisodeID
-                ]);
+                foreach ($ep->sources as $sc) {
+                    $server = Server::create([
+                        "ServerName" => $sc->ServerName,
+                        "Link_m3u8" => $sc->Link_m3u8,
+                        "Link_embed" => $sc->Link_embed,
+                        "EpisodeID" => $episode->EpisodeID
+                    ]);
+                }
             }
         }
 
@@ -108,6 +109,7 @@ class MovieController extends Controller
     {
         $movie = Movie::findOrFail($id);
         $data = $request->validated();
+        $episodes = json_decode($data["Episodes"]);
         // if ($request->hasFile("MovieImage")) {
         //     if ($movie->MovieImage) {
         //         $oldFileName = storage_path("app/public/upload/image/" . $movie->MovieImage);
@@ -115,7 +117,7 @@ class MovieController extends Controller
         //             File::delete($oldFileName);
         //         }
         //     }
-        //     $file = $data["MovieImage"];
+        //     $file = $request->file("MovieImage");
         //     $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         //     $fileNameExt = $file->getClientOriginalExtension();
         //     $newFileName = $fileNameWithoutExt . "_" . time() . "." . $fileNameExt;
@@ -124,7 +126,7 @@ class MovieController extends Controller
         // } else {
         //     $data["MovieImage"] = $movie->MovieImage;
         // }
-        // $movie->update([
+        // $movie->fill([
         //     'MovieName' => $data['MovieName'],
         //     'MovieYear' => $data['MovieYear'],
         //     'MovieDescription' => $data['MovieDescription'],
@@ -132,8 +134,13 @@ class MovieController extends Controller
         //     'MovieStatus' => $data['MovieStatus'],
         //     'MovieLink' => $data['MovieLink'],
         //     'MovieImage' => $data['MovieImage'],
-        //     'GenreID' => $data['GenreID'],
+        //     'TypeID' => $data['TypeID'],
+        //     "TotalEpisode" => $data["TotalEpisode"],
+        //     "MovieType" => $data["MovieType"],
         // ]);
+        // if ($movie->isDirty()) {
+        //     $movie->save();
+        // }
         // if ($data["DirectorID"]) {
         //     $movie->Directors()->sync($data["DirectorID"]);
         // }
@@ -143,13 +150,39 @@ class MovieController extends Controller
         // if ($data["CountryID"]) {
         //     $movie->Countries()->sync($data["CountryID"]);
         // }
-        // // if ($data["TypeID"]) {
-        // //     $movie->Types()->sync($data["TypeID"]);
-        // // }
+        // if ($data["GenreID"]) {
+        //     $movie->Genres()->sync($data["GenreID"]);
+        // }
+        // if ($episodes) {
+        //     foreach ($episodes as $ep) {
+        //         $episode = Episode::find($ep->EpisodeID);
+        //         if(!$episode) continue; 
+        //         $episode->fill([
+        //             "EpisodeName" => $ep->EpisodeName,
+        //         ]);
+        //         if ($episode->isDirty()) {
+        //             $episode->save();
+        //         }
+        //         if (!empty($ep->sources)) {
+        //             foreach ($ep->sources as $sv) {
+        //                 $serve = Server::find($sv->ServerID);
+        //                 if(!$serve) continue;
+        //                 $serve->fill([
+        //                     "ServerName" => $sv->ServerName,
+        //                     "Link_embed" => $sv->Link_embed,
+        //                     "Link_m3u8" => $sv->Link_m3u8
+        //                 ]);
+        //                 if ($serve->isDirty()) {
+        //                     $serve->save();
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         // return response()->json([
         //     "message" => "Cập nhật thành công!",
         // ]);
-        return response($data);
+        return response($episodes);
     }
     public function destroy(Movie $movie)
     {
@@ -167,11 +200,11 @@ class MovieController extends Controller
             }
         }
         $episodes = $movie->Episodes;
-        foreach($episodes as $ep){
+        foreach ($episodes as $ep) {
             $ep->Servers()->delete();
             $ep->delete();
         }
-        
+
         $movie->delete();
         return response()->json([
             "message" => "Xóa thành công!",
