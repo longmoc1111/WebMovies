@@ -110,79 +110,105 @@ class MovieController extends Controller
         $movie = Movie::findOrFail($id);
         $data = $request->validated();
         $episodes = json_decode($data["Episodes"]);
-        // if ($request->hasFile("MovieImage")) {
-        //     if ($movie->MovieImage) {
-        //         $oldFileName = storage_path("app/public/upload/image/" . $movie->MovieImage);
-        //         if (File::exists($oldFileName)) {
-        //             File::delete($oldFileName);
-        //         }
-        //     }
-        //     $file = $request->file("MovieImage");
-        //     $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        //     $fileNameExt = $file->getClientOriginalExtension();
-        //     $newFileName = $fileNameWithoutExt . "_" . time() . "." . $fileNameExt;
-        //     $file->move(storage_path("app/public/upload/image"), $newFileName);
-        //     $data["MovieImage"] = $newFileName;
-        // } else {
-        //     $data["MovieImage"] = $movie->MovieImage;
-        // }
-        // $movie->fill([
-        //     'MovieName' => $data['MovieName'],
-        //     'MovieYear' => $data['MovieYear'],
-        //     'MovieDescription' => $data['MovieDescription'],
-        //     'MovieEvaluate' => $data['MovieEvaluate'],
-        //     'MovieStatus' => $data['MovieStatus'],
-        //     'MovieLink' => $data['MovieLink'],
-        //     'MovieImage' => $data['MovieImage'],
-        //     'TypeID' => $data['TypeID'],
-        //     "TotalEpisode" => $data["TotalEpisode"],
-        //     "MovieType" => $data["MovieType"],
-        // ]);
-        // if ($movie->isDirty()) {
-        //     $movie->save();
-        // }
-        // if ($data["DirectorID"]) {
-        //     $movie->Directors()->sync($data["DirectorID"]);
-        // }
-        // if ($data["ActorID"]) {
-        //     $movie->Actors()->sync($data["ActorID"]);
-        // }
-        // if ($data["CountryID"]) {
-        //     $movie->Countries()->sync($data["CountryID"]);
-        // }
-        // if ($data["GenreID"]) {
-        //     $movie->Genres()->sync($data["GenreID"]);
-        // }
-        // if ($episodes) {
-        //     foreach ($episodes as $ep) {
-        //         $episode = Episode::find($ep->EpisodeID);
-        //         if(!$episode) continue; 
-        //         $episode->fill([
-        //             "EpisodeName" => $ep->EpisodeName,
-        //         ]);
-        //         if ($episode->isDirty()) {
-        //             $episode->save();
-        //         }
-        //         if (!empty($ep->sources)) {
-        //             foreach ($ep->sources as $sv) {
-        //                 $serve = Server::find($sv->ServerID);
-        //                 if(!$serve) continue;
-        //                 $serve->fill([
-        //                     "ServerName" => $sv->ServerName,
-        //                     "Link_embed" => $sv->Link_embed,
-        //                     "Link_m3u8" => $sv->Link_m3u8
-        //                 ]);
-        //                 if ($serve->isDirty()) {
-        //                     $serve->save();
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        // return response()->json([
-        //     "message" => "Cập nhật thành công!",
-        // ]);
-        return response($episodes);
+        if ($request->hasFile("MovieImage")) {
+            if ($movie->MovieImage) {
+                $oldFileName = storage_path("app/public/upload/image/" . $movie->MovieImage);
+                if (File::exists($oldFileName)) {
+                    File::delete($oldFileName);
+                }
+            }
+            $file = $request->file("MovieImage");
+            $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileNameExt = $file->getClientOriginalExtension();
+            $newFileName = $fileNameWithoutExt . "_" . time() . "." . $fileNameExt;
+            $file->move(storage_path("app/public/upload/image"), $newFileName);
+            $data["MovieImage"] = $newFileName;
+        } else {
+            $data["MovieImage"] = $movie->MovieImage;
+        }
+        $movie->fill([
+            'MovieName' => $data['MovieName'],
+            'MovieYear' => $data['MovieYear'],
+            'MovieDescription' => $data['MovieDescription'],
+            'MovieEvaluate' => $data['MovieEvaluate'],
+            'MovieStatus' => $data['MovieStatus'],
+            'MovieLink' => $data['MovieLink'],
+            'MovieImage' => $data['MovieImage'],
+            'TypeID' => $data['TypeID'],
+            "TotalEpisode" => $data["TotalEpisode"],
+            "MovieType" => $data["MovieType"],
+        ]);
+        if ($movie->isDirty()) {
+            $movie->save();
+        }
+        if ($data["DirectorID"]) {
+            $movie->Directors()->sync($data["DirectorID"]);
+        }
+        if ($data["ActorID"]) {
+            $movie->Actors()->sync($data["ActorID"]);
+        }
+        if ($data["CountryID"]) {
+            $movie->Countries()->sync($data["CountryID"]);
+        }
+        if ($data["GenreID"]) {
+            $movie->Genres()->sync($data["GenreID"]);
+        }
+        if ($episodes) {
+            foreach ($episodes as $ep) {
+                //cập nhật đối với tập cũ
+                if (!empty($ep->EpisodeID)) {
+                    $episode = Episode::find($ep->EpisodeID);
+                    if (!$episode) continue;
+                    $episode->fill([
+                        "EpisodeName" => $ep->EpisodeName,
+                    ]);
+                    if ($episode->isDirty()) {
+                        $episode->save();
+                    }
+                    if (!empty($ep->sources)) {
+                        foreach ($ep->sources as $sv) {
+                            if (!empty($sv->ServerID)) {
+                                $serve = Server::find($sv->ServerID);
+                                if (!$serve) continue;
+                                $serve->fill([
+                                    "ServerName" => $sv->ServerName,
+                                    "Link_embed" => $sv->Link_embed,
+                                    "Link_m3u8" => $sv->Link_m3u8
+                                ]);
+                                if ($serve->isDirty()) {
+                                    $serve->save();
+                                }
+                            } else if(empty($sv->ServerID)) {
+                                Server::create([
+                                    "ServerName" => $sv->ServerName,
+                                    "Link_embed" => $sv->Link_embed,
+                                    "Link_m3u8" => $sv->Link_m3u8,
+                                    "EpisodeID" => $episode->EpisodeID
+                                ]);
+                            }
+                        }
+                    }
+                //doi voi tap them moi
+                } else {
+                    $newEp =  Episode::create([
+                        "EpisodeName" => $ep->EpisodeName,
+                        "MovieID" => $movie->MovieID
+                    ]);
+                    foreach ($ep->sources as $sv) {
+                        Server::create([
+                            "ServerName" => $sv->ServerName,
+                            "Link_embed" => $sv->Link_embed,
+                            "Link_m3u8" => $sv->Link_m3u8,
+                            "EpisodeID" => $newEp->EpisodeID
+                        ]);
+                    }
+                }
+            }
+        }
+        return response()->json([
+            "message" => "Cập nhật thành công!",
+        ]);
+        // return response($episodes);
     }
     public function destroy(Movie $movie)
     {

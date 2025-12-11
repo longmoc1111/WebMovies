@@ -16,6 +16,7 @@ export default function Update() {
   const [chooseType, setChooseType] = useState("single");
   const [episodes, setEpisodes] = useState();
   const [selectedEp, setSelectedEp] = useState();
+  const [oldEpisodes, setOldEpisodes] = useState();
 
   const navigate = useNavigate();
   const [errors, setErrors] = useState();
@@ -78,9 +79,41 @@ export default function Update() {
         ],
       },
     ]);
-    // setSelectedEp(episodes.lenght)
+    setSelectedEp(episodes.length);
   };
 
+  const addSource = (index) => {
+    setEpisodes((prev) => {
+      return prev.map((ep, i) => {
+        if (i == index) {
+          return {
+            ...ep,
+            sources: [
+              ...ep.sources,
+              {
+                ServerName: "",
+                Link_embed: "",
+                Link_m3u8: "",
+              },
+            ],
+          };
+        }
+        return ep;
+      });
+    });
+  };
+  const removeSource = (index, srcIndex) => {
+    setEpisodes((prev) => {
+      return prev.map((ep, i) => {
+        if (i !== index) return ep;
+
+        return {
+          ...ep,
+          sources: ep.sources.filter((_, iSrc) => iSrc !== srcIndex),
+        };
+      });
+    });
+  };
   const [formData, setFormData] = useState({
     MovieName: "",
     MovieDescription: "",
@@ -119,7 +152,7 @@ export default function Update() {
     axiosClient
       .get(`/movies/${id}`)
       .then(({ data }) => {
-        console.log(data);
+        // console.log(data);
 
         setDirectors(
           data.directors.map((d) => ({
@@ -169,7 +202,10 @@ export default function Update() {
       });
   }, []);
 
-  // console.log(formData)
+  console.log(episodes);
+  console.log("olde", oldEpisodes);
+
+  // console.log(JSON.stringify(episodes[selectedEp].sources));
 
   const onUpdate = (ev) => {
     ev.preventDefault();
@@ -199,11 +235,11 @@ export default function Update() {
       })
       .then(({ data }) => {
         console.log(data);
-        // navigate("/movies", {
-        //   state: {
-        //     message: data.message,
-        //   },
-        // });
+        navigate("/movies", {
+          state: {
+            message: data.message,
+          },
+        });
       })
       .catch((err) => {
         const response = err.response;
@@ -215,8 +251,8 @@ export default function Update() {
       });
   };
 
-  console.log(episodes);
-  console.log("selected ep", selectedEp);
+  // console.log(episodes);
+  // console.log("selected ep", selectedEp);
 
   // console.log("fm dáta", formData);
 
@@ -554,18 +590,20 @@ export default function Update() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-12">
-                    <div className="sign__group justify-content-center d-flex">
-                      <div className="sign__season">
-                        <img
-                          src={`${
-                            import.meta.env.VITE_API_BASE_URL
-                          }/storage/upload/image/${formData.MovieImage}`}
-                          alt=""
-                        />
+                  {formData.MovieImage !== null && (
+                    <div className="col-12">
+                      <div className="sign__group justify-content-center d-flex">
+                        <div className="sign__season">
+                          <img
+                            src={`${
+                              import.meta.env.VITE_API_BASE_URL
+                            }/storage/upload/image/${formData.MovieImage}`}
+                            alt=""
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
                   <div className="col-12 mt-3">
                     <div className="sign__group">
@@ -579,6 +617,10 @@ export default function Update() {
                             checked={chooseType == "single"}
                             onChange={() => {
                               setChooseType("single");
+                              setFormData((prev) => ({
+                                ...prev,
+                                MovieType: "single",
+                              }));
                               setEpisodes([
                                 {
                                   EpisodeName: 0,
@@ -591,6 +633,20 @@ export default function Update() {
                                   ],
                                 },
                               ]);
+                              const checkEpisode = episodes.some((ep) =>
+                                ep.EpisodeID ? ep.EpisodeID != null : false
+                              );
+                              if (
+                                chooseType == "series" &&
+                                episodes.length > 0 &&
+                                checkEpisode
+                              ) {
+                                const modal = new bootstrap.Modal(
+                                  document.getElementById("modal_delete")
+                                );
+                                setOldEpisodes(episodes);
+                                modal.show();
+                              }
                             }}
                           />
                           <label htmlFor="type1">Phim lẻ</label>
@@ -604,7 +660,12 @@ export default function Update() {
                             checked={chooseType == "series"}
                             onChange={() => {
                               setChooseType("series");
-                              setEpisodes([ {
+                              setFormData((prev) => ({
+                                ...prev,
+                                MovieType: "series",
+                              }));
+                              setEpisodes([
+                                {
                                   EpisodeName: "",
 
                                   sources: [
@@ -614,7 +675,25 @@ export default function Update() {
                                       Link_m3u8: "",
                                     },
                                   ],
-                                },]);
+                                },
+                              ]);
+                              setSelectedEp(0);
+                    
+                              const checkEpisode = episodes.some((ep) =>
+                                ep.EpisodeID ? ep.EpisodeID != null : false
+                              );
+                              console.log("cjeck", checkEpisode);
+                              if (
+                                chooseType == "single" &&
+                                episodes.length > 0 &&
+                                checkEpisode
+                              ) {
+                                const modal = new bootstrap.Modal(
+                                  document.getElementById("modal_delete")
+                                );
+                                setOldEpisodes(episodes);
+                                modal.show();
+                              }
                             }}
                           />
                           <label htmlFor="type2">Phim bộ</label>
@@ -863,138 +942,142 @@ export default function Update() {
                           {/* ))} */}
                       {/* </div> */}
                       {/* </div> */}
-
-                      <div className="episode-list d-flex gap-2 align-items-center mb-3">
-                        {episodes.map((ep, index) => (
-                          <button
-                            key={index}
-                            className={`btn ${
-                              selectedEp === index
-                                ? "btn-primary"
-                                : "btn-secondary"
-                            }`}
-                            onClick={() => setSelectedEp(index)}
-                            type="button"
-                          >
-                            Tập {ep.EpisodeName}
-                          </button>
-                        ))}
-
-                        {/* Nút thêm tập mới */}
-                        <button
-                          className="btn btn-success"
-                          type="button"
-                          // onClick={addEpisode}
-                          onClick={addEpisode}
-                        >
-                          + Tập mới
-                        </button>
-                      </div>
-
-                      {selectedEp !== null && (
-                        <div className="episode-editor">
-                          {/* Tên tập */}
-                          <div className="sign__group mb-3">
-                            <input
-                              type="text"
-                              className="sign__input"
-                              placeholder="Tên tập"
-                              value={episodes[selectedEp].EpisodeName}
-                              onChange={(e) =>
-                                updateEpisode(selectedEp, {
-                                  EpisodeName: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-
-                          {/* Nguồn phim */}
-                          <div className="d-flex align-items-center mb-2">
-                            <span className="sign__episode-title">
-                              Nguồn phim
-                            </span>
-
+                      <div className="sign__season">
+                        <div className="episode-list d-flex gap-2 align-items-center sign__group">
+                          {episodes.map((ep, index) => (
                             <button
-                              className="sign__add btn"
-                              // onClick={() => addSource(selectedEp)}
+                              key={index}
+                              className={`btn  ${
+                                selectedEp === index
+                                  ? "btn-primary"
+                                  : "btn-secondary"
+                              }`}
+                              onClick={() => setSelectedEp(index)}
+                              type="button"
                             >
-                              <i className="bi bi-plus"></i>
+                              Tập {ep.EpisodeName}
                             </button>
-                          </div>
-
-                          {episodes[selectedEp].sources.map((src, srcIndex) => (
-                            <div
-                              className="row mb-3"
-                              // key={srcIndex}
-                            >
-                              {/* {srcIndex > 0 && ( */}
-                              <button
-                                className="sign__delete btn"
-                                // onClick={() =>
-                                //   removeSource(selectedEp, srcIndex)
-                                // }
-                              >
-                                <i className="bi bi-x"></i>
-                              </button>
-                              {/* )} */}
-
-                              {/* Server */}
-                              <div className="col-md-6">
-                                <div className="sign__group">
-                                  <Select
-                                    options={serverOptions}
-                                    value={serverOptions.find(
-                                      (opt) => src.ServerName === opt.value
-                                    )}
-                                    onChange={(selected) => {
-                                      updateSource(selectedEp, srcIndex, {
-                                        ServerName: selected.value,
-                                      });
-                                    }}
-                                    styles={customStyles}
-                                    placeholder="Server"
-                                  />
-                                </div>
-                              </div>
-
-                              {/* Link loại 1 */}
-                              <div className="col-12">
-                                <div className="sign__group">
-                                  <input
-                                    type="url"
-                                    className="sign__input"
-                                    placeholder="Link_embed"
-                                    value={src.Link_embed}
-                                    onChange={(e) => {
-                                      updateSource(selectedEp, srcIndex, {
-                                        Link_embed: e.target.value,
-                                      });
-                                    }}
-                                  />
-                                </div>
-                              </div>
-
-                              {/* Link loại 2 */}
-                              <div className="col-12">
-                                <div className="sign__group">
-                                  <input
-                                    type="url"
-                                    className="sign__input"
-                                    placeholder="Link_m3u8"
-                                    value={src.Link_m3u8}
-                                    onChange={(e) => {
-                                      updateSource(selectedEp, srcIndex, {
-                                        Link_m3u8: e.target.value,
-                                      });
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </div>
                           ))}
-                          {/* ))} */}
+
+                          {/* Nút thêm tập mới */}
+                          <button
+                            className="btn btn-success"
+                            type="button"
+                            // onClick={addEpisode}
+                            onClick={addEpisode}
+                          >
+                            + Tập mới
+                          </button>
                         </div>
-                      )}
+                      </div>
+                      <div className="sign__season">
+                        {selectedEp !== null && (
+                          <div className="episode-editor">
+                            {/* Tên tập */}
+                            <div className="sign__group mb-3">
+                              <input
+                                type="number"
+                                // min={1}
+                                className="sign__input"
+                                placeholder="Tên tập"
+                                value={episodes[selectedEp]?.EpisodeName}
+                                onChange={(e) =>
+                                  updateEpisode(selectedEp, {
+                                    EpisodeName: e.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+
+                            {/* Nguồn phim */}
+                            <div className="d-flex align-items-center mb-2">
+                              <span className="sign__episode-title">
+                                Nguồn phim
+                              </span>
+
+                              <button
+                                type="button"
+                                className="sign__add btn"
+                                onClick={() => addSource(selectedEp)}
+                              >
+                                <i className="bi bi-plus"></i>
+                              </button>
+                            </div>
+
+                            {episodes[selectedEp]?.sources?.map(
+                              (src, srcIndex) => (
+                                <div className="row mb-3" key={srcIndex}>
+                                  {srcIndex > 0 && (
+                                    <button
+                                      className="sign__delete btn"
+                                      style={{ marginRight: "35px" }}
+                                      onClick={() =>
+                                        removeSource(selectedEp, srcIndex)
+                                      }
+                                    >
+                                      <i className="bi bi-x"></i>
+                                    </button>
+                                  )}
+
+                                  {/* Server */}
+                                  <div className="col-6 col-md-6">
+                                    <div className="sign__group">
+                                      <Select
+                                        options={serverOptions}
+                                        value={serverOptions.find(
+                                          (opt) => src.ServerName === opt.value
+                                        )}
+                                        onChange={(selected) => {
+                                          updateSource(selectedEp, srcIndex, {
+                                            ServerName: selected.value,
+                                          });
+                                        }}
+                                        styles={customStyles}
+                                        placeholder="Server"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  {/* Link loại 1 */}
+                                  <div className="col-12">
+                                    <div className="sign__group">
+                                      <input
+                                        type="url"
+                                        className="sign__input"
+                                        placeholder="Link_embed"
+                                        value={src.Link_embed}
+                                        onChange={(e) => {
+                                          updateSource(selectedEp, srcIndex, {
+                                            Link_embed: e.target.value,
+                                          });
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+
+                                  {/* Link loại 2 */}
+                                  <div className="col-12">
+                                    <div className="sign__group">
+                                      <input
+                                        type="url"
+                                        className="sign__input"
+                                        placeholder="Link_m3u8"
+                                        value={src.Link_m3u8}
+                                        onChange={(e) => {
+                                          updateSource(selectedEp, srcIndex, {
+                                            Link_m3u8: e.target.value,
+                                          });
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                            {/* ))} */}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1008,6 +1091,46 @@ export default function Update() {
             </div>
           )}
           {/* <!-- end form --> */}
+        </div>
+      </div>
+      {/* <!-- delete modal --> */}
+      <div
+        class="modal fade"
+        id="modal_delete"
+        tabindex="-1"
+        aria-labelledby="modal-delete"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal__content">
+              <form action="#" class="modal__form">
+                <h4 class="modal__title">Cảnh báo</h4>
+
+                <p class="modal__text">
+                  Bạn có muốn thay đổi loại phim, dữ liệu sẽ bị xóa hoàn toàn?
+                </p>
+
+                <div class="modal__btns">
+                  <button class="modal__btn modal__btn--apply" type="button">
+                    <span>Xóa</span>
+                  </button>
+                  <button
+                    class="modal__btn modal__btn--dismiss"
+                    type="button"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                    onClick={() => {
+                      setEpisodes(oldEpisodes);
+                      setChooseType("series");
+                    }}
+                  >
+                    <span>Đóng</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </main>
