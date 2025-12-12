@@ -14,6 +14,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get("/movies/create-data", [MovieController::class, "createData"]);
     Route::get("/movies/update-data",[MovieController::class, "updateData"]);
+    Route::delete("/delete-episodes", [MovieController::class, "deleteEpisodes"]);
+    Route::delete("delete-single-eposode/{id}", [MovieController::class, "deleteSingleEpisode"]);
     Route::apiResource('users', UserController::class);
     Route::apiResource('/movies',MovieController::class);
 }); 

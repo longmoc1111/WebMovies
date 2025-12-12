@@ -114,6 +114,34 @@ export default function Update() {
       });
     });
   };
+
+  const onDelete = (ev) => {
+    ev.preventDefault();
+    axiosClient
+      .delete("/delete-episodes", {
+        data: { episodes: oldEpisodes },
+      })
+      .then(({ data }) => {
+        console.log(data);
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("modal_delete")
+        );
+        modal.hide();
+      })
+      .catch((er) => {
+        console.log(er);
+      });
+  };
+  const onDeleteSingleEp = (ev, id) => {
+    ev.preventDefault()
+    axiosClient.delete(`delete-single-eposode/${id}`)
+    .then(({data}) => {
+      console.log(data)
+    })
+    .catch((er) => {
+      console.log(er)
+    })
+  } 
   const [formData, setFormData] = useState({
     MovieName: "",
     MovieDescription: "",
@@ -291,12 +319,7 @@ export default function Update() {
 
           {!loading && (
             <div className="col-12">
-              <form
-                onSubmit={onUpdate}
-                method="POST"
-                className="sign__form sign__form--add"
-                encType="multipart/form-data"
-              >
+              <form onSubmit={onUpdate} className="sign__form sign__form--add">
                 <div className="row mb-4">
                   <div className="col-12 col-xl-7">
                     <div className="row">
@@ -678,7 +701,7 @@ export default function Update() {
                                 },
                               ]);
                               setSelectedEp(0);
-                    
+
                               const checkEpisode = episodes.some((ep) =>
                                 ep.EpisodeID ? ep.EpisodeID != null : false
                               );
@@ -706,7 +729,7 @@ export default function Update() {
                       <div>
                         <div className="row">
                           <div className="sign__season">
-                            <div className="col-12 col-md-6">
+                            <div className="col-6 col-md-6">
                               <div className="sign__group">
                                 <input
                                   type="text"
@@ -718,6 +741,7 @@ export default function Update() {
                               </div>
                             </div>
                           </div>
+
                           <div className="col-12 d-flex align-items-center mb-3">
                             <span className="sign__episode-title">
                               Nguồn phim
@@ -726,6 +750,7 @@ export default function Update() {
                               onClick={() => addSource(0)}
                               className="sign__add btn"
                               type="button"
+                              style={{ marginBottom: "5px" }}
                             >
                               <i className="bi bi-plus"></i>
                             </button>
@@ -815,133 +840,6 @@ export default function Update() {
 
                   {chooseType == "series" && (
                     <div className="col-12">
-                      {/* <div>
-                        <div className="sign__season">
-                          <div className="col-12">
-                            <div className="sign__group">
-                              <input
-                                type="number"
-                                className="sign__input"
-                                placeholder="Số tập"
-                                required
-                                defaultValue={formData.Episodes?.length}
-                                onChange={(e) => createEpisode(e.target.value)}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="row">
-                          {episodes.map((ep, index) => (
-                            <div className="sign__season">
-                              <div className="col-12 col-md-6">
-                                <div className="sign__group">
-                                  <input
-                                    type="text"
-                                    className="sign__input"
-                                    placeholder="Tập phim"
-                                    value={ep.EpisodeName}
-                                  />
-                                </div>
-                              </div>
-
-                              <div className="col-12 d-flex align-items-center mb-3">
-                                <span className="sign__episode-title">
-                                  Nguồn phim
-                                </span>
-                                <button
-                                  onClick={() => addSource(0)}
-                                  className="sign__add btn"
-                                  type="button"
-                                >
-                                  <i className="bi bi-plus"></i>
-                                </button>
-                              </div>
-
-                              {episodes[index].sources.map((src, srcIndex) => (
-                                <div className="sign__season">
-                                  {srcIndex >= 1 && (
-                                    <div className="col-12">
-                                      <button
-                                        // onClick={() => removeSource(0, srcIndex)}
-                                        className="sign__delete btn"
-                                        style={{ marginRight: "20px" }}
-                                        type="button"
-                                      >
-                                        <i className="bi bi-x"></i>
-                                      </button>
-                                    </div>
-                                  )}
-                                  <div className="col-6 col-md-6">
-                                    <div className="sign__group">
-                                      <Select
-                                        options={serverOptions}
-                                        value={serverOptions.find(
-                                          (opt) => opt.value === src.ServerName
-                                        )}
-                                        onChange={(selected) => {
-                                          setEpisodes((prev) => {
-                                            const copy = [...prev];
-                                            copy[0].sources[
-                                              srcIndex
-                                            ].ServerName = selected.value;
-                                            return copy;
-                                          });
-                                        }}
-                                        placeholder={"Server"}
-                                        styles={customStyles}
-                                        required
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <div className="col-12  ">
-                                    <div className="sign__group">
-                                      <input
-                                        type="url"
-                                        className="sign__input"
-                                        placeholder="Link_embed"
-                                        required
-                                        value={src.Link_embed}
-                                        onChange={(e) => {
-                                          setEpisodes((prev) => {
-                                            const copy = [...prev];
-                                            copy[0].sources[
-                                              srcIndex
-                                            ].Link_embed = e.target.value;
-                                            return copy;
-                                          });
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <div className="col-12  ">
-                                    <div className="sign__group">
-                                      <input
-                                        type="url"
-                                        className="sign__input"
-                                        placeholder="Link_m3u8"
-                                        required
-                                        value={src.Link_m3u8}
-                                        onChange={(e) => {
-                                          setEpisodes((prev) => {
-                                            const copy = [...prev];
-                                            copy[0].sources[
-                                              srcIndex
-                                            ].Link_m3u8 = e.target.value;
-                                            return copy;
-                                          });
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          ))}
-                          {/* ))} */}
-                      {/* </div> */}
-                      {/* </div> */}
                       <div className="sign__season">
                         <div className="episode-list d-flex gap-2 align-items-center sign__group">
                           {episodes.map((ep, index) => (
@@ -974,23 +872,41 @@ export default function Update() {
                         {selectedEp !== null && (
                           <div className="episode-editor">
                             {/* Tên tập */}
-                            <div className="sign__group mb-3">
-                              <input
-                                type="number"
-                                // min={1}
-                                className="sign__input"
-                                placeholder="Tên tập"
-                                value={episodes[selectedEp]?.EpisodeName}
-                                onChange={(e) =>
-                                  updateEpisode(selectedEp, {
-                                    EpisodeName: e.target.value,
-                                  })
-                                }
-                              />
+                            <div className="sign__season d-flex justify-content-between align-items-center">
+                              <div className="col-6 col-md-6">
+                                <div className="sign__group">
+                                  <input
+                                    type="number"
+                                    // min={1}
+                                    className="sign__input"
+                                    placeholder="Tên tập"
+                                    value={episodes[selectedEp]?.EpisodeName}
+                                    onChange={(e) =>
+                                      updateEpisode(selectedEp, {
+                                        EpisodeName: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </div>
+                              </div>
+                              <button
+                                className="btn btn-danger"
+                                style={{ marginBottom: "20px" }}
+                                type="button"
+                                // onClick={(ev) => onDeleteSingleEp(ev, episodes[selectedEp]?.EpisodeID)}
+                                onClick={(ev) => {
+                                  const modal = new bootstrap.Modal(document.getElementById(`delele_single_episodes_${episodes[selectedEp].EpisodeID}`))
+                                  modal.show()
+                                }}
+
+                                
+                              >
+                                xóa tập
+                              </button>
                             </div>
 
                             {/* Nguồn phim */}
-                            <div className="d-flex align-items-center mb-2">
+                            <div className="d-flex align-items-center sign__group">
                               <span className="sign__episode-title">
                                 Nguồn phim
                               </span>
@@ -999,6 +915,7 @@ export default function Update() {
                                 type="button"
                                 className="sign__add btn"
                                 onClick={() => addSource(selectedEp)}
+                                style={{ marginBottom: "5px" }}
                               >
                                 <i className="bi bi-plus"></i>
                               </button>
@@ -1006,7 +923,8 @@ export default function Update() {
 
                             {episodes[selectedEp]?.sources?.map(
                               (src, srcIndex) => (
-                                <div className="row mb-3" key={srcIndex}>
+                               <div className="sign__season">
+                                 <div className="row mb-3" key={srcIndex}>
                                   {srcIndex > 0 && (
                                     <button
                                       className="sign__delete btn"
@@ -1072,6 +990,7 @@ export default function Update() {
                                     </div>
                                   </div>
                                 </div>
+                               </div>
                               )
                             )}
                             {/* ))} */}
@@ -1093,18 +1012,20 @@ export default function Update() {
           {/* <!-- end form --> */}
         </div>
       </div>
-      {/* <!-- delete modal --> */}
+           {/* modal canh bao khi thay doi loai phim */}
       <div
         class="modal fade"
         id="modal_delete"
         tabindex="-1"
         aria-labelledby="modal-delete"
         aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
       >
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal__content">
-              <form action="#" class="modal__form">
+              <form onSubmit={onDelete} class="modal__form">
                 <h4 class="modal__title">Cảnh báo</h4>
 
                 <p class="modal__text">
@@ -1112,7 +1033,7 @@ export default function Update() {
                 </p>
 
                 <div class="modal__btns">
-                  <button class="modal__btn modal__btn--apply" type="button">
+                  <button class="modal__btn modal__btn--apply" type="submit">
                     <span>Xóa</span>
                   </button>
                   <button
@@ -1121,18 +1042,69 @@ export default function Update() {
                     data-bs-dismiss="modal"
                     aria-label="Close"
                     onClick={() => {
-                      setEpisodes(oldEpisodes);
-                      setChooseType("series");
+                      if (chooseType == "single") {
+                        setEpisodes(oldEpisodes);
+                        setChooseType("series");
+                      } else {
+                        setEpisodes(oldEpisodes);
+                        setChooseType("single");
+                      }
                     }}
                   >
-                    <span>Đóng</span>
+                    <span>Không thay đổi</span>
                   </button>
                 </div>
               </form>
             </div>
           </div>
         </div>
+        {/* modal xac nhan xoa tap phim */}
+        
+      
+      </div>
+
+      {/* modal xac nhan khi xoa bo phim */}
+         <div
+        class="modal fade"
+        id={`delele_single_episodes_${episodes?.[selectedEp]?.EpisodeID}`}
+        tabindex="-1"
+        aria-labelledby="modal-delete"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal__content">
+              <form class="modal__form">
+                <h4 class="modal__title">Cảnh báo</h4>
+
+                <p class="modal__text">
+                  Bạn có muốn thay đổi loại phim, dữ liệu sẽ bị xóa hoàn toàn?
+                </p>
+
+                <div class="modal__btns">
+                  <button class="modal__btn modal__btn--apply" type="submit">
+                    <span>Xóa</span>
+                  </button>
+                  <button
+                    class="modal__btn modal__btn--dismiss"
+                    type="button"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span>Không thay đổi</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        {/* modal xac nhan xoa tap phim */}
+        
+      
       </div>
     </main>
   );
 }
+

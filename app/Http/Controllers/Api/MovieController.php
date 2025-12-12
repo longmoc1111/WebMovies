@@ -236,4 +236,25 @@ class MovieController extends Controller
             "message" => "Xóa thành công!",
         ]);
     }
+    
+    public function deleteEpisodes(Request $request){
+      $data = $request->episodes;
+    if($data){
+        foreach($data as $dt){
+            $episode = Episode::find($dt["EpisodeID"]);
+            if(!$episode) continue;
+            $episode->Servers()->delete();
+            $episode->delete();
+        }
+    }
+      return response()->json([
+        "message" => "dữ liệu các tập phim đã được xóa!",
+      ]);
+    }
+
+    
+    public function deleteSingleEpisode($id){
+        $data = $id;
+        return response($data);
+    }
 }
