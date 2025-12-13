@@ -103,9 +103,9 @@ export default function DefaultLayout() {
             </li>
 
             <li className="sidebar__nav-item">
-              <a href="#" className="sidebar__nav-link">
+              <Link to = "/directors" className="sidebar__nav-link">
                 <i className="bi bi-chat"></i> <span>Đạo diễn</span>
-              </a>
+              </Link>
             </li>
 
             <li className="sidebar__nav-item">

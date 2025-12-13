@@ -218,7 +218,7 @@ class MovieController extends Controller
         $movie->Actors()->detach();
         $movie->Directors()->detach();
         $movie->Countries()->detach();
-        // $movie->Types()->detach();
+        $movie->Genres()->detach();
         if ($movie->MovieImage != null) {
             $fileName = storage_path("app/public/upload/image/" . $movie->MovieImage);
             if (File::exists($fileName)) {

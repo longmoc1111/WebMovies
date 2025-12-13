@@ -10,6 +10,8 @@ import UpdateUser from "./views/adminPages/userPages/Update";
 import Moives from "./views/adminPages/moviesPage/Moives";
 import Create from "./views/adminPages/MoviesPage/Create";
 import Update from "./views/adminPages/MoviesPage/Update";
+import Director from "./views/adminPages/directorPage/Director";
+import CreateDr from "./views/adminPages/directorPage/CreateDr";
 
 
 const router = createBrowserRouter([
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
       {
         path:"/movies/update/:id",
         element:<Update/>
+      },
+      {
+        path:"/directors",
+        element:<Director/>
+      },
+      {
+        path:"/directors/create",
+        element: <CreateDr/>
       }
     ],
   },
