@@ -17,34 +17,10 @@ export default function Update() {
   const [episodes, setEpisodes] = useState();
   const [selectedEp, setSelectedEp] = useState();
   const [oldEpisodes, setOldEpisodes] = useState();
+  const [deleteServer, setDeleteServer] = useState(null)
 
   const navigate = useNavigate();
   const [errors, setErrors] = useState();
-
-  // const createEpisode = (count) => {
-  //   setEpisodes((prev) => {
-  //     const previous = [...prev];
-  //     if (count > previous.length) {
-  //       const extra = Array.from(
-  //         { length: count - previous.length },
-  //         (_, i) => ({
-  //           ID: previous.length + i + 1,
-  //           EpisodeName: "",
-
-  //           sources: [
-  //             {
-  //               ServerName: "",
-  //               Link_embed: "",
-  //               Link_m3u8: "",
-  //             },
-  //           ],
-  //         })
-  //       );
-  //       return [...previous, ...extra];
-  //     }
-  //     return previous.slice(0, count);
-  //   });
-  // };
 
   const updateSource = (index, srcIndex, newdata) => {
     setEpisodes((prev) => {
@@ -65,11 +41,10 @@ export default function Update() {
   };
 
   const addEpisode = () => {
-    setEpisodes((prev) => [
-      ...prev,
-      {
-        EpisodeName: "",
-
+    setEpisodes((prev) => {
+      const newEpisodeIndex = prev.length;
+      const newEpisode = {
+        EpisodeName: newEpisodeIndex + 1,
         sources: [
           {
             ServerName: "",
@@ -77,9 +52,25 @@ export default function Update() {
             Link_m3u8: "",
           },
         ],
-      },
-    ]);
-    setSelectedEp(episodes.length);
+      };
+      setSelectedEp(newEpisodeIndex);
+      return [...prev, newEpisode];
+    });
+  };
+
+  const removeEpisode = (index) => {
+    setEpisodes((prev) => {
+      return prev.filter((_, i) => i !== index);
+    });
+    if (selectedEp == 0) {
+      setSelectedEp(selectedEp);
+    } else {
+      setSelectedEp(selectedEp - 1);
+    }
+    const modal = bootstrap.Modal.getInstance(
+      document.getElementById(`delele_single_episodes_${index}`)
+    );
+    modal.hide();
   };
 
   const addSource = (index) => {
@@ -133,15 +124,43 @@ export default function Update() {
       });
   };
   const onDeleteSingleEp = (ev, id) => {
-    ev.preventDefault()
-    axiosClient.delete(`delete-single-eposode/${id}`)
-    .then(({data}) => {
-      console.log(data)
-    })
-    .catch((er) => {
-      console.log(er)
-    })
-  } 
+    ev.preventDefault();
+    axiosClient
+      .delete(`delete-single-eposode/${id}`)
+      .then(({ data }) => {
+        iziToast.success({
+          message: data,
+          position: "topRight",
+        });
+        removeEpisode(selectedEp);
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById(`delele_single_episodes_${selectedEp}`)
+        );
+        modal.hide();
+      })
+      .catch((er) => {
+        console.log(er);
+      });
+  };
+  const onDeleteServer = (ev, selected, srcIndex, id) => {
+    ev.preventDefault();
+    axiosClient
+      .delete(`/delete-server/${id}`)
+      .then(({ data }) => {
+        removeSource(selected, srcIndex);
+        iziToast.success({
+          message: data,
+          position: "topRight"
+        })
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("delete_server_modal")
+        );
+        modal.hide();
+      })
+      .catch((er) => {
+        console.log(er);
+      });
+  };
   const [formData, setFormData] = useState({
     MovieName: "",
     MovieDescription: "",
@@ -689,8 +708,7 @@ export default function Update() {
                               }));
                               setEpisodes([
                                 {
-                                  EpisodeName: "",
-
+                                  EpisodeName: 1,
                                   sources: [
                                     {
                                       ServerName: "",
@@ -705,7 +723,6 @@ export default function Update() {
                               const checkEpisode = episodes.some((ep) =>
                                 ep.EpisodeID ? ep.EpisodeID != null : false
                               );
-                              console.log("cjeck", checkEpisode);
                               if (
                                 chooseType == "single" &&
                                 episodes.length > 0 &&
@@ -761,7 +778,20 @@ export default function Update() {
                               {srcIndex >= 1 && (
                                 <div className="col-12">
                                   <button
-                                    // onClick={() => removeSource(0, srcIndex)}
+                                    onClick={() => {
+                                      if (src.ServerID) {
+                                        setDeleteServer({
+                                          selectedEp: 0,
+                                          srcIndex,
+                                          ServerID: src.ServerID
+                                        })    
+                                        const el = document.getElementById("delete_server_modal")
+                                        const modal = bootstrap.Modal.getOrCreateInstance(el)
+                                        modal.show();
+                                      } else {
+                                        removeSource(selectedEp, srcIndex);
+                                      }
+                                    }}
                                     className="sign__delete btn"
                                     style={{ marginRight: "20px" }}
                                     type="button"
@@ -868,8 +898,8 @@ export default function Update() {
                           </button>
                         </div>
                       </div>
-                      <div className="sign__season">
-                        {selectedEp !== null && (
+                      {selectedEp !== null && episodes.length > 0 && (
+                        <div className="sign__season">
                           <div className="episode-editor">
                             {/* Tên tập */}
                             <div className="sign__season d-flex justify-content-between align-items-center">
@@ -880,6 +910,7 @@ export default function Update() {
                                     // min={1}
                                     className="sign__input"
                                     placeholder="Tên tập"
+                                    readOnly
                                     value={episodes[selectedEp]?.EpisodeName}
                                     onChange={(e) =>
                                       updateEpisode(selectedEp, {
@@ -895,11 +926,13 @@ export default function Update() {
                                 type="button"
                                 // onClick={(ev) => onDeleteSingleEp(ev, episodes[selectedEp]?.EpisodeID)}
                                 onClick={(ev) => {
-                                  const modal = new bootstrap.Modal(document.getElementById(`delele_single_episodes_${episodes[selectedEp].EpisodeID}`))
-                                  modal.show()
+                                  const modal = new bootstrap.Modal(
+                                    document.getElementById(
+                                      `delele_single_episodes_${selectedEp}`
+                                    )
+                                  );
+                                  modal.show();
                                 }}
-
-                                
                               >
                                 xóa tập
                               </button>
@@ -923,80 +956,93 @@ export default function Update() {
 
                             {episodes[selectedEp]?.sources?.map(
                               (src, srcIndex) => (
-                               <div className="sign__season">
-                                 <div className="row mb-3" key={srcIndex}>
-                                  {srcIndex > 0 && (
-                                    <button
-                                      className="sign__delete btn"
-                                      style={{ marginRight: "35px" }}
-                                      onClick={() =>
-                                        removeSource(selectedEp, srcIndex)
-                                      }
-                                    >
-                                      <i className="bi bi-x"></i>
-                                    </button>
-                                  )}
-
-                                  {/* Server */}
-                                  <div className="col-6 col-md-6">
-                                    <div className="sign__group">
-                                      <Select
-                                        options={serverOptions}
-                                        value={serverOptions.find(
-                                          (opt) => src.ServerName === opt.value
-                                        )}
-                                        onChange={(selected) => {
-                                          updateSource(selectedEp, srcIndex, {
-                                            ServerName: selected.value,
-                                          });
+                                <div className="sign__season">
+                                  <div className="row mb-3" key={srcIndex}>
+                                    {srcIndex > 0 && (
+                                      <button
+                                        className="sign__delete btn"
+                                        style={{ marginRight: "50px" }}
+                                        type="button"
+                                        onClick={() => {
+                                          if (src.ServerID) {
+                                            setDeleteServer({
+                                              selectedEp,
+                                              srcIndex,
+                                              ServerID: src.ServerID
+                                            })
+                                            const el = document.getElementById("delete_server_modal")
+                                            const modal = bootstrap.Modal.getOrCreateInstance(el)
+                                            modal.show();
+                                          } else {
+                                            removeSource(selectedEp, srcIndex);
+                                          }
                                         }}
-                                        styles={customStyles}
-                                        placeholder="Server"
-                                      />
+                                      >
+                                        <i className="bi bi-x"></i>
+                                      </button>
+                                    )}
+
+                                    {/* Server */}
+                                    <div className="col-6 col-md-6">
+                                      <div className="sign__group">
+                                        <Select
+                                          options={serverOptions}
+                                          value={serverOptions.find(
+                                            (opt) =>
+                                              src.ServerName === opt.value
+                                          )}
+                                          onChange={(selected) => {
+                                            updateSource(selectedEp, srcIndex, {
+                                              ServerName: selected.value,
+                                            });
+                                          }}
+                                          styles={customStyles}
+                                          placeholder="Server"
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
 
-                                  {/* Link loại 1 */}
-                                  <div className="col-12">
-                                    <div className="sign__group">
-                                      <input
-                                        type="url"
-                                        className="sign__input"
-                                        placeholder="Link_embed"
-                                        value={src.Link_embed}
-                                        onChange={(e) => {
-                                          updateSource(selectedEp, srcIndex, {
-                                            Link_embed: e.target.value,
-                                          });
-                                        }}
-                                      />
+                                    {/* Link loại 1 */}
+                                    <div className="col-12">
+                                      <div className="sign__group">
+                                        <input
+                                          type="url"
+                                          className="sign__input"
+                                          placeholder="Link_embed"
+                                          value={src.Link_embed}
+                                          onChange={(e) => {
+                                            updateSource(selectedEp, srcIndex, {
+                                              Link_embed: e.target.value,
+                                            });
+                                          }}
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
 
-                                  {/* Link loại 2 */}
-                                  <div className="col-12">
-                                    <div className="sign__group">
-                                      <input
-                                        type="url"
-                                        className="sign__input"
-                                        placeholder="Link_m3u8"
-                                        value={src.Link_m3u8}
-                                        onChange={(e) => {
-                                          updateSource(selectedEp, srcIndex, {
-                                            Link_m3u8: e.target.value,
-                                          });
-                                        }}
-                                      />
+                                    {/* Link loại 2 */}
+                                    <div className="col-12">
+                                      <div className="sign__group">
+                                        <input
+                                          type="url"
+                                          className="sign__input"
+                                          placeholder="Link_m3u8"
+                                          value={src.Link_m3u8}
+                                          onChange={(e) => {
+                                            updateSource(selectedEp, srcIndex, {
+                                              Link_m3u8: e.target.value,
+                                            });
+                                          }}
+                                        />
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                               </div>
                               )
                             )}
                             {/* ))} */}
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1012,7 +1058,7 @@ export default function Update() {
           {/* <!-- end form --> */}
         </div>
       </div>
-           {/* modal canh bao khi thay doi loai phim */}
+      {/* modal canh bao khi thay doi loai phim */}
       <div
         class="modal fade"
         id="modal_delete"
@@ -1059,14 +1105,12 @@ export default function Update() {
           </div>
         </div>
         {/* modal xac nhan xoa tap phim */}
-        
-      
       </div>
 
       {/* modal xac nhan khi xoa bo phim */}
-         <div
+      <div
         class="modal fade"
-        id={`delele_single_episodes_${episodes?.[selectedEp]?.EpisodeID}`}
+        id={`delele_single_episodes_${selectedEp}`}
         tabindex="-1"
         aria-labelledby="modal-delete"
         aria-hidden="true"
@@ -1079,12 +1123,21 @@ export default function Update() {
               <form class="modal__form">
                 <h4 class="modal__title">Cảnh báo</h4>
 
-                <p class="modal__text">
-                  Bạn có muốn thay đổi loại phim, dữ liệu sẽ bị xóa hoàn toàn?
-                </p>
+                <p class="modal__text ">Bạn có chắc muốn xóa tập phim này?</p>
 
                 <div class="modal__btns">
-                  <button class="modal__btn modal__btn--apply" type="submit">
+                  <button
+                    class="modal__btn modal__btn--apply"
+                    type="button"
+                    onClick={(ev) => {
+                      if (episodes?.[selectedEp]?.EpisodeID) {
+                        onDeleteSingleEp(ev, episodes?.[selectedEp]?.EpisodeID);
+                      } else {
+                        console.log("SE2", selectedEp);
+                        removeEpisode(selectedEp);
+                      }
+                    }}
+                  >
                     <span>Xóa</span>
                   </button>
                   <button
@@ -1100,11 +1153,55 @@ export default function Update() {
             </div>
           </div>
         </div>
-        {/* modal xac nhan xoa tap phim */}
-        
-      
       </div>
+      {/* modal canh bao xoa nguon phim*/}
+      
+        <div
+          class="modal fade"
+          id="delete_server_modal"
+          tabindex="-1"
+          aria-labelledby="modal-delete"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal__content">
+                <form action="#" class="modal__form">
+                  <h4 class="modal__title">Cảnh báo</h4>
+
+                  <p class="modal__text">
+                    Nguồn phim này đã tồn tại bạn có chắc muốn xóa không?
+                  </p>
+
+                  <div class="modal__btns">
+                    <button
+                      class="modal__btn modal__btn--apply"
+                      type="button"
+                      onClick={(ev) => {
+                          if(deleteServer){
+                         onDeleteServer(ev, deleteServer.selectedEp, deleteServer.srcIndex, deleteServer.ServerID )
+                       }
+                      }
+                     
+                      }
+                    >
+                      <span>Xóa</span>
+                    </button>
+                    <button
+                      class="modal__btn modal__btn--dismiss"
+                      type="button"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span>Đóng</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      
     </main>
   );
 }
-

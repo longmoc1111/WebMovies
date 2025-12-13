@@ -254,7 +254,18 @@ class MovieController extends Controller
 
     
     public function deleteSingleEpisode($id){
-        $data = $id;
-        return response($data);
+        $data = Episode::find($id);
+        if($data){
+            $data->Servers()->delete();
+            $data->delete();    
+        }
+        return response()->json("xóa thành công tập phim!");
+    }
+    public function deleteServer($id){
+        $server = Server::find($id);
+        if($server){
+            $server->delete();
+        }
+        return response()->json( "xóa thành công nguồn phim!");
     }
 }
