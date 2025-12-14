@@ -93,8 +93,7 @@ class MovieController extends Controller
 
         return response($episodes);
     }
-    public function updateData() {}
-    public function show(Movie $movie)
+         public function show(Movie $movie)
     {
         return [
             "movies" => new MovieResource($movie),

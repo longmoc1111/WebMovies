@@ -11,7 +11,7 @@ class UpdateDirectorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class UpdateDirectorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'DirectorName' => 'required|max:55',
+            'DirectorNationality' => 'nullable|string|max:55',
+            'DirectorDate' => 'nullable|date',
+            "DirectorAvatar" => "nullable|file"
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            "DirectorName.required" => "Không được để trống!",
+            // "DirectorName.max" => "Tên không được phép vượt 55 ký tự!"
         ];
     }
 }

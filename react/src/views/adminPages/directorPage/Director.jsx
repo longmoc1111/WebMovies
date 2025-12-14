@@ -8,7 +8,12 @@ export default function Director() {
   const [loading, setLoading] = useState(false);
   const [deleteDirector, setDeleteDirector] = useState();
   const [countries, setContries] = useState();
-
+  const nameRef = useRef();
+  const dateRef = useRef();
+  const imageFileRef = useRef(null);
+  const [country, setCountry] = useState("");
+  const [errors, setErrors] = useState([]);
+  const [errorUpdate, setErrorUpdate] = useState([]);
   const [formData, setFormData] = useState({
     DirectorID: "",
     DirectorName: "",
@@ -16,14 +21,6 @@ export default function Director() {
     DirectorDate: "",
     DirectorAvatar: null,
   });
-
-  const nameRef = useRef();
-  const dateRef = useRef();
-  const imageFileRef = useRef(null);
-  const [country, setCountry] = useState();
-
-  console.log(imageFileRef.current);
-
   useEffect(() => {
     getDirector();
   }, []);
@@ -41,11 +38,8 @@ export default function Director() {
         );
         setLoading(false);
       })
-      .catch((er) => {
-        console.log(er);
-      });
+      .catch((er) => {});
   };
-  console.log(countries);
   const onDelete = (ev, id) => {
     ev.preventDefault();
     axiosClient
@@ -62,16 +56,18 @@ export default function Director() {
         });
       })
       .catch((er) => {
-        console.log(er);
       });
   };
-  console.log(formData);
   const onCreate = (ev) => {
     ev.preventDefault();
     const fd = new FormData();
     fd.append("DirectorName", nameRef.current.value);
-    fd.append("DirectorNationality", country);
-    fd.append("DirectorDate", dateRef.current.value);
+    if (country) {
+      fd.append("DirectorNationality", country);
+    }
+    if (dateRef.current.value) {
+      fd.append("DirectorDate", dateRef.current.value || null);
+    }
     if (imageFileRef.current instanceof File) {
       fd.append("DirectorAvatar", imageFileRef.current);
     }
@@ -90,32 +86,44 @@ export default function Director() {
         });
       })
       .catch((er) => {
-        console.log(er);
+        setErrors(er.response.data.errors);
       });
   };
-
-  const onUpdate = (ev, id) => {
-    ev.preventDefault()
-    const fd = new FormData()
-       fd.append("DirectorName", formData.DirectorName);
-    fd.append("DirectorNationality", formData.DirectorNationality);
-    fd.append("DirectorDate", formData.DirectorDate);
+  const onUpdate = (ev) => {
+    ev.preventDefault();
+    const fd = new FormData();
+    fd.append("DirectorName", formData.DirectorName);
+    if (formData.DirectorNationality) {
+      fd.append("DirectorNationality", formData.DirectorNationality);
+    }
+    if (formData.DirectorDate) {
+      fd.append("DirectorDate", formData.DirectorDate);
+    }
     if (formData.DirectorAvatar instanceof File) {
       fd.append("DirectorAvatar", formData.DirectorAvatar);
     }
-    fd.append("_method", "PUT")
-    axiosClient.post(`/directors/${id}`,
-      {headers: {"Content_Type" : "multipart/form_data"}}
-    )
-    .then(({data})=> {
-      console.log(data)
-    })
-    .catch((er) => {
-      console.log(er)
-    })
-  }
+    fd.append("_method", "PUT");
+    axiosClient
+      .post(`/directors/${formData.DirectorID}`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then(({ data }) => {
+        getDirector();
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("modal_update_director")
+        );
+        modal.hide();
+        iziToast.success({
+          message: data,
+          position: "topRight",
+        });
+      })
+      .catch((er) => {
+        setErrorUpdate(er.response.data.errors);
+        console.log(er.response.data.errors)
+      });
+  };
 
-  console.log(director);
   return (
     <main className="main">
       <div className="container-fluid">
@@ -131,6 +139,7 @@ export default function Director() {
                   type="button"
                   className="main__title-link main__title-link--wrap"
                   onClick={() => {
+                    
                     const el = document.getElementById("modal_create_director");
                     const modal = bootstrap.Modal.getOrCreateInstance(el);
                     modal.show();
@@ -143,7 +152,6 @@ export default function Director() {
                     name="sort"
                     className="filter__select"
                     id="filter__sort"
-                    onchange="this.form.submit()"
                   >
                     <option value="Tên">Tên đạo diễn</option>
                     <option value="Ngày sinh">Ngày sinh</option>
@@ -178,7 +186,6 @@ export default function Director() {
                 </thead>
                 {loading && (
                   <tbody>
-                    (
                     <tr>
                       <td colSpan={8}>
                         <div
@@ -196,13 +203,12 @@ export default function Director() {
                         </div>
                       </td>
                     </tr>
-                    ){" "}
                   </tbody>
                 )}
                 {!loading && (
                   <tbody>
                     {director.map((dr, index) => (
-                      <tr>
+                      <tr key={dr.DirectorID}>
                         <td>
                           <div className="catalog__text">{index + 1}</div>
                         </td>
@@ -218,12 +224,14 @@ export default function Director() {
                         </td>
                         <td>
                           <div className="catalog__text">
-                            {dr.DirectorNationality}
+                            {dr.DirectorNationality
+                              ? dr.DirectorNationality
+                              : "Đang cập nhật"}
                           </div>
                         </td>
 
                         <td>
-                          <div className="catalog__text">{dr.DirectorDate}</div>
+                          <div className="catalog__text">{dr.DirectorDate ? dr.DirectorDate : "Đang cập nhật"}</div>
                         </td>
                         <td>
                           <div className="catalog__btns">
@@ -251,7 +259,6 @@ export default function Director() {
                             </button>
                             <button
                               type="button"
-                              data-bs-toggle="modal"
                               className="catalog__btn catalog__btn--delete"
                               onClick={() => {
                                 setDeleteDirector({
@@ -296,7 +303,30 @@ export default function Director() {
                 <div className="col-12">
                   <div className="sign__group">
                     <label className="sign__label">Tên tác giả</label>
-                    <input ref={nameRef} type="text" className="sign__input" />
+                    {errors.DirectorName && (
+                      <div>
+                        {errors.DirectorName.map((key, index) => (
+                          <p
+                            className="text-danger"
+                            style={{ margin: 0 }}
+                            key={key}
+                          >
+                            {errors.DirectorName[index]}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                    <input
+                      ref={nameRef}
+                      onFocus={() =>
+                        setErrors({
+                          ...errors,
+                          DirectorName: null,
+                        })
+                      }
+                      type="text"
+                      className="sign__input"
+                    />
                   </div>
                 </div>
                 <div className="row">
@@ -374,7 +404,7 @@ export default function Director() {
       <div
         className="modal fade"
         id="delete_director_modal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="modal-delete"
         aria-hidden="true"
       >
@@ -423,12 +453,21 @@ export default function Director() {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal__content">
-              <form onSubmit={onUpdate(ev, formData.DirectorID)} className="modal__form">
+              <form onSubmit={onUpdate} className="modal__form">
                 <h4 className="modal__title">Cập nhật thông tin</h4>
 
                 <div className="col-12">
                   <div className="sign__group">
                     <label className="sign__label">Tên tác giả</label>
+                     {errorUpdate?.DirectorName?.map((key, index) => (
+                      <p
+                        className="text-danger"
+                        style={{ margin: 0 }}
+                        key={key}
+                      >
+                        {errorUpdate.DirectorName[index]}
+                      </p>
+                    ))} 
                     <input
                       value={formData.DirectorName}
                       onChange={(e) => {
@@ -437,6 +476,10 @@ export default function Director() {
                           DirectorName: e.target.value,
                         });
                       }}
+                      onFocus={() => setErrorUpdate({
+                        ...errorUpdate,
+                        DirectorName: null
+                      })}
                       type="text"
                       className="sign__input"
                     />
@@ -448,12 +491,14 @@ export default function Director() {
                       <label className="sign__label">Quốc gia</label>
                       <Select
                         options={countries}
-                        value={countries?.find((opt) => opt.value === formData.DirectorNationality)}
+                        value={countries?.find(
+                          (opt) => opt.value === formData.DirectorNationality
+                        )}
                         onChange={(selected) => {
                           setFormData({
                             ...formData,
-                            DirectorNationality: selected.value
-                          })
+                            DirectorNationality: selected.value,
+                          });
                         }}
                         type="text"
                         styles={customStyles}
@@ -470,8 +515,8 @@ export default function Director() {
                         onChange={(e) => {
                           setFormData({
                             ...formData,
-                            DirectorDate: e.target.value
-                          })
+                            DirectorDate: e.target.value,
+                          });
                         }}
                         type="date"
                         className="sign__input"
@@ -502,9 +547,9 @@ export default function Director() {
                         onChange={(e) => {
                           setFormData({
                             ...formData,
-                            DirectorAvatar: e.target.files[0]
-                          })
-                        }} 
+                            DirectorAvatar: e.target.files[0],
+                          });
+                        }}
                       />
                     </div>
                   </div>
@@ -514,7 +559,7 @@ export default function Director() {
                       type="submit"
                       className="sign__btn sign__btn--modal"
                     >
-                      Thêm
+                      Lưu
                     </button>
                   </div>
                 </div>
