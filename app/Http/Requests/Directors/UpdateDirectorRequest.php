@@ -4,14 +4,14 @@ namespace App\Http\Requests\Directors;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreDirectorRequest extends FormRequest
+class UpdateDirectorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,10 +22,7 @@ class StoreDirectorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'DirectorName' => 'required|max:55',
-            'DirectorNationality' => 'nullable|string|max:55',
-            'DirectorDate' => 'nullable|date',
-            "DirectorAvatar" => "nullable|file"
+            //
         ];
     }
 }

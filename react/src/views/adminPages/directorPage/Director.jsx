@@ -9,10 +9,18 @@ export default function Director() {
   const [deleteDirector, setDeleteDirector] = useState();
   const [countries, setContries] = useState();
 
+  const [formData, setFormData] = useState({
+    DirectorID: "",
+    DirectorName: "",
+    DirectorNationality: "",
+    DirectorDate: "",
+    DirectorAvatar: null,
+  });
+
   const nameRef = useRef();
-  const conuntryRef = useRef();
   const dateRef = useRef();
   const imageFileRef = useRef(null);
+  const [country, setCountry] = useState();
 
   console.log(imageFileRef.current);
 
@@ -27,7 +35,7 @@ export default function Director() {
         setDirector(data.directors);
         setContries(
           data.Countries.map((c) => ({
-            value: c.CountryID,
+            value: c.CountryName,
             label: c.CountryName,
           }))
         );
@@ -57,24 +65,55 @@ export default function Director() {
         console.log(er);
       });
   };
-  console.log(conuntryRef)
+  console.log(formData);
   const onCreate = (ev) => {
     ev.preventDefault();
     const fd = new FormData();
     fd.append("DirectorName", nameRef.current.value);
-    fd.append("DirectorNationality", conuntryRef.current.value);
+    fd.append("DirectorNationality", country);
     fd.append("DirectorDate", dateRef.current.value);
-    fd.append("DirectorAvatar", imageFileRef.current);
+    if (imageFileRef.current instanceof File) {
+      fd.append("DirectorAvatar", imageFileRef.current);
+    }
 
     axiosClient
       .post("/directors", fd)
       .then(({ data }) => {
-        console.log(data);
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("modal_create_director")
+        );
+        modal.hide();
+        getDirector();
+        iziToast.success({
+          message: data,
+          position: "topRight",
+        });
       })
       .catch((er) => {
         console.log(er);
       });
   };
+
+  const onUpdate = (ev, id) => {
+    ev.preventDefault()
+    const fd = new FormData()
+       fd.append("DirectorName", formData.DirectorName);
+    fd.append("DirectorNationality", formData.DirectorNationality);
+    fd.append("DirectorDate", formData.DirectorDate);
+    if (formData.DirectorAvatar instanceof File) {
+      fd.append("DirectorAvatar", formData.DirectorAvatar);
+    }
+    fd.append("_method", "PUT")
+    axiosClient.post(`/directors/${id}`,
+      {headers: {"Content_Type" : "multipart/form_data"}}
+    )
+    .then(({data})=> {
+      console.log(data)
+    })
+    .catch((er) => {
+      console.log(er)
+    })
+  }
 
   console.log(director);
   return (
@@ -188,12 +227,28 @@ export default function Director() {
                         </td>
                         <td>
                           <div className="catalog__btns">
-                            <a
+                            <button
                               href="#"
                               className="catalog__btn catalog__btn--edit"
+                              onClick={() => {
+                                const modal =
+                                  bootstrap.Modal.getOrCreateInstance(
+                                    document.getElementById(
+                                      "modal_update_director"
+                                    )
+                                  );
+                                modal.show();
+                                setFormData(() => ({
+                                  DirectorID: dr.DirectorID,
+                                  DirectorName: dr.DirectorName,
+                                  DirectorNationality: dr.DirectorNationality,
+                                  DirectorDate: dr.DirectorDate,
+                                  DirectorAvatar: dr.DirectorAvatar,
+                                }));
+                              }}
                             >
                               <i className="bi bi-pencil-square"></i>
-                            </a>
+                            </button>
                             <button
                               type="button"
                               data-bs-toggle="modal"
@@ -250,9 +305,9 @@ export default function Director() {
                       <label className="sign__label">Quốc gia</label>
                       <Select
                         options={countries}
-                        ref={conuntryRef}
-                        onchange = {(selected) => {
-                            conuntryRef.current = selected.value
+                        value={countries?.find((opt) => opt.value === country)}
+                        onChange={(selected) => {
+                          setCountry(selected.value);
                         }}
                         type="text"
                         styles={customStyles}
@@ -357,6 +412,118 @@ export default function Director() {
           </div>
         </div>
       </div>
+      {/* modal tao diector */}
+      <div
+        className="modal fade"
+        id="modal_update_director"
+        tabIndex="-1"
+        aria-labelledby="modal-user"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal__content">
+              <form onSubmit={onUpdate(ev, formData.DirectorID)} className="modal__form">
+                <h4 className="modal__title">Cập nhật thông tin</h4>
+
+                <div className="col-12">
+                  <div className="sign__group">
+                    <label className="sign__label">Tên tác giả</label>
+                    <input
+                      value={formData.DirectorName}
+                      onChange={(e) => {
+                        setFormData({
+                          ...formData,
+                          DirectorName: e.target.value,
+                        });
+                      }}
+                      type="text"
+                      className="sign__input"
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-12">
+                    <div className="sign__group">
+                      <label className="sign__label">Quốc gia</label>
+                      <Select
+                        options={countries}
+                        value={countries?.find((opt) => opt.value === formData.DirectorNationality)}
+                        onChange={(selected) => {
+                          setFormData({
+                            ...formData,
+                            DirectorNationality: selected.value
+                          })
+                        }}
+                        type="text"
+                        styles={customStyles}
+                        placeholder={"Chọn quốc gia"}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-12">
+                    <div className="sign__group">
+                      <label className="sign__label"></label>
+                      <input
+                        value={formData.DirectorDate}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            DirectorDate: e.target.value
+                          })
+                        }}
+                        type="date"
+                        className="sign__input"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-12">
+                    <label htmlFor="" className="sign__label">
+                      Ảnh đại diện
+                    </label>
+                    <div className="sign__video">
+                      <label
+                        id="movie1"
+                        className=" d-inline-flex align-items-center justify-content-between w-100"
+                        style={{ height: "46px", paddingRight: "30px" }}
+                      >
+                        <i
+                          className="bi bi-image"
+                          style={{ fontSize: "20px" }}
+                        ></i>
+                      </label>
+                      <input
+                        data-name="#movie1"
+                        id="sign__video-upload"
+                        name="MovieImage"
+                        className="sign__video-upload"
+                        type="file"
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            DirectorAvatar: e.target.files[0]
+                          })
+                        }} 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-12 col-lg-6 offset-lg-3">
+                    <button
+                      type="submit"
+                      className="sign__btn sign__btn--modal"
+                    >
+                      Thêm
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* end modal tạo diector */}
     </main>
   );
 }

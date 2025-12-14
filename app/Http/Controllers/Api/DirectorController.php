@@ -30,6 +30,18 @@ class DirectorController extends Controller
 
     public function store(StoreDirectorRequest $request){
         $data = $request->validated();
-        return response($data);
+        if($request->hasFile("DirectorAvatar")){
+            $file = $request->file("DirectorAvatar");
+            $fileNameWithoutExt = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $fileNameExt = $file->getClientOriginalExtension();
+            $newFileName = $fileNameWithoutExt . "_". time() . "." . $fileNameExt;
+            $data["DirectorAvatar"] = $newFileName;
+            $file->move(storage_path("app/public/upload/avartarDirector"), $newFileName);
+        }
+        Director::create($data);
+        return response()->json("Thêm mới thông tin tác giả thành công!");
+    }
+    public function update($id){
+        
     }
 }
