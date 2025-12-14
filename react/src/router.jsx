@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Login from "./views/Login";
-import Sigup from "./views/signup";
+import Signup from "./views/Signup";
 import DashBoard from "./views/DashBoard";
 import NotFound from "./views/NotFound";
 import DefaultLayout from "./components/DefaultLayout";
@@ -11,7 +11,7 @@ import Moives from "./views/adminPages/moviesPage/Moives";
 import Create from "./views/adminPages/MoviesPage/Create";
 import Update from "./views/adminPages/MoviesPage/Update";
 import Director from "./views/adminPages/directorPage/Director";
-import CreateDr from "./views/adminPages/directorPage/CreateDr";
+import Actor from "./views/adminPages/actorPage/Actor";
 
 
 const router = createBrowserRouter([
@@ -51,10 +51,10 @@ const router = createBrowserRouter([
       {
         path:"/directors",
         element:<Director/>
-      },
+      },     
       {
-        path:"/directors/create",
-        element: <CreateDr/>
+        path:"/actors",
+        element:<Actor/>
       }
     ],
   },
@@ -68,7 +68,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/signup",
-        element: <Sigup />,
+        element: <Signup />,
       },
     ],
   },

@@ -1,12 +1,15 @@
  <?php
 
+use App\Http\Controllers\api\ActorController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\api\MovieController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\DirectorController;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use PHPUnit\Framework\Attributes\Group;
+
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/user',function(Request $request){       
@@ -20,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete("/delete-server/{id}", [MovieController::class, "deleteServer"]);
     Route::apiResource('users', UserController::class);
     Route::apiResource('/movies',MovieController::class);
+    Route::apiResource("/actors", ActorController::class);
 
     Route::apiResource("/directors", DirectorController::class);
 }); 
