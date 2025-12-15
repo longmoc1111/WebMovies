@@ -24,7 +24,7 @@ class MovieController extends Controller
 {
     public function index()
     {
-        return MovieViewResource::collection(Movie::orderBy("created_at", "ASC")->paginate(50));
+        return MovieViewResource::collection(Movie::orderBy("created_at", "ASC")->paginate(10));
     }
     public function createData()
     {

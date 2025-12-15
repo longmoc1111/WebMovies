@@ -11,7 +11,7 @@ export default function Moives() {
   const location = useLocation();
   const hasShowToast = useRef(false);
   const [page, setPage] = useState(1);
-  const [link, setLink] = useState({});
+  const [meta, setMeta] = useState({});
 
   useEffect(() => {
     if (initialized.current == false && window.SlimSelect) {
@@ -28,19 +28,19 @@ export default function Moives() {
     getMovies();
   }, []);
 
-  const getMovies = () => {
+  const getMovies = (url = `/movies?page=${page}`) => {
     setLoading(true);
     axiosClient
-      .get(`/movies?page=${page}`)
+      .get(url)
       .then(({ data }) => {
         setMovies(data.data);
-        setLink(data.links);
-        console.log(data)
+        setMeta(data.meta);
+        console.log(data);
         setLoading(false);
       })
       .catch((err) => {
         const response = err.response;
-        console.log(response);
+        // console.log(response);
 
         if (response?.status === 422) {
           setErrors(response.data.errors);
@@ -49,7 +49,7 @@ export default function Moives() {
         }
       });
   };
-  console.log("Link ", link);
+  console.log("meta", meta);
   useEffect(() => {
     if (!hasShowToast.current && location.state?.message) {
       hasShowToast.current = true;
@@ -75,10 +75,10 @@ export default function Moives() {
         setLoading(true);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
       });
   };
-  console.log(movies);
+  // console.log(movies);
   return (
     // <!-- main content -->
     <main className="main">
@@ -244,13 +244,16 @@ export default function Moives() {
           </div>
           {/* <!-- end items --> */}
           {/* <!-- paginator --> */}
-          { !loading && <div className="col-12">
-            <div className="main__paginator">
-              {/* <!-- amount --> */}
-              <span className="main__paginator-pages">10 of 169</span>
-              {/* <!-- end amount --> */}
+          {!loading && (
+            <div className="col-12">
+              <div className="main__paginator">
+                {/* <!-- amount --> */}
+                <span className="main__paginator-pages">
+                  {meta.from} - {meta.to} of {meta.last_page}
+                </span>
+                {/* <!-- end amount --> */}
 
-              <ul className="main__paginator-list">
+                {/* <ul className="main__paginator-list">
                 <li>
                   <a href="#">
                     <i className="ti ti-chevron-left"></i>
@@ -263,43 +266,85 @@ export default function Moives() {
                     <i className="ti ti-chevron-right"></i>
                   </a>
                 </li>
-              </ul>
+              </ul> */}
 
-              <ul className="paginator">
-                <li className="paginator__item paginator__item--prev">
-                  <a href="#">
-                    <i className="bi bi-chevron-left"></i>
-                  </a>
-                </li>
-                <li className="paginator__item">
-                  <a href="#">1</a>
-                </li>
-                <li className="paginator__item paginator__item--active">
-                  <a href="#">2</a>
-                </li>
-                <li className="paginator__item">
-                  <a href="#">3</a>
-                </li>
-                <li className="paginator__item">
-                  <a href="#">4</a>
-                </li>
-                <li className="paginator__item">
-                  <span>...</span>
-                </li>
-                <li className="paginator__item">
-                  <a href="#">29</a>
-                </li>
-                <li className="paginator__item">
-                  <a href="#">30</a>
-                </li>
-                <li className="paginator__item paginator__item--next">
-                  <a href="#">
-                    <i className="bi bi-chevron-right"></i>
-                  </a>
-                </li>
-              </ul>
+                <ul className="paginator">
+                  {meta?.links?.map((link, index) => {
+                    const isPrev = link.label.includes("Previous");
+                    const isNext = link.label.includes("Next");
+
+                    if (isPrev) {
+                      return (
+                        <li
+                          className={`paginator__item paginator__item--prev ${
+                            !link.url ? "disabled" : ""
+                          }`}
+                        >
+                          <button
+                            disabled={link.url == null}
+                            onClick={() => getMovies(link.url)}
+                          >
+                            <i className="bi bi-chevron-left"></i>
+                          </button>
+                        </li>
+                      );
+                    }
+                    if (isNext) {
+                      return (
+                        <li className="paginator__item paginator__item--next">
+                          <button onClick={() => getMovies(link.url)}>
+                            <i className="bi bi-chevron-right"></i>
+                          </button>
+                        </li>
+                      );
+                    }
+                    return (
+                      <li
+                        key={index}
+                        className={`paginator__item ${
+                          link.active ? "paginator__item--active" : ""
+                        }`}
+                      >
+                        <button
+                          disabled={!link.url}
+                          onClick={() => link.url && getMovies(link.url)}
+                          dangerouslySetInnerHTML={{ __html: link.label }}
+                        />
+                      </li>
+                    );
+                  })}
+
+                  {/* <li className="paginator__item">
+                    <a href="#">1</a>
+                  </li>
+                  <li className="paginator__item paginator__item--active">
+                    <a href="#">2</a>
+                  </li>
+                  <li className="paginator__item">
+                    <button href="#">3</button>
+                  </li>
+                  <li className="paginator__item">
+                    <a href="#">4</a>
+                  </li>
+                  <li className="paginator__item">
+                    <span>...</span>
+                  </li>
+                  <li className="paginator__item">
+                    <a href="#">29</a>
+                  </li>
+                  <li className="paginator__item">
+                    <a href="#">30</a>
+                  </li>
+
+                  <li className="paginator__item paginator__item--next">
+                    <a href="#">
+                      <i className="bi bi-chevron-right"></i>
+                    </a>
+                  </li>*/}
+                </ul>
+              </div>
             </div>
-          </div>}
+          )}
           {/* <!-- end paginator -->   */}
         </div>
       </div>

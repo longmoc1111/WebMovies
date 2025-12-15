@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('actors', function (Blueprint $table) {
             $table->id("ActorID");
             $table->string("ActorName");
-            $table->string("ActorNationality");
-            $table->date("ActorDate");
-            $table->text("ActorAvatar");
+            $table->string("ActorNationality")->nullable();
+            $table->date("ActorDate")->nullable();
+            $table->text("ActorAvatar")->nullable();
             $table->timestamps(); 
         });
     }

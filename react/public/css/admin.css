@@ -1211,7 +1211,7 @@ body::-webkit-scrollbar-thumb {
   border-radius: 8px;
   cursor: default;
 }
-.paginator__item a {
+.paginator__item button {
   font-size: 16px;
   height: 40px;
   width: 40px;
@@ -1224,7 +1224,7 @@ body::-webkit-scrollbar-thumb {
   border-radius: 8px;
   border: 2px solid transparent;
 }
-.paginator__item:hover a {
+.paginator__item:hover button {
   color: #f9ab00;
 }
 .paginator__item--prev i,
@@ -1237,12 +1237,12 @@ body::-webkit-scrollbar-thumb {
 .paginator__item--next:hover i {
   color: #f9ab00;
 }
-.paginator__item--active a {
+.paginator__item--active button {
   color: #fff;
   cursor: default;
   border-color: #f9ab00;
 }
-.paginator__item--active a:hover {
+.paginator__item--active button:hover {
   color: #fff;
 }
 @media (min-width: 768px) {

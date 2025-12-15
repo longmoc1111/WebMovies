@@ -91,40 +91,40 @@ export default function Actor() {
         console.log(er)
       });
   };
-  // const onUpdate = (ev) => {
-  //   ev.preventDefault();
-  //   const fd = new FormData();
-  //   fd.append("ActorName", formData.ActorName);
-  //   if (formData.ActorNationality) {
-  //     fd.append("ActorNationality", formData.ActorNationality);
-  //   }
-  //   if (formData.ActorDate) {
-  //     fd.append("ActorDate", formData.ActorDate);
-  //   }
-  //   if (formData.ActorAvatar instanceof File) {
-  //     fd.append("ActorAvatar", formData.ActorAvatar);
-  //   }
-  //   fd.append("_method", "PUT");
-  //   axiosClient
-  //     .post(`/Actors/${formData.ActorID}`, fd, {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     })
-  //     .then(({ data }) => {
-  //       getActor();
-  //       const modal = bootstrap.Modal.getInstance(
-  //         document.getElementById("modal_update_Actor")
-  //       );
-  //       modal.hide();
-  //       iziToast.success({
-  //         message: data,
-  //         position: "topRight",
-  //       });
-  //     })
-  //     .catch((er) => {
-  //       setErrorUpdate(er.response.data.errors);
-  //       console.log(er.response.data.errors)
-  //     });
-  // };
+  const onUpdate = (ev) => {
+    ev.preventDefault();
+    const fd = new FormData();
+    fd.append("ActorName", formData.ActorName);
+    if (formData.ActorNationality) {
+      fd.append("ActorNationality", formData.ActorNationality);
+    }
+    if (formData.ActorDate) {
+      fd.append("ActorDate", formData.ActorDate);
+    }
+    if (formData.ActorAvatar instanceof File) {
+      fd.append("ActorAvatar", formData.ActorAvatar);
+    }
+    fd.append("_method", "PUT");
+    axiosClient
+      .post(`/actors/${formData.ActorID}`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then(({ data }) => {
+        getActor();
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("modal_update_actor")
+        );
+        modal.hide();
+        iziToast.success({
+          message: data,
+          position: "topRight",
+        });
+      })
+      .catch((er) => {
+        setErrorUpdate(er.response.data.errors);
+        console.log(er.response.data.errors)
+      });
+  };
 
   return (
     <main className="main">
@@ -239,22 +239,22 @@ export default function Actor() {
                             <button
                               href="#"
                               className="catalog__btn catalog__btn--edit"
-                              // onClick={() => {
-                              //   const modal =
-                              //     bootstrap.Modal.getOrCreateInstance(
-                              //       document.getElementById(
-                              //         "modal_update_actor"
-                              //       )
-                              //     );
-                              //   modal.show();
-                              //   setFormData(() => ({
-                              //     ActorID: at.ActorID,
-                              //     ActorName: at.ActorName,
-                              //     ActorNationality: at.ActorNationality,
-                              //     ActorDate: at.ActorDate,
-                              //     ActorAvatar: at.ActorAvatar,
-                              //   }));
-                              // }}
+                              onClick={() => {
+                                const modal =
+                                  bootstrap.Modal.getOrCreateInstance(
+                                    document.getElementById(
+                                      "modal_update_actor"
+                                    )
+                                  );
+                                modal.show();
+                                setFormData(() => ({
+                                  ActorID: at.ActorID,
+                                  ActorName: at.ActorName,
+                                  ActorNationality: at.ActorNationality,
+                                  ActorDate: at.ActorDate,
+                                  ActorAvatar: at.ActorAvatar,
+                                }));
+                              }}
                             >
                               <i className="bi bi-pencil-square"></i>
                             </button>
@@ -304,7 +304,7 @@ export default function Actor() {
                 <div className="col-12">
                   <div className="sign__group">
                     <label className="sign__label">Tên diễn viên</label>
-                    {/* {errors.ActorName && (
+             {errors.ActorName && (
                       <div>
                         {errors.ActorName.map((key, index) => (
                           <p
@@ -312,11 +312,11 @@ export default function Actor() {
                             style={{ margin: 0 }}
                             key={key}
                           >
-                            {errors.ActorName[index]}
+                            {errors.ActorName?.[index]}
                           </p>
                         ))}
                       </div>
-                    )} */}
+                    )}  
                     <input
                       ref={nameRef}
                       onFocus={() =>
@@ -443,8 +443,8 @@ export default function Actor() {
           </div>
         </div>
       </div>
-      {/* modal tao diector */}
-      {/* <div
+      {/* modal cap nhat diector */}
+      <div
         className="modal fade"
         id="modal_update_actor"
         tabIndex="-1"
@@ -568,8 +568,8 @@ export default function Actor() {
             </div>
           </div>
         </div>
-      </div> */}
-      {/* end modal tạo diector */}
+      </div>
+      {/* end modal cap nhat diector */}
     </main>
   );
 }

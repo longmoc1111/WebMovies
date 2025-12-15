@@ -118,7 +118,7 @@ export default function DefaultLayout() {
                 <i className="bi bi-person"></i> <span>Người dùng</span>
               </Link>
             </li>
-            <li className="sidebar__nav-item">
+            {/* <li className="sidebar__nav-item">
               <a
                 className="sidebar__nav-link"
                 href="#"
@@ -144,7 +144,7 @@ export default function DefaultLayout() {
                   <a href="#">404 Page</a>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             <li className="sidebar__nav-item">
               <a href="#" className="sidebar__nav-link">
