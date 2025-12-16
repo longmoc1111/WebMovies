@@ -253,20 +253,44 @@ export default function Moives() {
                 </span>
                 {/* <!-- end amount --> */}
 
-                {/* <ul className="main__paginator-list">
-                <li>
-                  <a href="#">
-                    <i className="ti ti-chevron-left"></i>
-                    <span>Prev</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="#">
-                    <span>Next</span>
-                    <i className="ti ti-chevron-right"></i>
-                  </a>
-                </li>
-              </ul> */}
+                <ul className="main__paginator-list">
+                  {meta?.links?.map((link, index) => {
+                    const prev = link.label.includes("Previous");
+                    const next = link.label.includes("Next");
+
+                    if (prev) {
+                      if(!link.url) return 
+                      return (
+                        <li key={index}>
+                          <button
+                            href="#"
+                            onClick={() => {
+                              getMovies(link.url);
+                            }}
+                          >
+                            <i className="bi bi-chevron-left"></i>
+                            <span>Prev</span>
+                          </button>
+                        </li>
+                      );
+                    }
+                    if (next) {
+                      if(!link.url) return
+                      return (
+                        <li>
+                          <button 
+                          onClick={() => {
+                            getMovies(link.url)
+                          }}
+                          >
+                            <span>Next</span>
+                            <i className="bi bi-chevron-right"></i>
+                          </button>
+                        </li>
+                      );
+                    }
+                  })}
+                </ul>
 
                 <ul className="paginator">
                   {meta?.links?.map((link, index) => {
@@ -274,24 +298,25 @@ export default function Moives() {
                     const isNext = link.label.includes("Next");
 
                     if (isPrev) {
+                      if (!link.url) return;
                       return (
                         <li
-                          className={`paginator__item paginator__item--prev ${
-                            !link.url ? "disabled" : ""
-                          }`}
+                          key={index}
+                          className="paginator__item paginator__item--prev"
                         >
-                          <button
-                            disabled={link.url == null}
-                            onClick={() => getMovies(link.url)}
-                          >
+                          <button onClick={() => getMovies(link.url)}>
                             <i className="bi bi-chevron-left"></i>
                           </button>
                         </li>
                       );
                     }
                     if (isNext) {
+                      if (!link.url) return;
                       return (
-                        <li className="paginator__item paginator__item--next">
+                        <li
+                          key={index}
+                          className="paginator__item paginator__item--next"
+                        >
                           <button onClick={() => getMovies(link.url)}>
                             <i className="bi bi-chevron-right"></i>
                           </button>
@@ -305,11 +330,9 @@ export default function Moives() {
                           link.active ? "paginator__item--active" : ""
                         }`}
                       >
-                        <button
-                          disabled={!link.url}
-                          onClick={() => link.url && getMovies(link.url)}
-                          dangerouslySetInnerHTML={{ __html: link.label }}
-                        />
+                        <button onClick={() => link.url && getMovies(link.url)}>
+                          {link.label}
+                        </button>
                       </li>
                     );
                   })}

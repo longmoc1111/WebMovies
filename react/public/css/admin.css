@@ -571,22 +571,22 @@ body::-webkit-scrollbar-thumb {
 .main__paginator-list li {
   margin-right: 15px;
 }
-.main__paginator-list li:first-child a {
+.main__paginator-list li:first-child button {
   padding-left: 10px;
 }
-.main__paginator-list li:first-child a span {
+.main__paginator-list li:first-child button span {
   margin-left: 4px;
 }
 .main__paginator-list li:last-child {
   margin-right: 0;
 }
-.main__paginator-list li:last-child a {
+.main__paginator-list li:last-child button {
   padding-right: 10px;
 }
-.main__paginator-list li:last-child a span {
+.main__paginator-list li:last-child button span {
   margin-right: 4px;
 }
-.main__paginator-list a {
+.main__paginator-list button {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -599,15 +599,15 @@ body::-webkit-scrollbar-thumb {
   border-radius: 8px;
   background-color: #222028;
 }
-.main__paginator-list a span {
+.main__paginator-list button span {
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
 }
-.main__paginator-list a i {
+.main__paginator-list button i {
   font-size: 20px;
 }
-.main__paginator-list a:hover {
+.main__paginator-list button:hover {
   color: #f9ab00;
 }
 @media (min-width: 576px) {
