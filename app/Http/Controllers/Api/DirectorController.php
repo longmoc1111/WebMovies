@@ -15,12 +15,12 @@ class DirectorController extends Controller
 {
     public function index()
     {
-        $directors = Director::orderBy("created_at", "DESC")->paginate(20);
+        $directors = Director::orderBy("created_at", "DESC")->paginate(10);
         $countries = Country::all();
-        return response()->json([
-            "directors" => DirectorResource::collection($directors),
-            "Countries" => $countries
-        ]);
+        return DirectorResource::collection($directors)
+            ->additional([
+                'countries' => $countries
+            ]);
     }
 
     public function destroy($id)
@@ -76,9 +76,9 @@ class DirectorController extends Controller
         }
         if ($director) {
             $director->fill($data);
-             if($director->isDirty()){
+            if ($director->isDirty()) {
                 $director->save();
-             }
+            }
         }
 
         return response()->json("Cập nhật thông tin tác giả thành công!");

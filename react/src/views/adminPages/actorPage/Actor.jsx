@@ -3,9 +3,9 @@ import axiosClient from "../../axios-client";
 import Select from "react-select";
 import { Link } from "react-router-dom";
 import { customStyles } from "../../../../public/js/selectReact";
- 
+
 export default function Actor() {
-   const [actors, setActor] = useState([]);
+  const [actors, setActor] = useState([]);
   const [loading, setLoading] = useState(false);
   const [deleteActor, setDeleteActor] = useState();
   const [countries, setContries] = useState();
@@ -15,6 +15,8 @@ export default function Actor() {
   const [country, setCountry] = useState("");
   const [errors, setErrors] = useState([]);
   const [errorUpdate, setErrorUpdate] = useState([]);
+  const [meta, setMeta] = useState({});
+  const [page, setPage] = useState(1);
   const [formData, setFormData] = useState({
     ActorID: "",
     ActorName: "",
@@ -25,14 +27,15 @@ export default function Actor() {
   useEffect(() => {
     getActor();
   }, []);
-  const getActor = () => {
+  const getActor = (url = `/actors?page=${page}`) => {
     setLoading(true);
     axiosClient
-      .get("/actors")
+      .get(url)
       .then(({ data }) => {
-        setActor(data.actors);
+        setMeta(data.meta);
+        setActor(data.data);
         setContries(
-          data.Countries.map((c) => ({
+          data.countries.map((c) => ({
             value: c.CountryName,
             label: c.CountryName,
           }))
@@ -56,8 +59,7 @@ export default function Actor() {
           position: "topRight",
         });
       })
-      .catch((er) => {
-      });
+      .catch((er) => {});
   };
   const onCreate = (ev) => {
     ev.preventDefault();
@@ -88,7 +90,6 @@ export default function Actor() {
       })
       .catch((er) => {
         setErrors(er.response.data.errors);
-        console.log(er)
       });
   };
   const onUpdate = (ev) => {
@@ -122,7 +123,6 @@ export default function Actor() {
       })
       .catch((er) => {
         setErrorUpdate(er.response.data.errors);
-        console.log(er.response.data.errors)
       });
   };
 
@@ -140,7 +140,6 @@ export default function Actor() {
                   type="button"
                   className="main__title-link main__title-link--wrap"
                   onClick={() => {
-                    
                     const el = document.getElementById("modal_create_actor");
                     const modal = bootstrap.Modal.getOrCreateInstance(el);
                     modal.show();
@@ -232,7 +231,9 @@ export default function Actor() {
                         </td>
 
                         <td>
-                          <div className="catalog__text">{at.ActorDate ? at.ActorDate : "Đang cập nhật"}</div>
+                          <div className="catalog__text">
+                            {at.ActorDate ? at.ActorDate : "Đang cập nhật"}
+                          </div>
                         </td>
                         <td>
                           <div className="catalog__btns">
@@ -265,9 +266,8 @@ export default function Actor() {
                                 setDeleteActor({
                                   id: at.ActorID,
                                 });
-                                const el = document.getElementById(
-                                  "delete_actor_modal"
-                                );
+                                const el =
+                                  document.getElementById("delete_actor_modal");
                                 const modal =
                                   bootstrap.Modal.getOrCreateInstance(el);
                                 modal.show();
@@ -283,6 +283,99 @@ export default function Actor() {
                 )}
               </table>
             </div>
+            {/* <!-- paginator --> */}
+            {!loading && (
+              <div className="col-12">
+                <div className="main__paginator">
+                  {/* <!-- amount --> */}
+                  <span className="main__paginator-pages">
+                    {meta.current_page} - {meta.to} of {meta.total}
+                  </span>
+                  {/* <!-- end amount --> */}
+
+                  <ul className="main__paginator-list">
+                    {meta?.links?.map((link, index) => {
+                      const prev = link.label.includes("Previous");
+                      const next = link.label.includes("Next");
+
+                      if (prev) {
+                        if (!link.url) return;
+                        return (
+                          <li key={index}>
+                            <button onClick={() => getActor(link.url)}>
+                              <i className="bi bi-chevron-left"></i>
+                              <span>Prev</span>
+                            </button>
+                          </li>
+                        );
+                      }
+
+                      if (next) {
+                        if (!link.url) return;
+                        return (
+                          <li key={index}>
+                            <button onClick={() => getActor(link.url)}>
+                              <span>Next</span>
+                              <i className="bi bi-chevron-right"></i>
+                            </button>
+                          </li>
+                        );
+                      }
+                    })}
+                  </ul>
+
+                  <ul className="paginator">
+                    {meta?.links?.map((link, index) => {
+                      const prev = link.label.includes("Previous");
+                      const next = link.label.includes("Next");
+
+                      if (prev) {
+                        if (!link.url) return;
+                        return (
+                          <li
+                            key={index}
+                            className="paginator__item paginator__item--prev"
+                          >
+                            <button onClick={() => getActor(link.url)}>
+                              <i className="bi bi-chevron-left"></i>
+                            </button>
+                          </li>
+                        );
+                      }
+
+                      if (next) {
+                        if (!link.url) return;
+                        return (
+                          <li
+                            key={index}
+                            className="paginator__item paginator__item--next"
+                          >
+                            <button onClick={() => getActor(link.url)}>
+                              <i className="bi bi-chevron-right"></i>
+                            </button>
+                          </li>
+                        );
+                      }
+                      return (
+                        <li
+                          key={index}
+                          className={`paginator__item ${
+                            link.active === true
+                              ? "paginator__item--active"
+                              : ""
+                          }`}
+                        >
+                          <button onClick={() => getActor(link.url)}>
+                            {link.label}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+            )}
+            {/* <!-- end paginator --> */}
           </div>
         </div>
       </div>
@@ -304,7 +397,7 @@ export default function Actor() {
                 <div className="col-12">
                   <div className="sign__group">
                     <label className="sign__label">Tên diễn viên</label>
-             {errors.ActorName && (
+                    {errors.ActorName && (
                       <div>
                         {errors.ActorName.map((key, index) => (
                           <p
@@ -316,7 +409,7 @@ export default function Actor() {
                           </p>
                         ))}
                       </div>
-                    )}  
+                    )}
                     <input
                       ref={nameRef}
                       onFocus={() =>
@@ -460,7 +553,7 @@ export default function Actor() {
                 <div className="col-12">
                   <div className="sign__group">
                     <label className="sign__label">Tên tác giả</label>
-                     {errorUpdate?.ActorName?.map((key, index) => (
+                    {errorUpdate?.ActorName?.map((key, index) => (
                       <p
                         className="text-danger"
                         style={{ margin: 0 }}
@@ -468,7 +561,7 @@ export default function Actor() {
                       >
                         {errorUpdate.ActorName[index]}
                       </p>
-                    ))} 
+                    ))}
                     <input
                       value={formData.ActorName}
                       onChange={(e) => {
@@ -477,10 +570,12 @@ export default function Actor() {
                           ActorName: e.target.value,
                         });
                       }}
-                      onFocus={() => setErrorUpdate({
-                        ...errorUpdate,
-                        ActorName: null
-                      })}
+                      onFocus={() =>
+                        setErrorUpdate({
+                          ...errorUpdate,
+                          ActorName: null,
+                        })
+                      }
                       type="text"
                       className="sign__input"
                     />

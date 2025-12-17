@@ -33,6 +33,7 @@ export default function Moives() {
     axiosClient
       .get(url)
       .then(({ data }) => {
+        console.log(data)
         setMovies(data.data);
         setMeta(data.meta);
         console.log(data);
@@ -336,34 +337,6 @@ export default function Moives() {
                       </li>
                     );
                   })}
-
-                  {/* <li className="paginator__item">
-                    <a href="#">1</a>
-                  </li>
-                  <li className="paginator__item paginator__item--active">
-                    <a href="#">2</a>
-                  </li>
-                  <li className="paginator__item">
-                    <button href="#">3</button>
-                  </li>
-                  <li className="paginator__item">
-                    <a href="#">4</a>
-                  </li>
-                  <li className="paginator__item">
-                    <span>...</span>
-                  </li>
-                  <li className="paginator__item">
-                    <a href="#">29</a>
-                  </li>
-                  <li className="paginator__item">
-                    <a href="#">30</a>
-                  </li>
-
-                  <li className="paginator__item paginator__item--next">
-                    <a href="#">
-                      <i className="bi bi-chevron-right"></i>
-                    </a>
-                  </li>*/}
                 </ul>
               </div>
             </div>

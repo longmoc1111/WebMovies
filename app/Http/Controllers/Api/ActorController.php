@@ -15,12 +15,10 @@ class ActorController extends Controller
 {
     public function index()
     {
-        $actors = Actor::orderBy("created_at", "DESC")->paginate(20);
+        $actors = Actor::orderBy("created_at", "DESC")->paginate(10);
         $countries = Country::all();
-        return response()->json([
-            "actors" => ActorResource::collection($actors),
-            "Countries" => $countries
-        ]);
+        return ActorResource::collection($actors)->additional(["countries" =>$countries]);
+        
     }
     public function destroy($id)
     {

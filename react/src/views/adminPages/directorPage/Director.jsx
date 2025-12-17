@@ -14,6 +14,8 @@ export default function Director() {
   const [country, setCountry] = useState("");
   const [errors, setErrors] = useState([]);
   const [errorUpdate, setErrorUpdate] = useState([]);
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState({});
   const [formData, setFormData] = useState({
     DirectorID: "",
     DirectorName: "",
@@ -24,14 +26,15 @@ export default function Director() {
   useEffect(() => {
     getDirector();
   }, []);
-  const getDirector = () => {
+  const getDirector = (url = `/directors?page=${page}`) => {
     setLoading(true);
     axiosClient
-      .get("/directors")
+      .get(url)
       .then(({ data }) => {
-        setDirector(data.directors);
+        setMeta(data.meta);
+        setDirector(data.data);
         setContries(
-          data.Countries.map((c) => ({
+          data.countries.map((c) => ({
             value: c.CountryName,
             label: c.CountryName,
           }))
@@ -55,8 +58,7 @@ export default function Director() {
           position: "topRight",
         });
       })
-      .catch((er) => {
-      });
+      .catch((er) => {});
   };
   const onCreate = (ev) => {
     ev.preventDefault();
@@ -120,7 +122,6 @@ export default function Director() {
       })
       .catch((er) => {
         setErrorUpdate(er.response.data.errors);
-        console.log(er.response.data.errors)
       });
   };
 
@@ -139,7 +140,6 @@ export default function Director() {
                   type="button"
                   className="main__title-link main__title-link--wrap"
                   onClick={() => {
-                    
                     const el = document.getElementById("modal_create_director");
                     const modal = bootstrap.Modal.getOrCreateInstance(el);
                     modal.show();
@@ -231,7 +231,11 @@ export default function Director() {
                         </td>
 
                         <td>
-                          <div className="catalog__text">{dr.DirectorDate ? dr.DirectorDate : "Đang cập nhật"}</div>
+                          <div className="catalog__text">
+                            {dr.DirectorDate
+                              ? dr.DirectorDate
+                              : "Đang cập nhật"}
+                          </div>
                         </td>
                         <td>
                           <div className="catalog__btns">
@@ -282,6 +286,93 @@ export default function Director() {
                 )}
               </table>
             </div>
+            {/* <!-- paginator --> */}
+            {!loading &&
+            (
+              <div class="col-12">
+                <div class="main__paginator">
+                  {/* <!-- amount --> */}
+                  <span class="main__paginator-pages">
+                    {" "}
+                    {meta?.current_page} - {meta?.to} of {meta?.total}
+                  </span>
+                  {/* <!-- end amount --> */}
+
+                  <ul class="main__paginator-list">
+                    {meta?.links?.map((link, index) => {
+                      const prev = link.label.includes("Previous");
+                      const next = link.label.includes("Next");
+
+                      if (prev) {
+                        if (!link.url) return;
+                        return (
+                          <li key={index}>
+                            <button onClick={() => getDirector(link.url)}>
+                              <i class="bi bi-chevron-left"></i>
+                              <span>Prev</span>
+                            </button>
+                          </li>
+                        );
+                      }
+
+                      if (next) {
+                        if (!link.url) return;
+                        return (
+                          <li key={index}>
+                            <button onClick={() => getDirector(link.url)}>
+                              <span>Next</span>
+                              <i class="bi bi-chevron-right"></i>
+                            </button>
+                          </li>
+                        );
+                      }
+                    })}
+                  </ul>
+
+                  <ul class="paginator">
+                    {meta?.links?.map((link, index) => {
+                      const prev = link.label.includes("Previous");
+                      const next = link.label.includes("Next");
+                      if (prev) {
+                        if (!link.url) return;
+                        return (
+                          <li key={index} class="paginator__item paginator__item--prev">
+                            <button onClick={() => getDirector(link.url)}>
+                              <i class="bi bi-chevron-left"></i>
+                            </button>
+                          </li>
+                        );
+                      }
+
+                      if (next) {
+                        if (!link.url) return;
+                        return (
+                          <li key={index} class="paginator__item paginator__item--next">
+                            <button onClick={() => getDirector(link.url)}>
+                              <i class="bi bi-chevron-right"></i>
+                            </button>
+                          </li>
+                        );
+                      }
+                      return (
+                        <li key={index}
+                          class={`paginator__item ${
+                            link.active === true
+                              ? "paginator__item--active"
+                              : ""
+                          }`}
+                        >
+                          <button onClick={() => getDirector(link.url)}>
+                            {link.label}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+            )}
+            {/* <!-- end paginator --> */}
           </div>
         </div>
       </div>
@@ -459,7 +550,7 @@ export default function Director() {
                 <div className="col-12">
                   <div className="sign__group">
                     <label className="sign__label">Tên tác giả</label>
-                     {errorUpdate?.DirectorName?.map((key, index) => (
+                    {errorUpdate?.DirectorName?.map((key, index) => (
                       <p
                         className="text-danger"
                         style={{ margin: 0 }}
@@ -467,7 +558,7 @@ export default function Director() {
                       >
                         {errorUpdate.DirectorName[index]}
                       </p>
-                    ))} 
+                    ))}
                     <input
                       value={formData.DirectorName}
                       onChange={(e) => {
@@ -476,10 +567,12 @@ export default function Director() {
                           DirectorName: e.target.value,
                         });
                       }}
-                      onFocus={() => setErrorUpdate({
-                        ...errorUpdate,
-                        DirectorName: null
-                      })}
+                      onFocus={() =>
+                        setErrorUpdate({
+                          ...errorUpdate,
+                          DirectorName: null,
+                        })
+                      }
                       type="text"
                       className="sign__input"
                     />
