@@ -16,27 +16,31 @@ export default function Users() {
   const location = useLocation();
   const hasShowToast = useRef(false);
   const initialized = useRef(false);
+  const [meta, setMeta] = useState({});
+  const [page, setPage] = useState(1);
 
-  useEffect(() =>{
-    if(initialized.current == false &&  window.SlimSelect){
+  useEffect(() => {
+    if (initialized.current == false && window.SlimSelect) {
       new window.SlimSelect({
         select: "#filter__sort",
         settings: {
-          placeholderText: "Lọc người dùng"
-        }
-      })
-      initialized.current = true
+          placeholderText: "Lọc người dùng",
+        },
+      });
+      initialized.current = true;
     }
-  },[])
+  }, []);
   useEffect(() => {
     getUsers();
   }, []);
 
-  const getUsers = () => {
+  const getUsers = (url = `/users?page=${page}`) => {
     setLoading(true);
     axiosClient
-      .get("/users")
+      .get(url)
       .then(({ data }) => {
+        console.log(data);
+        setMeta(data.meta);
         setLoading(false);
         setUsers(data.data);
       })
@@ -219,6 +223,120 @@ export default function Users() {
                 </tbody>
               </table>
             </div>
+            {/* <!-- paginator --> */}
+
+            {!loading && (
+              <div className="col-12">
+                <div className="main__paginator">
+                  {/* <!-- amount --> */}
+                  <span className="main__paginator-pages">
+                    {meta.current_page} - {meta.to} of {meta.total}
+                  </span>
+                  {/* <!-- end amount --> */}
+
+                  <ul className="main__paginator-list">
+                    {meta?.links?.map((link, index) => {
+                      const prev = link.label.includes("Previous");
+                      const next = link.label.includes("Next");
+
+                      if (prev) {
+                        if (!link.url) return;
+                        return (
+                          <li key={index}>
+                            <button onClick={() => getUsers(link.url)}>
+                              <i className="bi bi-chevron-left"></i>
+                              <span>Prev</span>
+                            </button>
+                          </li>
+                        );
+                      }
+                      if (next) {
+                        if (!link.url) return;
+                        return (
+                          <li key={index}>
+                            <button onClick={() => getUsers(link.url)}>
+                              <span>Next</span>
+                              <i className="bi bi-chevron-right"></i>
+                            </button>
+                          </li>
+                        );
+                      }
+                    })}
+                  </ul>
+
+                  <ul className="paginator">
+                    {meta?.links?.map((link, index) => {
+                      const prev = link.label.includes("Previous");
+                      const next = link.label.includes("Next");
+
+                      if (prev) {
+                        if (!link.url) return;
+                        return (
+                          <li
+                            key={index}
+                            className="paginator__item paginator__item--prev"
+                          >
+                            <button onClick={() => getUsers(link.url)}>
+                              <i className="bi bi-chevron-left"></i>
+                            </button>
+                          </li>
+                        );
+                      }
+
+                      if (next) {
+                        if (!link.url) return;
+                        return (
+                          <li
+                            key={index}
+                            className="paginator__item paginator__item--next"
+                          >
+                            <button onClick={() => getUsers(link.url)}>
+                              <i className="bi bi-chevron-right"></i>
+                            </button>
+                          </li>
+                        );
+                      }
+                       const pageNumber = Number(link.label);
+                     
+                      if (
+                        pageNumber === 1 ||
+                        pageNumber === meta.last_page ||
+                        (pageNumber >= meta.current_page - 2 && pageNumber <= meta.current_page + 2)
+                      ) {
+                        return (
+                          <li
+                            key={index}
+                            className={`paginator__item ${
+                              link.active === true
+                                ? "paginator__item--active"
+                                : ""
+                            } `}
+                          >
+                            <button onClick={() => getUsers(link.url)}>
+                              {link.label}
+                            </button>
+                          </li>
+                        );
+                      }
+                      console.log("pagnb" , pageNumber)
+                      console.log("link" , link)
+
+                      if (
+                        pageNumber === meta.current_page - 3 ||
+                        pageNumber === meta.current_page + 3
+                      ) {
+                        return (
+                          <li className="paginator__item">
+                            <span>...</span>
+                          </li>
+                        );
+                      }
+                    })}
+                  </ul>
+                </div>
+              </div>
+            )}
+            {/* <!-- end paginator --> */}
           </div>
         </div>
       </div>
