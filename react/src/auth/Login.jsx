@@ -2,7 +2,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import React, { useRef, useState } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
-import axiosClient from "./axios-client";
+import axiosClient from "../pages/axios-client";
 
 export default function Login() {
   const emailRef = useRef();

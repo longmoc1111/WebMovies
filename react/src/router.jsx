@@ -1,23 +1,24 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Login from "./views/Login";
-import Signup from "./views/Signup";
-import DashBoard from "./views/DashBoard";
-import NotFound from "./views/NotFound";
-import DefaultLayout from "./components/DefaultLayout";
-import GustLayout from "./components/GustLayout";
-import Users from "./views/adminPages/userPages//Users";
-import UpdateUser from "./views/adminPages/userPages/Update";
-import Moives from "./views/adminPages/moviesPage/Moives";
-import Create from "./views/adminPages/MoviesPage/Create";
-import Update from "./views/adminPages/MoviesPage/Update";
-import Director from "./views/adminPages/directorPage/Director";
-import Actor from "./views/adminPages/actorPage/Actor";
+import Login from "./auth/Login";
+import Signup from "./auth/Signup";
+import DashBoard from "./pages/DashBoard";
+import NotFound from "./pages/NotFound";
+import GustLayout from "@/layouts/Gust/GustLayout"
+import AdminLayout from "@/layouts/Admin/AdminLayout";
+import Users from "@adminPages/userPages/Users";
+import UpdateUser from "@adminPages/userPages/Update";
+import Moives from "@adminPages/moviesPage/Moives";
+import Create from "@adminPages/MoviesPage/Create";
+import Update from "@adminPages/MoviesPage/Update";
+import Director from "@adminPages/directorPage/Director";
+import Actor from "@adminPages/actorPage/Actor";
+
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <DefaultLayout />,
+    element: <AdminLayout />,
     children: [
       {
       path: "/",

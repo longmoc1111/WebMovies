@@ -1,9 +1,8 @@
 import axios from 'axios'
 import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import axiosClient from './axios-client'
-// console.log("BASE_URL =", import.meta.env.VITE_API_BASE_URL);
 import { useStateContext } from '../contexts/ContextProvider'
+import axiosClient from '../pages/axios-client'
 
 export default function Signup() {
   const nameRef = useRef()

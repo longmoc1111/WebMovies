@@ -1,0 +1,106 @@
+import React, { use, useEffect } from "react";
+import { useStateContext } from "../../contexts/ContextProvider";
+import { Link } from "react-router-dom";
+import axiosClient from "../../pages/axios-client";
+
+export default function SideBar() {
+  const { user, setUser, setToken } = useStateContext();
+  const onLogout = (ev) => {
+    ev.preventDefault();
+
+    axiosClient.post("/logout").then(() => {
+      setUser({});
+      setToken(null);
+    });
+  };
+
+  return (
+    <div className="sidebar">
+      <a href="index.html" className="sidebar__logo">
+        <img src="img/logo.svg" alt="" />
+      </a>
+
+      <div className="sidebar__user">
+        <div className="sidebar__user-img">
+          <img src="/img/user.svg" alt="" />
+        </div>
+
+        <div className="sidebar__user-title">
+          <span>Admin</span>
+          <p>{user.name}</p>
+        </div>
+        <form onSubmit={onLogout} className="sidebar__user-btn">
+          <button className="sidebar__user-btn" type="submit">
+            <i className="bi bi-box-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <div className="sidebar__nav-wrap">
+        <ul className="sidebar__nav">
+          <li className="sidebar__nav-item">
+            <Link to="/DashBoard" className="sidebar__nav-link ">
+              <i className="bi bi-grid"></i> <span>Dashboard</span>
+            </Link>
+          </li>
+
+          <li className="sidebar__nav-item">
+            <Link to="/movies" className="sidebar__nav-link ">
+              <i className="bi bi-film"></i> <span>Quản lý phim</span>
+            </Link>
+          </li>
+
+          <li className="sidebar__nav-item">
+            <Link to="/directors" className="sidebar__nav-link">
+              <i className="bi bi-chat"></i> <span>Đạo diễn</span>
+            </Link>
+          </li>
+
+          <li className="sidebar__nav-item">
+            <Link to="/actors" className="sidebar__nav-link">
+              <i className="bi bi-chat"></i> <span>diễn viên</span>
+            </Link>
+          </li>
+          <li className="sidebar__nav-item">
+            <Link to="/users" className="sidebar__nav-link">
+              <i className="bi bi-person"></i> <span>Người dùng</span>
+            </Link>
+          </li>
+          {/* <li className="sidebar__nav-item">
+              <a
+                className="sidebar__nav-link"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="bi bi-files"></i> <span>Trang</span>{" "}
+                <i className="bi bi-chevron-down"></i>
+              </a>
+
+              <ul className="dropdown-menu sidebar__dropdown-menu">
+                <li>
+                  <a href="#">Thêm Mới phim</a>
+                </li>
+                <li>
+                  <a href="#">Đăng nhập</a>
+                </li>
+                <li>
+                  <a href="#">Đăng ký</a>
+                </li>
+                <li>
+                  <a href="#">404 Page</a>
+                </li>
+              </ul>
+            </li> */}
+
+          <li className="sidebar__nav-item">
+            <a href="#" className="sidebar__nav-link">
+              <i className="bi bi-arrow-left"></i> <span>Back to HotFlix</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}

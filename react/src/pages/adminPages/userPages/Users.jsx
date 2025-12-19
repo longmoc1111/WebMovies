@@ -333,7 +333,7 @@ export default function Users() {
                       }
                     })}
                   </ul>
-                </div>
+                </div>  
               </div>
             )}
             {/* <!-- end paginator --> */}
