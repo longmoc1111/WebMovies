@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import axiosClient from "@axios/axios-client";
 import { Link, useLocation } from "react-router-dom";
+import MainTitle from "../../../components/admin/common/mainTitle/MainTitle";
 
 export default function Users() {
   const nameRef = useRef();
@@ -99,246 +100,215 @@ export default function Users() {
     }
     window.history.replaceState({}, document.title);
   }, []);
+  const onSearch = () => {};
+  const onSort = () => {};
+  const sortOption = [{ value: "Tên", label: "Lọc theo tên" }];
 
   return (
-    <main className="main">
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-12">
-            <div className="main__title">
-              <h2>diễn viên</h2>
+    <>
+      <div className="col-12">
+        <MainTitle
+          title={"Diễn Viên"}
+          onSearch={onSearch}
+          onSort={onSort}
+          sortOption={sortOption}
+        />
+      </div>
 
-              <div className="main__title-wrap">
-                <button
-                  type="button"
-                  data-bs-toggle="modal"
-                  className="main__title-link main__title-link--wrap"
-                  data-bs-target="#modal-user"
-                >
-                  Add user
-                </button>
-                <form action="#" className="filter__select">
-                  <select
-                    name="sort"
-                    className="filter__select"
-                    id="filter__sort"
-                    // onChange= {this.form.submit()}
-                  >
-                    <option value="Tên">Tên tác giả</option>
-                    <option value="Ngày sinh">Ngày sinh</option>
-                    <option value="Quốc tịch">Quốc tịch</option>
-                  </select>
-                </form>
+      <div className="col-12">
+        <div className="catalog catalog--1">
+          <table className="catalog__table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>HỌ VÀ TÊN</th>
+                <th>email</th>
+                <th>avatar</th>
+                <th></th>
+              </tr>
+            </thead>
 
-                <form action="#" className="main__title-form">
-                  <input name="search" type="text" placeholder="Tìm kiếm...." />
-                  <button type="submit">
-                    <i className="bi bi-search"></i>
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-12">
-            <div className="catalog catalog--1">
-              <table className="catalog__table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>HỌ VÀ TÊN</th>
-                    <th>email</th>
-                    <th>avatar</th>
-                    <th></th>
-                  </tr>
-                </thead>
-
-                {loading && (
-                  <tbody>
-                    (
-                    <tr>
-                      <td colSpan={5}>
-                        <div
-                          id="loading-test-1"
-                          style={{ width: "100%" }}
-                          className="d-flex flex-column justify-content-center align-items-center"
-                        >
-                          <div
-                            className="spinner-border text-primary mb-3"
-                            role="status"
-                          ></div>
-                          <span className="fw-bold text-primary">
-                            Loading...
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                    ){" "}
-                  </tbody>
-                )}
-
-                <tbody>
-                  {!loading &&
-                    users.map((u) => (
-                      <tr key={u.id}>
-                        <td>
-                          <div className="catalog__text">{u.id}</div>
-                        </td>
-                        <td>
-                          <div className="catalog__text">{u.name}</div>
-                        </td>
-                        <td>
-                          <div className="catalog__user">
-                            <div className="catalog__avatar">
-                              <img
-                                src="/assets/actorAvatar/{{$actor->ActorAvatar}}"
-                                alt=""
-                              />
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="catalog__text">{u.email}</div>
-                        </td>
-                        <td>
-                          <div className="catalog__btns">
-                            <Link
-                              to={`update/${u.id}`}
-                              className="catalog__btn catalog__btn--edit"
-                            >
-                              <i className="bi bi-pencil-square"></i>
-                            </Link>
-                            <button
-                              type="button"
-                              data-bs-toggle="modal"
-                              className="catalog__btn catalog__btn--delete"
-                              data-bs-target={`#modal-delete_${u.id}`}
-                            >
-                              <i className="bi bi-trash"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-            {/* <!-- paginator --> */}
-
-            {!loading && (
-              <div className="col-12">
-                <div className="main__paginator">
-                  {/* <!-- amount --> */}
-                  <span className="main__paginator-pages">
-                    {meta.current_page} - {meta.to} of {meta.total}
-                  </span>
-                  {/* <!-- end amount --> */}
-
-                  <ul className="main__paginator-list">
-                    {meta?.links?.map((link, index) => {
-                      const prev = link.label.includes("Previous");
-                      const next = link.label.includes("Next");
-
-                      if (prev) {
-                        if (!link.url) return;
-                        return (
-                          <li key={index}>
-                            <button onClick={() => getUsers(link.url)}>
-                              <i className="bi bi-chevron-left"></i>
-                              <span>Prev</span>
-                            </button>
-                          </li>
-                        );
-                      }
-                      if (next) {
-                        if (!link.url) return;
-                        return (
-                          <li key={index}>
-                            <button onClick={() => getUsers(link.url)}>
-                              <span>Next</span>
-                              <i className="bi bi-chevron-right"></i>
-                            </button>
-                          </li>
-                        );
-                      }
-                    })}
-                  </ul>
-
-                  <ul className="paginator">
-                    {meta?.links?.map((link, index) => {
-                      const prev = link.label.includes("Previous");
-                      const next = link.label.includes("Next");
-
-                      if (prev) {
-                        if (!link.url) return;
-                        return (
-                          <li
-                            key={index}
-                            className="paginator__item paginator__item--prev"
-                          >
-                            <button onClick={() => getUsers(link.url)}>
-                              <i className="bi bi-chevron-left"></i>
-                            </button>
-                          </li>
-                        );
-                      }
-
-                      if (next) {
-                        if (!link.url) return;
-                        return (
-                          <li
-                            key={index}
-                            className="paginator__item paginator__item--next"
-                          >
-                            <button onClick={() => getUsers(link.url)}>
-                              <i className="bi bi-chevron-right"></i>
-                            </button>
-                          </li>
-                        );
-                      }
-                       const pageNumber = Number(link.label);
-                     
-                      if (
-                        pageNumber === 1 ||
-                        pageNumber === meta.last_page ||
-                        (pageNumber >= meta.current_page - 2 && pageNumber <= meta.current_page + 2)
-                      ) {
-                        return (
-                          <li
-                            key={index}
-                            className={`paginator__item ${
-                              link.active === true
-                                ? "paginator__item--active"
-                                : ""
-                            } `}
-                          >
-                            <button onClick={() => getUsers(link.url)}>
-                              {link.label}
-                            </button>
-                          </li>
-                        );
-                      }
-                      console.log("pagnb" , pageNumber)
-                      console.log("link" , link)
-
-                      if (
-                        pageNumber === meta.current_page - 3 ||
-                        pageNumber === meta.current_page + 3
-                      ) {
-                        return (
-                          <li className="paginator__item">
-                            <span>...</span>
-                          </li>
-                        );
-                      }
-                    })}
-                  </ul>
-                </div>  
-              </div>
+            {loading && (
+              <tbody>
+                (
+                <tr>
+                  <td colSpan={5}>
+                    <div
+                      id="loading-test-1"
+                      style={{ width: "100%" }}
+                      className="d-flex flex-column justify-content-center align-items-center"
+                    >
+                      <div
+                        className="spinner-border text-primary mb-3"
+                        role="status"
+                      ></div>
+                      <span className="fw-bold text-primary">Loading...</span>
+                    </div>
+                  </td>
+                </tr>
+                ){" "}
+              </tbody>
             )}
-            {/* <!-- end paginator --> */}
-          </div>
+
+            <tbody>
+              {!loading &&
+                users.map((u) => (
+                  <tr key={u.id}>
+                    <td>
+                      <div className="catalog__text">{u.id}</div>
+                    </td>
+                    <td>
+                      <div className="catalog__text">{u.name}</div>
+                    </td>
+                    <td>
+                      <div className="catalog__user">
+                        <div className="catalog__avatar">
+                          <img
+                            src="/assets/actorAvatar/{{$actor->ActorAvatar}}"
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="catalog__text">{u.email}</div>
+                    </td>
+                    <td>
+                      <div className="catalog__btns">
+                        <Link
+                          to={`update/${u.id}`}
+                          className="catalog__btn catalog__btn--edit"
+                        >
+                          <i className="bi bi-pencil-square"></i>
+                        </Link>
+                        <button
+                          type="button"
+                          data-bs-toggle="modal"
+                          className="catalog__btn catalog__btn--delete"
+                          data-bs-target={`#modal-delete_${u.id}`}
+                        >
+                          <i className="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
         </div>
+        {/* <!-- paginator --> */}
+
+        {!loading && (
+          <div className="col-12">
+            <div className="main__paginator">
+              {/* <!-- amount --> */}
+              <span className="main__paginator-pages">
+                {meta.current_page} - {meta.to} of {meta.total}
+              </span>
+              {/* <!-- end amount --> */}
+
+              <ul className="main__paginator-list">
+                {meta?.links?.map((link, index) => {
+                  const prev = link.label.includes("Previous");
+                  const next = link.label.includes("Next");
+
+                  if (prev) {
+                    if (!link.url) return;
+                    return (
+                      <li key={index}>
+                        <button onClick={() => getUsers(link.url)}>
+                          <i className="bi bi-chevron-left"></i>
+                          <span>Prev</span>
+                        </button>
+                      </li>
+                    );
+                  }
+                  if (next) {
+                    if (!link.url) return;
+                    return (
+                      <li key={index}>
+                        <button onClick={() => getUsers(link.url)}>
+                          <span>Next</span>
+                          <i className="bi bi-chevron-right"></i>
+                        </button>
+                      </li>
+                    );
+                  }
+                })}
+              </ul>
+
+              <ul className="paginator">
+                {meta?.links?.map((link, index) => {
+                  const prev = link.label.includes("Previous");
+                  const next = link.label.includes("Next");
+
+                  if (prev) {
+                    if (!link.url) return;
+                    return (
+                      <li
+                        key={index}
+                        className="paginator__item paginator__item--prev"
+                      >
+                        <button onClick={() => getUsers(link.url)}>
+                          <i className="bi bi-chevron-left"></i>
+                        </button>
+                      </li>
+                    );
+                  }
+
+                  if (next) {
+                    if (!link.url) return;
+                    return (
+                      <li
+                        key={index}
+                        className="paginator__item paginator__item--next"
+                      >
+                        <button onClick={() => getUsers(link.url)}>
+                          <i className="bi bi-chevron-right"></i>
+                        </button>
+                      </li>
+                    );
+                  }
+                  const pageNumber = Number(link.label);
+
+                  if (
+                    pageNumber === 1 ||
+                    pageNumber === meta.last_page ||
+                    (pageNumber >= meta.current_page - 2 &&
+                      pageNumber <= meta.current_page + 2)
+                  ) {
+                    return (
+                      <li
+                        key={index}
+                        className={`paginator__item ${
+                          link.active === true ? "paginator__item--active" : ""
+                        } `}
+                      >
+                        <button onClick={() => getUsers(link.url)}>
+                          {link.label}
+                        </button>
+                      </li>
+                    );
+                  }
+                  console.log("pagnb", pageNumber);
+                  console.log("link", link);
+
+                  if (
+                    pageNumber === meta.current_page - 3 ||
+                    pageNumber === meta.current_page + 3
+                  ) {
+                    return (
+                      <li className="paginator__item">
+                        <span>...</span>
+                      </li>
+                    );
+                  }
+                })}
+              </ul>
+            </div>
+          </div>
+        )}
+        {/* <!-- end paginator --> */}
       </div>
       {/* modal tao user */}
       <div
@@ -479,6 +449,6 @@ export default function Users() {
           </div>
         </div>
       ))}
-    </main>
+    </>
   );
 }

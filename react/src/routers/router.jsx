@@ -4,7 +4,7 @@ import Signup from "@auth/Signup";
 import DashBoard from "@adminPages/dashBoard/DashBoard";
 import NotFound from "@errors/NotFound";
 import GustLayout from "@/layouts/gust/GustLayout"
-import AdminLayout from "@/layouts/admin";
+import AdminLayout from "@/layouts/admin/main";
 import Users from "@adminPages/userPages/Users";
 import UpdateUser from "@adminPages/userPages/Update";
 import Moives from "@adminPages/moviesPage/Moives";

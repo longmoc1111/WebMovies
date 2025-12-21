@@ -1,9 +1,10 @@
 import React, { use, useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import axiosClient from "@axios/axios-client";
-import Header from "./header/Header";
-import Sidebar from "./sidebar/Sidebar";
-import { useStateContext } from "../../contexts/ContextProvider";
+import Header from "../header/Header";
+import Sidebar from "../sideBar/SideBar";
+import { useStateContext } from "../../../contexts/ContextProvider";
+import styles from "./main.module.scss"
 export default function AdminLayout() {
   const { token, setUser } = useStateContext();
   const [sidebarActive, setSidebarActive] = useState(false);
@@ -22,7 +23,13 @@ export default function AdminLayout() {
     <>
       <Header onToggleSidebar={toggleSidebar} active={sidebarActive} />
       <Sidebar active={sidebarActive} />
-      <Outlet />
+      <main className={styles.main}>
+        <div className="container-fluid">
+          <div className="row">
+            <Outlet />
+          </div>
+        </div>
+      </main>
     </>
   );
 }

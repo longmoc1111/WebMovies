@@ -126,255 +126,244 @@ export default function Director() {
   };
 
   return (
-    <main className="main">
-      <div className="container-fluid">
-        <div className="row">
-          {/* <!-- main title --> */}
-          <div className="col-12">
-            <div className="main__title">
-              <h2>Đạo diễn</h2>
+    <>
+      {/* <!-- main title --> */}
+      <div className="col-12">
+        <div className="main__title">
+          <h2>Đạo diễn</h2>
 
-              <div className="main__title-wrap">
-                <button
-                  to="/directors/create"
-                  type="button"
-                  className="main__title-link main__title-link--wrap"
-                  onClick={() => {
-                    const el = document.getElementById("modal_create_director");
-                    const modal = bootstrap.Modal.getOrCreateInstance(el);
-                    modal.show();
-                  }}
-                >
-                  Thêm mới
-                </button>
-                <form className="filter__select">
-                  <select
-                    name="sort"
-                    className="filter__select"
-                    id="filter__sort"
-                  >
-                    <option value="Tên">Tên đạo diễn</option>
-                    <option value="Ngày sinh">Ngày sinh</option>
-                    <option value="Quốc tịch">Quốc tịch</option>
-                  </select>
-                </form>
+          <div className="main__title-wrap">
+            <button
+              to="/directors/create"
+              type="button"
+              className="main__title-link main__title-link--wrap"
+              onClick={() => {
+                const el = document.getElementById("modal_create_director");
+                const modal = bootstrap.Modal.getOrCreateInstance(el);
+                modal.show();
+              }}
+            >
+              Thêm mới
+            </button>
+            <form className="filter__select">
+              <select name="sort" className="filter__select" id="filter__sort">
+                <option value="Tên">Tên đạo diễn</option>
+                <option value="Ngày sinh">Ngày sinh</option>
+                <option value="Quốc tịch">Quốc tịch</option>
+              </select>
+            </form>
 
-                {/* <!-- search --> */}
-                <form className="main__title-form">
-                  <input name="search" type="text" placeholder="Tìm kiếm...." />
-                  <button type="submit">
-                    <i className="bi bi-search"></i>
-                  </button>
-                </form>
-                {/* <!-- end search --> */}
-              </div>
-            </div>
-          </div>
-
-          <div className="col-12">
-            <div className="catalog catalog--1">
-              <table className="catalog__table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>HỌ VÀ TÊN</th>
-                    <th>ẢNH ĐẠI DIỆN</th>
-                    <th>QUỐC TỊCH</th>
-                    <th>NGÀY SINH</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                {loading && (
-                  <tbody>
-                    <tr>
-                      <td colSpan={8}>
-                        <div
-                          id="loading-test-1"
-                          style={{ width: "100%" }}
-                          className="d-flex flex-column justify-content-center align-items-center"
-                        >
-                          <div
-                            className="spinner-border text-primary mb-3"
-                            role="status"
-                          ></div>
-                          <span className="fw-bold text-primary">
-                            Loading...
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                )}
-                {!loading && (
-                  <tbody>
-                    {director.map((dr, index) => (
-                      <tr key={dr.DirectorID}>
-                        <td>
-                          <div className="catalog__text">{index + 1}</div>
-                        </td>
-                        <td>
-                          <div className="catalog__text">{dr.DirectorName}</div>
-                        </td>
-                        <td>
-                          <div className="catalog__user">
-                            <div className="catalog__avatar">
-                              <img src="#" alt="" />
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="catalog__text">
-                            {dr.DirectorNationality
-                              ? dr.DirectorNationality
-                              : "Đang cập nhật"}
-                          </div>
-                        </td>
-
-                        <td>
-                          <div className="catalog__text">
-                            {dr.DirectorDate
-                              ? dr.DirectorDate
-                              : "Đang cập nhật"}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="catalog__btns">
-                            <button
-                              href="#"
-                              className="catalog__btn catalog__btn--edit"
-                              onClick={() => {
-                                const modal =
-                                  bootstrap.Modal.getOrCreateInstance(
-                                    document.getElementById(
-                                      "modal_update_director"
-                                    )
-                                  );
-                                modal.show();
-                                setFormData(() => ({
-                                  DirectorID: dr.DirectorID,
-                                  DirectorName: dr.DirectorName,
-                                  DirectorNationality: dr.DirectorNationality,
-                                  DirectorDate: dr.DirectorDate,
-                                  DirectorAvatar: dr.DirectorAvatar,
-                                }));
-                              }}
-                            >
-                              <i className="bi bi-pencil-square"></i>
-                            </button>
-                            <button
-                              type="button"
-                              className="catalog__btn catalog__btn--delete"
-                              onClick={() => {
-                                setDeleteDirector({
-                                  id: dr.DirectorID,
-                                });
-                                const el = document.getElementById(
-                                  "delete_director_modal"
-                                );
-                                const modal =
-                                  bootstrap.Modal.getOrCreateInstance(el);
-                                modal.show();
-                              }}
-                            >
-                              <i className="bi bi-trash"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                )}
-              </table>
-            </div>
-            {/* <!-- paginator --> */}
-            {!loading &&
-            (
-              <div class="col-12">
-                <div class="main__paginator">
-                  {/* <!-- amount --> */}
-                  <span class="main__paginator-pages">
-                    {" "}
-                    {meta?.current_page} - {meta?.to} of {meta?.total}
-                  </span>
-                  {/* <!-- end amount --> */}
-
-                  <ul class="main__paginator-list">
-                    {meta?.links?.map((link, index) => {
-                      const prev = link.label.includes("Previous");
-                      const next = link.label.includes("Next");
-
-                      if (prev) {
-                        if (!link.url) return;
-                        return (
-                          <li key={index}>
-                            <button onClick={() => getDirector(link.url)}>
-                              <i class="bi bi-chevron-left"></i>
-                              <span>Prev</span>
-                            </button>
-                          </li>
-                        );
-                      }
-
-                      if (next) {
-                        if (!link.url) return;
-                        return (
-                          <li key={index}>
-                            <button onClick={() => getDirector(link.url)}>
-                              <span>Next</span>
-                              <i class="bi bi-chevron-right"></i>
-                            </button>
-                          </li>
-                        );
-                      }
-                    })}
-                  </ul>
-
-                  <ul class="paginator">
-                    {meta?.links?.map((link, index) => {
-                      const prev = link.label.includes("Previous");
-                      const next = link.label.includes("Next");
-                      if (prev) {
-                        if (!link.url) return;
-                        return (
-                          <li key={index} class="paginator__item paginator__item--prev">
-                            <button onClick={() => getDirector(link.url)}>
-                              <i class="bi bi-chevron-left"></i>
-                            </button>
-                          </li>
-                        );
-                      }
-
-                      if (next) {
-                        if (!link.url) return;
-                        return (
-                          <li key={index} class="paginator__item paginator__item--next">
-                            <button onClick={() => getDirector(link.url)}>
-                              <i class="bi bi-chevron-right"></i>
-                            </button>
-                          </li>
-                        );
-                      }
-                      return (
-                        <li key={index}
-                          class={`paginator__item ${
-                            link.active === true
-                              ? "paginator__item--active"
-                              : ""
-                          }`}
-                        >
-                          <button onClick={() => getDirector(link.url)}>
-                            {link.label}
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              </div>
-            )}
-            {/* <!-- end paginator --> */}
+            {/* <!-- search --> */}
+            <form className="main__title-form">
+              <input name="search" type="text" placeholder="Tìm kiếm...." />
+              <button type="submit">
+                <i className="bi bi-search"></i>
+              </button>
+            </form>
+            {/* <!-- end search --> */}
           </div>
         </div>
+      </div>
+
+      <div className="col-12">
+        <div className="catalog catalog--1">
+          <table className="catalog__table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>HỌ VÀ TÊN</th>
+                <th>ẢNH ĐẠI DIỆN</th>
+                <th>QUỐC TỊCH</th>
+                <th>NGÀY SINH</th>
+                <th></th>
+              </tr>
+            </thead>
+            {loading && (
+              <tbody>
+                <tr>
+                  <td colSpan={8}>
+                    <div
+                      id="loading-test-1"
+                      style={{ width: "100%" }}
+                      className="d-flex flex-column justify-content-center align-items-center"
+                    >
+                      <div
+                        className="spinner-border text-primary mb-3"
+                        role="status"
+                      ></div>
+                      <span className="fw-bold text-primary">Loading...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            )}
+            {!loading && (
+              <tbody>
+                {director.map((dr, index) => (
+                  <tr key={dr.DirectorID}>
+                    <td>
+                      <div className="catalog__text">{index + 1}</div>
+                    </td>
+                    <td>
+                      <div className="catalog__text">{dr.DirectorName}</div>
+                    </td>
+                    <td>
+                      <div className="catalog__user">
+                        <div className="catalog__avatar">
+                          <img src="#" alt="" />
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="catalog__text">
+                        {dr.DirectorNationality
+                          ? dr.DirectorNationality
+                          : "Đang cập nhật"}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className="catalog__text">
+                        {dr.DirectorDate ? dr.DirectorDate : "Đang cập nhật"}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="catalog__btns">
+                        <button
+                          href="#"
+                          className="catalog__btn catalog__btn--edit"
+                          onClick={() => {
+                            const modal = bootstrap.Modal.getOrCreateInstance(
+                              document.getElementById("modal_update_director")
+                            );
+                            modal.show();
+                            setFormData(() => ({
+                              DirectorID: dr.DirectorID,
+                              DirectorName: dr.DirectorName,
+                              DirectorNationality: dr.DirectorNationality,
+                              DirectorDate: dr.DirectorDate,
+                              DirectorAvatar: dr.DirectorAvatar,
+                            }));
+                          }}
+                        >
+                          <i className="bi bi-pencil-square"></i>
+                        </button>
+                        <button
+                          type="button"
+                          className="catalog__btn catalog__btn--delete"
+                          onClick={() => {
+                            setDeleteDirector({
+                              id: dr.DirectorID,
+                            });
+                            const el = document.getElementById(
+                              "delete_director_modal"
+                            );
+                            const modal =
+                              bootstrap.Modal.getOrCreateInstance(el);
+                            modal.show();
+                          }}
+                        >
+                          <i className="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
+          </table>
+        </div>
+        {/* <!-- paginator --> */}
+        {!loading && (
+          <div class="col-12">
+            <div class="main__paginator">
+              {/* <!-- amount --> */}
+              <span class="main__paginator-pages">
+                {" "}
+                {meta?.current_page} - {meta?.to} of {meta?.total}
+              </span>
+              {/* <!-- end amount --> */}
+
+              <ul class="main__paginator-list">
+                {meta?.links?.map((link, index) => {
+                  const prev = link.label.includes("Previous");
+                  const next = link.label.includes("Next");
+
+                  if (prev) {
+                    if (!link.url) return;
+                    return (
+                      <li key={index}>
+                        <button onClick={() => getDirector(link.url)}>
+                          <i class="bi bi-chevron-left"></i>
+                          <span>Prev</span>
+                        </button>
+                      </li>
+                    );
+                  }
+
+                  if (next) {
+                    if (!link.url) return;
+                    return (
+                      <li key={index}>
+                        <button onClick={() => getDirector(link.url)}>
+                          <span>Next</span>
+                          <i class="bi bi-chevron-right"></i>
+                        </button>
+                      </li>
+                    );
+                  }
+                })}
+              </ul>
+
+              <ul class="paginator">
+                {meta?.links?.map((link, index) => {
+                  const prev = link.label.includes("Previous");
+                  const next = link.label.includes("Next");
+                  if (prev) {
+                    if (!link.url) return;
+                    return (
+                      <li
+                        key={index}
+                        class="paginator__item paginator__item--prev"
+                      >
+                        <button onClick={() => getDirector(link.url)}>
+                          <i class="bi bi-chevron-left"></i>
+                        </button>
+                      </li>
+                    );
+                  }
+
+                  if (next) {
+                    if (!link.url) return;
+                    return (
+                      <li
+                        key={index}
+                        class="paginator__item paginator__item--next"
+                      >
+                        <button onClick={() => getDirector(link.url)}>
+                          <i class="bi bi-chevron-right"></i>
+                        </button>
+                      </li>
+                    );
+                  }
+                  return (
+                    <li
+                      key={index}
+                      class={`paginator__item ${
+                        link.active === true ? "paginator__item--active" : ""
+                      }`}
+                    >
+                      <button onClick={() => getDirector(link.url)}>
+                        {link.label}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        )}
+        {/* <!-- end paginator --> */}
       </div>
 
       {/* modal tao diector */}
@@ -662,6 +651,6 @@ export default function Director() {
         </div>
       </div>
       {/* end modal tạo diector */}
-    </main>
+    </>
   );
 }
