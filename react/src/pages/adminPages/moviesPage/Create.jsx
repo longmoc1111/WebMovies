@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import axiosClient from "../../axios-client";
+import axiosClient from "@axios/axios-client";
 import Select from "react-select";
 import { customStyles } from "../../../../public/js/selectReact";
 import { useNavigate } from "react-router-dom";

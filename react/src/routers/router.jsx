@@ -1,10 +1,10 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Login from "./auth/Login";
-import Signup from "./auth/Signup";
-import DashBoard from "./pages/DashBoard";
-import NotFound from "./pages/NotFound";
-import GustLayout from "@/layouts/Gust/GustLayout"
-import AdminLayout from "@/layouts/Admin/AdminLayout";
+import Login from "@auth/Login";
+import Signup from "@auth/Signup";
+import DashBoard from "@adminPages/dashBoard/DashBoard";
+import NotFound from "@errors/NotFound";
+import GustLayout from "@/layouts/gust/GustLayout"
+import AdminLayout from "@/layouts/admin";
 import Users from "@adminPages/userPages/Users";
 import UpdateUser from "@adminPages/userPages/Update";
 import Moives from "@adminPages/moviesPage/Moives";

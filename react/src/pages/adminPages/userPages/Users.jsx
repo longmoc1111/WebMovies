@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import axiosClient from "../../axios-client";
+import axiosClient from "@axios/axios-client";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Users() {

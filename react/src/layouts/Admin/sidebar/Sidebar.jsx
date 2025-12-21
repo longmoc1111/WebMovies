@@ -1,9 +1,9 @@
-import React, { use, useEffect } from "react";
-import { useStateContext } from "../../contexts/ContextProvider";
 import { Link } from "react-router-dom";
-import axiosClient from "../../pages/axios-client";
+import axiosClient from "@axios/axios-client";
+import styles from "./Sidebar.module.scss"
+import { useStateContext } from "../../../contexts/ContextProvider";
 
-export default function SideBar() {
+export default function Sidebar({active}) {
   const { user, setUser, setToken } = useStateContext();
   const onLogout = (ev) => {
     ev.preventDefault();
@@ -15,60 +15,60 @@ export default function SideBar() {
   };
 
   return (
-    <div className="sidebar">
-      <a href="index.html" className="sidebar__logo">
+    <div className={`${styles.sidebar} ${active ? styles.sidebar__active : ""}`}>
+      <a href="index.html" className={styles.sidebar__logo}>
         <img src="img/logo.svg" alt="" />
       </a>
 
-      <div className="sidebar__user">
+      <div className={styles.sidebar__user}>
         <div className="sidebar__user-img">
           <img src="/img/user.svg" alt="" />
         </div>
 
-        <div className="sidebar__user-title">
+        <div className={styles.sidebar__user__title}>
           <span>Admin</span>
           <p>{user.name}</p>
         </div>
-        <form onSubmit={onLogout} className="sidebar__user-btn">
-          <button className="sidebar__user-btn" type="submit">
+        <form onSubmit={onLogout} className={styles.sidebar__user__btn}>
+          <button className={styles.sidebar__user__btn} type="submit">
             <i className="bi bi-box-arrow-right"></i>
           </button>
         </form>
       </div>
 
-      <div className="sidebar__nav-wrap">
-        <ul className="sidebar__nav">
-          <li className="sidebar__nav-item">
-            <Link to="/DashBoard" className="sidebar__nav-link ">
+      <div className={styles.sidebar__nav__wrap}>
+        <ul className={styles.sidebar__nav}>
+          <li className={styles.sidebar__nav__item}>
+            <Link to="/DashBoard" className={styles.sidebar__nav__link}>
               <i className="bi bi-grid"></i> <span>Dashboard</span>
             </Link>
           </li>
 
-          <li className="sidebar__nav-item">
-            <Link to="/movies" className="sidebar__nav-link ">
+          <li className={styles.sidebar__nav__item}>
+            <Link to="/movies" className={styles.sidebar__nav__link}>
               <i className="bi bi-film"></i> <span>Quản lý phim</span>
             </Link>
           </li>
 
-          <li className="sidebar__nav-item">
-            <Link to="/directors" className="sidebar__nav-link">
+          <li className={styles.sidebar__nav__item}>
+            <Link to="/directors" className={styles.sidebar__nav__link}>
               <i className="bi bi-chat"></i> <span>Đạo diễn</span>
             </Link>
           </li>
 
-          <li className="sidebar__nav-item">
-            <Link to="/actors" className="sidebar__nav-link">
+          <li className={styles.sidebar__nav__item}>
+            <Link to="/actors" className={styles.sidebar__nav__link}>
               <i className="bi bi-chat"></i> <span>diễn viên</span>
             </Link>
           </li>
-          <li className="sidebar__nav-item">
-            <Link to="/users" className="sidebar__nav-link">
+          <li className={styles.sidebar__nav__item}>
+            <Link to="/users" className={styles.sidebar__nav__link}>
               <i className="bi bi-person"></i> <span>Người dùng</span>
             </Link>
           </li>
-          {/* <li className="sidebar__nav-item">
+          {/* <li className={styles.sidebar__nav__item}>
               <a
-                className="sidebar__nav-link"
+                className={styles.sidebar__nav__link}
                 href="#"
                 role="button"
                 data-bs-toggle="dropdown"
@@ -94,8 +94,8 @@ export default function SideBar() {
               </ul>
             </li> */}
 
-          <li className="sidebar__nav-item">
-            <a href="#" className="sidebar__nav-link">
+          <li className={styles.sidebar__nav__item}>
+            <a href="#" className={styles.sidebar__nav__link}>
               <i className="bi bi-arrow-left"></i> <span>Back to HotFlix</span>
             </a>
           </li>

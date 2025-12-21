@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { customStyles } from "../../../../public/js/selectReact";
 import Select from "react-select";
 import axios from "axios";
-import axiosClient from "../../axios-client";
+import axiosClient from "@axios/axios-client";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function Update() {

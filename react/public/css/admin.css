@@ -142,9 +142,9 @@ body::-webkit-scrollbar-thumb {
 /*==============================
 	Header
 ==============================*/
-.header {
+/* .header {
   display: block;
-  position: fixed;
+  position: fixed; 
   top: 0;
   left: 0;
   width: 100%;
@@ -220,11 +220,11 @@ body::-webkit-scrollbar-thumb {
   .header {
     display: none;
   }
-}
+} */
 /*==============================
 	Sidebar
 ==============================*/
-.sidebar {
+/* .sidebar {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -433,7 +433,7 @@ body::-webkit-scrollbar-thumb {
   .sidebar__logo {
     height: 80px;
   }
-}
+} */
 /*==============================
 	Main
 ==============================*/

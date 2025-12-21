@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import axiosClient from "../../axios-client";
+import axiosClient from "@axios/axios-client";
 
 export default function UpdateUser() {
   const { id } = useParams();

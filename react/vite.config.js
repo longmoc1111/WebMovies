@@ -9,6 +9,10 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, "./src"),
       '@adminPages': path.resolve(__dirname, "./src/pages/adminPages"),
+      '@errors': path.resolve(__dirname, "./src/pages/errors"),
+      '@auth' : path.resolve(__dirname, "./src/pages/auth"),
+      '@axios': path.resolve(__dirname, "./src/axios")
+      
     }
   }
 })

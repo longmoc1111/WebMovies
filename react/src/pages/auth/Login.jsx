@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
 import React, { useRef, useState } from "react";
-import { useStateContext } from "../contexts/ContextProvider";
-import axiosClient from "../pages/axios-client";
+import axiosClient from "../../axios/axios-client";
+import { useStateContext } from "../../contexts/ContextProvider";
 
 export default function Login() {
   const emailRef = useRef();
@@ -26,10 +26,10 @@ export default function Login() {
         if (response && response.status === 422) {
           if (response.data.errors) {
             setErrors(response.data.errors);
-          }else{
+          } else {
             setErrors({
-              email: [response.data.message]
-            })
+              email: [response.data.message],
+            });
           }
         }
       });
