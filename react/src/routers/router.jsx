@@ -24,7 +24,6 @@ const router = createBrowserRouter([
       path: "/",
       element: <Navigate to = "/users"/>
       },
-      
       {
         path:"/dashboard",
         element: <DashBoard/>

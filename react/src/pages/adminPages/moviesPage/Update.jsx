@@ -105,7 +105,7 @@ export default function Update() {
       });
     });
   };
-
+  
   const onDelete = (ev) => {
     ev.preventDefault();
     axiosClient

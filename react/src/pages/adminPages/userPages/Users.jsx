@@ -322,7 +322,7 @@ export default function Users() {
           <div className="modal-content">
             <div className="modal__content">
               <form onSubmit={onCreate} className="modal__form">
-                <h4 className="modal__title">Add User</h4>
+                <h4 className="modal__title">Thêm mới</h4>
 
                 <div className="col-12">
                   <div className="sign__group">

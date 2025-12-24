@@ -24,6 +24,7 @@ export default function Actor() {
     ActorDate: "",
     ActorAvatar: null,
   });
+  // console.log(nameRef.current)
   useEffect(() => {
     getActor();
   }, []);
